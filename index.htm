@@ -1,0 +1,57 @@
+﻿<!DOCTYPE html>
+
+<html>
+  <head>
+    <meta charset=utf-8>
+    <title>
+    <#title>
+    </title>
+  </head>
+  <body>
+
+    <a href=/ style=text-decoration:none><#title2></a>
+    <header>
+    <a name=top></a>
+    <form action=/regist?db=<#database> method="post">
+      <table>
+        <tr><td>
+          <label><p>お名前</p><input name="name" class=name value=<#cookie param=name>></label>
+          <label><p>タイトル</p><input name="title" class=title value=<#cookie param=title> placeholder="タイトルなし."></label>
+          <input type="submit" value="送信">
+        </td></tr>
+        <tr><td>
+          <label><p>本文<span>必須</span><br></p>
+            <textarea style="font-size:1.75em" name="comment" cols=30
+                      required placeholder="コメントなどを入力してください."><#cookie param=comment></textarea></label>
+        </td></tr>
+        <tr><td>
+          <label><p>パスワード</p><input name="password" type="password" placeholder="削除用">
+          </label> / <input type="checkbox" name="show" value="true" checked><p>プレビュー</p>
+        </td></tr>
+        <tr><td>
+          <label><p>合言葉をひらがなで入力してください: genki <input name=aikotoba type=text value=<#cookie param=aikotoba>></label>
+        </td></tr>
+      </table>
+    </form>
+    </header>
+    <hr size="1" width="100%">
+    <form action=/userdel?db=<#database> method="post" id=search>
+      <label><p>記事No</p><input name="number"></label>
+      <label><p>Pass</p><input type="password" name="password"></label>
+      <input type="submit" value="削除">
+    </form>
+    <form action=/userdel?db=<#database> method=post id=search>
+      <label><p>記事No</p><input name=number></label>
+      <input type=submit value=移動>
+    </form>
+    <p><a href=/search?db=<#database>>検索ページ</a></p>
+    <p style=text-align:right><a href=#article>下へ移動</a></p>
+    <p style=text-align:center><#database></p>
+
+  <#article>
+	<a name=article></a>
+	<p style=text-align:right><a href=#top>Topへ移動</a></p>
+
+    <p style=text-align:center><a href="/admin?db=<#database>&num=0">管理者用ログイン</a></p>
+  </body>
+</html>
