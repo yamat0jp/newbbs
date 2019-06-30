@@ -1,15 +1,20 @@
 object DataModule1: TDataModule1
   OldCreateOrder = False
-  Height = 150
-  Width = 215
+  Height = 230
+  Width = 302
   object FDTable1: TFDTable
     Active = True
-    IndexFieldNames = 'DATABASE'
+    IndexFieldNames = 'DBNUM'
     Connection = FDConnection1
     UpdateOptions.UpdateTableName = 'DBNAME'
     TableName = 'DBNAME'
-    Left = 16
+    Left = 32
     Top = 88
+    object FDTable1DBNUM: TIntegerField
+      FieldName = 'DBNUM'
+      Origin = 'DBNUM'
+      Required = True
+    end
     object FDTable1DATABASE: TWideStringField
       FieldName = 'DATABASE'
       Origin = '"DATABASE"'
@@ -31,12 +36,19 @@ object DataModule1: TDataModule1
   end
   object FDTable2: TFDTable
     Active = True
-    IndexFieldNames = 'NUMBER'
+    IndexFieldNames = 'DBNUM;NUMBER'
+    MasterSource = DataSource1
+    MasterFields = 'DBNUM'
     Connection = FDConnection1
     UpdateOptions.UpdateTableName = 'ARTICLE'
     TableName = 'ARTICLE'
-    Left = 80
+    Left = 96
     Top = 88
+    object FDTable2DBNUM: TIntegerField
+      FieldName = 'DBNUM'
+      Origin = 'DBNUM'
+      Required = True
+    end
     object FDTable2NUMBER: TIntegerField
       FieldName = 'NUMBER'
       Origin = 'NUMBER'
@@ -73,25 +85,70 @@ object DataModule1: TDataModule1
     Connection = FDConnection1
     UpdateOptions.UpdateTableName = 'SETTING'
     TableName = 'SETTING'
-    Left = 144
+    Left = 160
     Top = 88
-    object FDTable3TITLE: TStringField
+    object FDTable3TITLE: TWideStringField
       FieldName = 'TITLE'
       Origin = 'TITLE'
+      Size = 80
     end
-    object FDTable3TITLE2: TStringField
+    object FDTable3TITLE2: TWideStringField
       FieldName = 'TITLE2'
       Origin = 'TITLE2'
-      Size = 80
+      Size = 320
     end
     object FDTable3MENTE: TBooleanField
       FieldName = 'MENTE'
       Origin = 'MENTE'
+    end
+    object FDTable3INFO: TIntegerField
+      FieldName = 'INFO'
+      Origin = 'INFO'
+    end
+    object FDTable3COUNT: TIntegerField
+      FieldName = 'COUNT'
+      Origin = '"COUNT"'
     end
   end
   object FDGUIxWaitCursor1: TFDGUIxWaitCursor
     Provider = 'Forms'
     Left = 48
     Top = 24
+  end
+  object DataSource1: TDataSource
+    DataSet = FDTable1
+    Left = 64
+    Top = 152
+  end
+  object FDQuery1: TFDQuery
+    Connection = FDConnection1
+    Left = 160
+    Top = 152
+  end
+  object FDTable4: TFDTable
+    Active = True
+    Connection = FDConnection1
+    UpdateOptions.UpdateTableName = 'REQ'
+    TableName = 'REQ'
+    Left = 224
+    Top = 88
+    object FDTable4DBNAME: TIntegerField
+      FieldName = 'DBNAME'
+      Origin = 'DBNAME'
+    end
+    object FDTable4POSNUM: TIntegerField
+      FieldName = 'POSNUM'
+      Origin = 'POSNUM'
+    end
+    object FDTable4DATE: TDateField
+      FieldName = 'DATE'
+      Origin = '"DATE"'
+      Required = True
+    end
+    object FDTable4REQUEST: TWideMemoField
+      FieldName = 'REQUEST'
+      Origin = 'REQUEST'
+      BlobType = ftWideMemo
+    end
   end
 end

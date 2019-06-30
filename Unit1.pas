@@ -21,13 +21,24 @@ type
     FDTable2NAME: TStringField;
     FDTable2COMMENT: TWideMemoField;
     FDTable2RAW: TWideMemoField;
+    FDTable3: TFDTable;
+    FDGUIxWaitCursor1: TFDGUIxWaitCursor;
+    DataSource1: TDataSource;
+    FDTable2DBNUM: TIntegerField;
     FDTable2DATE: TDateField;
     FDTable1DATABASE: TWideStringField;
-    FDTable3: TFDTable;
-    FDTable3TITLE: TStringField;
-    FDTable3TITLE2: TStringField;
+    FDTable1DBNUM: TIntegerField;
+    FDQuery1: TFDQuery;
+    FDTable4: TFDTable;
+    FDTable3TITLE: TWideStringField;
+    FDTable3TITLE2: TWideStringField;
     FDTable3MENTE: TBooleanField;
-    FDGUIxWaitCursor1: TFDGUIxWaitCursor;
+    FDTable3INFO: TIntegerField;
+    FDTable4DBNAME: TIntegerField;
+    FDTable4POSNUM: TIntegerField;
+    FDTable4DATE: TDateField;
+    FDTable4REQUEST: TWideMemoField;
+    FDTable3COUNT: TIntegerField;
   private
     { Private êÈåæ }
   public
