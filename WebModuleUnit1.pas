@@ -17,6 +17,12 @@ type
     master: TPageProducer;
     alert: TDataSetPageProducer;
     footer: TDataSetPageProducer;
+    mail: TPageProducer;
+    header: TPageProducer;
+    css1: TPageProducer;
+    css2: TPageProducer;
+    css3: TPageProducer;
+    css4: TPageProducer;
     procedure indexHTMLTag(Sender: TObject; Tag: TTag; const TagString: string;
       TagParams: TStrings; var ReplaceText: string);
     procedure TWebModule1indexpageAction(Sender: TObject; Request: TWebRequest;
@@ -38,13 +44,19 @@ type
       Response: TWebResponse; var Handled: Boolean);
     procedure searchHTMLTag(Sender: TObject; Tag: TTag; const TagString: string;
       TagParams: TStrings; var ReplaceText: string);
-    procedure page(Sender: TObject; Request: TWebRequest;
-      Response: TWebResponse; var Handled: Boolean);
     procedure masterHTMLTag(Sender: TObject; Tag: TTag; const TagString: string;
       TagParams: TStrings; var ReplaceText: string);
     procedure articlesHTMLTag(Sender: TObject; Tag: TTag;
       const TagString: string; TagParams: TStrings; var ReplaceText: string);
     procedure footerHTMLTag(Sender: TObject; Tag: TTag; const TagString: string;
+      TagParams: TStrings; var ReplaceText: string);
+    procedure TWebModule1alertAction(Sender: TObject; Request: TWebRequest;
+      Response: TWebResponse; var Handled: Boolean);
+    procedure TWebModule1masterAction(Sender: TObject; Request: TWebRequest;
+      Response: TWebResponse; var Handled: Boolean);
+    procedure mailHTMLTag(Sender: TObject; Tag: TTag; const TagString: string;
+      TagParams: TStrings; var ReplaceText: string);
+    procedure alertHTMLTag(Sender: TObject; Tag: TTag; const TagString: string;
       TagParams: TStrings; var ReplaceText: string);
   private
     { private êÈåæ }
@@ -64,6 +76,30 @@ uses Unit1;
 
 {$R *.dfm}
 
+procedure TTWebModule1.alertHTMLTag(Sender: TObject; Tag: TTag;
+  const TagString: string; TagParams: TStrings; var ReplaceText: string);
+var
+  s: TStringList;
+  i: Integer;
+begin
+  if TagString = 'article' then
+  begin
+    s := TStringList.Create;
+    try
+      s.Text := articles.Content;
+      for i := s.Count - 1 downto 0 do
+        if Copy(s[i], 1, 18) = '<section id=master' then
+        begin
+          s.Delete(i);
+          break;
+        end;
+      ReplaceText := s.Text;
+    finally
+      s.Free;
+    end;
+  end;
+end;
+
 procedure TTWebModule1.articlesHTMLTag(Sender: TObject; Tag: TTag;
   const TagString: string; TagParams: TStrings; var ReplaceText: string);
 begin
@@ -82,66 +118,58 @@ begin
         ReplaceText := ReplaceText + ' ' + i.ToString + ' '
       else
         ReplaceText := ReplaceText +
-          Format('<a href=/index?db=%s&num=%d> %d </a>',
+          Format('<a style=text-decoration-line:none href=/index?db=%s&num=%d> %d </a>',
           [Request.QueryFields.Values['db'], i, i])
   else if TagString = 'recent' then
     case Self.Tag of
       - 1:
         ReplaceText := TagString
     else
-      ReplaceText := '<a href=/index?db=' + Request.QueryFields.Values['db'] +
-        '>recent</a>';
+      ReplaceText := '<a style=text-decoration-line:none href=/index?db=' +
+        Request.QueryFields.Values['db'] + '>recent</a>';
     end;
 end;
 
 procedure TTWebModule1.indexHTMLTag(Sender: TObject; Tag: TTag;
   const TagString: string; TagParams: TStrings; var ReplaceText: string);
 var
-  count, max, index: Integer;
   i: Integer;
+  x: Boolean;
 begin
-  if Self.Tag = 0 then
-  begin
-    DataModule1.FDTable1.Locate('database',
-      Request.QueryFields.Values['db'], []);
-    count := DataModule1.FDTable2.RecordCount;
-    max := DataModule1.FDTable3.FieldByName('count').AsInteger;
-    index := StrToIntDef(Request.QueryFields.Values['num'], -1);
-    if count >= 10 * max then
-      ReplaceText := 'Ç±ÇÍà»è„ìäçeÇ≈Ç´Ç‹ÇπÇÒ.';
-    if (index > -1) and (count < max * (index - 1)) then
-      index := (count div max) + 1;
-    Self.Tag := index;
-    case index of
-      - 1:
-        begin
-          DataModule1.FDTable2.Last;
-          DataModule1.FDTable2.MoveBy(1 - max);
-        end;
-    else
-      DataModule1.FDTable2.First;
-      DataModule1.FDTable2.MoveBy(max * (index - 1));
-    end;
-  end;
   if TagString = 'article' then
   begin
-    for i := 1 to max do
+    x := DataModule1.FDTable1.FieldByName('dbnum')
+      .AsInteger = DataModule1.FDTable3.FieldByName('info').AsInteger;
+    for i := 1 to DataModule1.FDTable3.FieldByName('count').AsInteger do
     begin
       if DataModule1.FDTable2.Eof = true then
         break;
-      ReplaceText := ReplaceText + articles.Content;
+      if x = false then
+        ReplaceText := ReplaceText + articles.Content
+      else
+        ReplaceText := articles.Content + ReplaceText;
       DataModule1.FDTable2.Next;
     end;
   end
-  else if (TagString = 'footer') or (TagString = 'header') then
-    ReplaceText := ReplaceText + footer.Content;
+  else if TagString = 'footer' then
+    ReplaceText := footer.Content
+  else if TagString = 'header' then
+  begin
+    i := DataModule1.FDTable3.FieldByName('count').AsInteger;
+    if 10 * i < DataModule1.FDTable2.RecordCount then
+      ReplaceText := 'Ç±ÇÍà»è„ìäçeÇ≈Ç´Ç‹ÇπÇÒ.'
+    else
+      ReplaceText := header.Content;
+  end
+  else if TagString = 'css' then
+    ReplaceText := css2.Content;
 end;
 
 procedure TTWebModule1.itemsHTMLTag(Sender: TObject; Tag: TTag;
   const TagString: string; TagParams: TStrings; var ReplaceText: string);
 var
   s: TStringList;
-  t: string;
+  t, str: string;
   i, j: Integer;
 begin
   if TagString = 'item' then
@@ -149,17 +177,24 @@ begin
     s := TStringList.Create;
     try
       s.Text := DataModule1.FDTable2.FieldByName('raw').AsString;
-      for i := 0 to s.count - 1 do
-        for j := 0 to ss.count - 1 do
+      for i := 0 to s.Count - 1 do
+        for j := 0 to ss.Count - 1 do
           if Pos(ss[j], s[i]) > 0 then
             if Request.ContentFields.Values['type'] = 'OR' then
               s[i] := '<p style=background-color:aqua>' + s[i]
             else
               s[i] := '<p style=background-color:yellow>' + s[i];
       with DataModule1.FDTable2 do
-        t := Format('<a href=%s>[ %s-%s ]</a>',
-          ['/index', FieldByName('dbnum').AsString, FieldByName('number')
-          .AsString]);
+      begin
+        i := FieldByName('dbnum').AsInteger;
+        j := FieldByName('number').AsInteger;
+        str := Request.QueryFields.Values['db'];
+        if str = '' then
+          t := Format('<a href=/index?db=%s&num=%d>[ %d-%d ]</a>',
+            [str, j, i, j])
+        else
+          t := Format('<a href=/index?db=%s&num=%d>[ %d ]</a>', [str, j, j]);
+      end;
       ReplaceText := t + s.Text;
     finally
       s.Free;
@@ -181,48 +216,80 @@ begin
       begin
         i := FieldByName('dbname').AsInteger;
         j := FieldByName('posnum').AsInteger;
-        DataModule1.FDTable2.Locate('dbname;posnum', VarArrayOf([i, j]), []);
-        s := DataModule1.FDTable4.FieldByName('request').AsString;
+        DataModule1.FDTable2.Locate('dbnum;number', VarArrayOf([i, j]), []);
+        s := FieldByName('request').AsString;
         ReplaceText := ReplaceText + alert.Content + s;
         Next;
       end;
     end;
 end;
 
+procedure TTWebModule1.mailHTMLTag(Sender: TObject; Tag: TTag;
+  const TagString: string; TagParams: TStrings; var ReplaceText: string);
+begin
+  if TagString = 'content' then
+    ReplaceText := alert.Content
+  else if TagString = 'query' then
+    ReplaceText := '?' + Request.Query + '#' +
+      Request.QueryFields.Values['num'];
+end;
+
 procedure TTWebModule1.searchHTMLTag(Sender: TObject; Tag: TTag;
   const TagString: string; TagParams: TStrings; var ReplaceText: string);
 var
   s: TStringList;
-  i: Integer;
-  j: Integer;
+  procedure sub;
+  var
+    i: Integer;
+    j: Integer;
+  label jump;
+  begin
+    DataModule1.FDTable2.First;
+    while DataModule1.FDTable2.Eof = false do
+    begin
+      s.Text := DataModule1.FDTable2.FieldByName('raw').AsString;
+      ss.Delimiter := ' ';
+      ss.StrictDelimiter := false;
+      ss.DelimitedText := Request.ContentFields.Values['word1'];
+      for i := 0 to s.Count - 1 do
+        for j := 0 to ss.Count - 1 do
+          if Pos(ss[j], s[i]) > 0 then
+          begin
+            ReplaceText := ReplaceText + items.Content;
+            goto jump;
+          end;
+    jump:
+      DataModule1.FDTable2.Next;
+    end;
+  end;
+
 begin
   if (Request.MethodType = mtPost) and (TagString = 'items') then
   begin
-    DataModule1.FDTable1.First;
     s := TStringList.Create;
     ss := TStringList.Create;
     try
-      while DataModule1.FDTable1.Eof = false do
+      if Request.QueryFields.Values['db'] = '' then
       begin
-        DataModule1.FDTable2.First;
-        while DataModule1.FDTable2.Eof = false do
+        DataModule1.FDTable1.First;
+        while DataModule1.FDTable1.Eof = false do
         begin
-          s.Text := DataModule1.FDTable2.FieldByName('raw').AsString;
-          ss.Delimiter := ' ';
-          ss.StrictDelimiter := false;
-          ss.DelimitedText := Request.ContentFields.Values['word1'];
-          for i := 0 to s.count - 1 do
-            for j := 0 to ss.count - 1 do
-              if Pos(ss[j], s[i]) > 0 then
-                ReplaceText := ReplaceText + items.Content;
-          DataModule1.FDTable2.Next;
+          sub;
+          DataModule1.FDTable1.Next;
         end;
-        DataModule1.FDTable1.Next;
-      end;
+      end
+      else
+        sub;
     finally
       s.Free;
       ss.Free;
     end;
+  end
+  else if TagString = 'query' then
+  begin
+    ReplaceText := Request.Query;
+    if ReplaceText <> '' then
+      ReplaceText := '?' + ReplaceText;
   end;
 end;
 
@@ -260,7 +327,12 @@ begin
   end
   else if TagString = 'info' then
     ReplaceText := DataModule1.FDTable1.Lookup('dbnum',
-      DataModule1.FDTable3.FieldByName('info').AsInteger, 'database');
+      DataModule1.FDTable3.FieldByName('info').AsInteger, 'database')
+  else if TagString = 'css' then
+    if TagParams.Values['id'] = '1' then
+      ReplaceText := css1.Content
+    else if TagParams.Values['id'] = '3' then
+      ReplaceText := css3.Content;
 end;
 
 procedure TTWebModule1.TWebModule1adminAction(Sender: TObject;
@@ -269,6 +341,29 @@ begin
   DataModule1.FDTable1.Locate('database', Request.QueryFields.Values['db'], []);
   Response.ContentType := 'text/html;charset=utf-8';
   Response.Content := admin.Content;
+end;
+
+procedure TTWebModule1.TWebModule1alertAction(Sender: TObject;
+  Request: TWebRequest; Response: TWebResponse; var Handled: Boolean);
+var
+  num1, num2: Integer;
+  s: string;
+begin
+  s := Request.QueryFields.Values['db'];
+  num1 := DataModule1.FDTable1.Lookup('database', s, 'dbnum');
+  num2 := Request.QueryFields.Values['num'].ToInteger;
+  if Request.MethodType = mtGet then
+  begin
+    DataModule1.FDTable2.Locate('number', num2, []);
+    Response.ContentType := 'text/html;charset=utf-8';
+    Response.Content := mail.Content;
+  end
+  else
+  begin
+    DataModule1.FDTable4.AppendRecord
+      ([num1, num2, Now, Request.ContentFields.Values['request']]);
+    Response.SendRedirect(Format('/index?db=%s&num=%d#%d', [s, Tag, num2]));
+  end;
 end;
 
 procedure TTWebModule1.TWebModule1helpAction(Sender: TObject;
@@ -290,8 +385,27 @@ end;
 
 procedure TTWebModule1.TWebModule1indexpageAction(Sender: TObject;
   Request: TWebRequest; Response: TWebResponse; var Handled: Boolean);
+var
+  Count, max, int: Integer;
+  s: string;
 begin
-  Self.Tag := 0;
+  DataModule1.FDTable1.Locate('database', Request.QueryFields.Values['db'], []);
+  Count := DataModule1.FDTable2.RecordCount;
+  max := DataModule1.FDTable3.FieldByName('count').AsInteger;
+  int := StrToIntDef(Request.QueryFields.Values['num'], -1);
+  if (int > -1) and (Count < max * (int - 1)) then
+    int := (Count div max) + 1;
+  case int of
+    - 1:
+      begin
+        DataModule1.FDTable2.Last;
+        DataModule1.FDTable2.MoveBy(1 - max);
+      end;
+  else
+    DataModule1.FDTable2.First;
+    DataModule1.FDTable2.MoveBy(max * (int - 1));
+  end;
+  Tag := int;
   Response.ContentType := 'text/html; charset="utf-8"';
   if DataModule1.FDTable3.FieldByName('mente').AsBoolean = true then
     Response.Content := 'ÇΩÇæÇ¢Ç‹ÉÅÉìÉeÉiÉìÉXíÜÇ≈Ç∑^_^'
@@ -299,11 +413,11 @@ begin
     Response.Content := index.Content;
 end;
 
-procedure TTWebModule1.page(Sender: TObject; Request: TWebRequest;
-  Response: TWebResponse; var Handled: Boolean);
+procedure TTWebModule1.TWebModule1masterAction(Sender: TObject;
+  Request: TWebRequest; Response: TWebResponse; var Handled: Boolean);
 begin
   Response.ContentType := 'text/html;charset=utf-8';
-  Response.Content := alert.Content;
+  Response.Content := master.Content;
 end;
 
 procedure TTWebModule1.TWebModule1registAction(Sender: TObject;
@@ -329,7 +443,7 @@ begin
   comment := TStringList.Create;
   try
     comment.Text := raw;
-    for i := 0 to comment.count - 1 do
+    for i := 0 to comment.Count - 1 do
       comment[i] := '<p>' + comment[i];
     i := DataModule1.FDTable1.FieldByName('dbnum').AsInteger;
     DataModule1.FDTable2.AppendRecord([i, number, title, name, comment.Text,
