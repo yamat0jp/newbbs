@@ -43,6 +43,17 @@ object TWebModule1: TTWebModule1
       Name = 'alert'
       PathInfo = '/alert'
       OnAction = TWebModule1alertAction
+    end
+    item
+      Name = 'delete'
+      PathInfo = '/userdel'
+      OnAction = TWebModule1deleteAction
+    end
+    item
+      MethodType = mtPost
+      Name = 'jump'
+      PathInfo = '/jump'
+      OnAction = TWebModule1jumpAction
     end>
   Height = 353
   Width = 436
@@ -94,7 +105,7 @@ object TWebModule1: TTWebModule1
         '/label>'
       '      <input type="submit" value="'#21066#38500'">'
       '    </form>'
-      '    <form action=/userdel?db=<#database> method=post id=search>'
+      '    <form action=/jump?db=<#database> method=post id=search>'
       '      <label><p>'#35352#20107'No</p><input name=number></label>'
       '      <input type=submit value='#31227#21205'>'
       '    </form>'
@@ -107,8 +118,8 @@ object TWebModule1: TTWebModule1
       #9'<p style=text-align:right><a href=#top>Top'#12408#31227#21205'</a></p>'
       '  <#footer>'
       
-        '    <p style=text-align:center><a href="/admin?db=<#database>&nu' +
-        'm=0">'#31649#29702#32773#29992#12525#12464#12452#12531'</a></p>'
+        '    <p style=text-align:center><a href="/admin?db=<#database>">'#31649 +
+        #29702#32773#29992#12525#12464#12452#12531'</a></p>'
       '  </body>'
       '</html>')
     DataSet = DataModule1.FDTable1
@@ -149,6 +160,7 @@ object TWebModule1: TTWebModule1
       '<html>'
       '  <head>'
       '    <title>'#26908#32034'</title>'
+      '    <#css>'
       '  </head>'
       ''
       '  <body>'
