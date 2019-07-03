@@ -50,10 +50,16 @@ object TWebModule1: TTWebModule1
       OnAction = TWebModule1deleteAction
     end
     item
-      MethodType = mtPost
+      MethodType = mtGet
       Name = 'jump'
       PathInfo = '/jump'
       OnAction = TWebModule1jumpAction
+    end
+    item
+      MethodType = mtGet
+      Name = 'link'
+      PathInfo = '/link'
+      OnAction = TWebModule1linkAction
     end>
   Height = 353
   Width = 436
@@ -61,8 +67,8 @@ object TWebModule1: TTWebModule1
     HTMLDoc.Strings = (
       '                                            <hr size=1>'
       
-        #9'<section id=number><a name=<#number>></a><a href=/userdel?job=<' +
-        '#number> style=text-decoration:none>'
+        #9'<section id=number><a name=<#number>></a><a href=/jump?num=<#nu' +
+        'mber> style=text-decoration:none>'
       #9#9'[<#number>]</a></section>'
       #9'<section id=title><#title></section>'
       #9'<section id=name>'#12288'Name:<h1><#name></h1></section>'
@@ -130,6 +136,9 @@ object TWebModule1: TTWebModule1
   object admin: TDataSetTableProducer
     Columns = <
       item
+        Title.Caption = 'check'
+      end
+      item
         FieldName = 'NUMBER'
       end
       item
@@ -145,10 +154,13 @@ object TWebModule1: TTWebModule1
         FieldName = 'DATE'
       end>
     Footer.Strings = (
-      '<p style=text-align:center><a href=/index>'#25147#12427'</a>')
+      '<input type=submit value='#21066#38500#12377#12427'><input type=submit value='#12522#12475#12483#12488'>'
+      '</form>'
+      '<p style=text-align:center><a href=/index?db=<#database>>'#25147#12427'</a>')
     Header.Strings = (
-      '')
+      '<form action=/admindel>')
     DataSet = DataModule1.FDTable2
+    OnFormatCell = adminFormatCell
     Left = 176
     Top = 32
   end
@@ -361,7 +373,8 @@ object TWebModule1: TTWebModule1
   end
   object footer: TDataSetPageProducer
     HTMLDoc.Strings = (
-      '<p style=text-align:center>[ <#link> ] <#recent>')
+      '<p style=text-align:center>[ <#link> ] <#recent>'
+      '')
     DataSet = DataModule1.FDTable1
     OnHTMLTag = footerHTMLTag
     Left = 112
@@ -383,49 +396,6 @@ object TWebModule1: TTWebModule1
     OnHTMLTag = mailHTMLTag
     Left = 176
     Top = 144
-  end
-  object header: TPageProducer
-    HTMLDoc.Strings = (
-      '    <header>'
-      '    <a name=top></a>'
-      '    <form action=/regist?db=<#database> method="post">'
-      '      <table>'
-      '        <tr><td>'
-      
-        '          <label><p>'#12362#21517#21069'</p><input name="name" class=name value=<' +
-        '#cookie param=name>></label>'
-      
-        '          <label><p>'#12479#12452#12488#12523'</p><input name="title" class=title valu' +
-        'e=<#cookie param=title> placeholder="'#12479#12452#12488#12523#12394#12375'."></label>'
-      '          <input type="submit" value="'#36865#20449'">'
-      '        </td></tr>'
-      '        <tr><td>'
-      '          <label><p>'#26412#25991'<span>'#24517#38920'</span><br></p>'
-      
-        '            <textarea style="font-size:1.75em" name="comment" co' +
-        'ls=30'
-      
-        '                      required placeholder="'#12467#12513#12531#12488#12394#12393#12434#20837#21147#12375#12390#12367#12384#12373#12356'."><#' +
-        'cookie param=comment></textarea></label>'
-      '        </td></tr>'
-      '        <tr><td>'
-      
-        '          <label><p>'#12497#12473#12527#12540#12489'</p><input name="password" type="passwo' +
-        'rd" placeholder="'#21066#38500#29992'">'
-      
-        '          </label> / <input type="checkbox" name="show" value="t' +
-        'rue" checked><p>'#12503#12524#12499#12517#12540'</p>'
-      '        </td></tr>'
-      '        <tr><td>'
-      
-        '          <label><p>'#21512#35328#33865#12434#12402#12425#12364#12394#12391#20837#21147#12375#12390#12367#12384#12373#12356': genki <input name=aikotob' +
-        'a type=text value=<#cookie param=aikotoba>></label>'
-      '        </td></tr>'
-      '      </table>'
-      '    </form>'
-      '    </header>')
-    Left = 240
-    Top = 192
   end
   object css1: TPageProducer
     HTMLDoc.Strings = (
@@ -1299,5 +1269,50 @@ object TWebModule1: TTWebModule1
       '</style>')
     Left = 360
     Top = 240
+  end
+  object header: TDataSetPageProducer
+    HTMLDoc.Strings = (
+      '    <header>'
+      '    <a name=top></a>'
+      '    <form action=/regist?db=<#database> method="post">'
+      '      <table>'
+      '        <tr><td>'
+      
+        '          <label><p>'#12362#21517#21069'</p><input name="name" class=name value=<' +
+        '#cookie param=name>></label>'
+      
+        '          <label><p>'#12479#12452#12488#12523'</p><input name="title" class=title plac' +
+        'eholder="'#12479#12452#12488#12523#12394#12375'."></label>'
+      '          <input type="submit" value="'#36865#20449'">'
+      '        </td></tr>'
+      '        <tr><td>'
+      '          <label><p>'#26412#25991'<span>'#24517#38920'</span><br></p>'
+      
+        '            <textarea style="font-size:1.75em" name="comment" co' +
+        'ls=30'
+      
+        '                      required placeholder="'#12467#12513#12531#12488#12394#12393#12434#20837#21147#12375#12390#12367#12384#12373#12356'."><#' +
+        'raw></textarea></label>'
+      '        </td></tr>'
+      '        <tr><td>'
+      
+        '          <label><p>'#12497#12473#12527#12540#12489'</p><input name="password" type="passwo' +
+        'rd" placeholder="'#21066#38500#29992'">'
+      
+        '          </label> / <input type="checkbox" name="show" value="t' +
+        'rue" <#check>><p>'#12503#12524#12499#12517#12540'</p>'
+      '        </td></tr>'
+      '        <tr><td>'
+      
+        '          <label><p>'#21512#35328#33865#12434#12402#12425#12364#12394#12391#20837#21147#12375#12390#12367#12384#12373#12356': genki <input name=aikotob' +
+        'a type=text value=<#cookie param=aikotoba>></label>'
+      '        </td></tr>'
+      '      </table>'
+      '    </form>'
+      '    </header>')
+    DataSet = DataModule1.FDTable1
+    OnHTMLTag = headerHTMLTag
+    Left = 240
+    Top = 192
   end
 end

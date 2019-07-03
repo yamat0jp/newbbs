@@ -16,29 +16,30 @@ type
     FDTable1: TFDTable;
     FDConnection1: TFDConnection;
     FDTable2: TFDTable;
-    FDTable2NUMBER: TIntegerField;
-    FDTable2TITLE: TStringField;
-    FDTable2NAME: TStringField;
-    FDTable2COMMENT: TWideMemoField;
-    FDTable2RAW: TWideMemoField;
     FDTable3: TFDTable;
     FDGUIxWaitCursor1: TFDGUIxWaitCursor;
     DataSource1: TDataSource;
-    FDTable2DBNUM: TIntegerField;
-    FDTable2DATE: TDateField;
     FDTable1DATABASE: TWideStringField;
     FDTable1DBNUM: TIntegerField;
     FDQuery1: TFDQuery;
     FDTable4: TFDTable;
-    FDTable3TITLE: TWideStringField;
-    FDTable3TITLE2: TWideStringField;
-    FDTable3MENTE: TBooleanField;
-    FDTable3INFO: TIntegerField;
     FDTable4DBNAME: TIntegerField;
     FDTable4POSNUM: TIntegerField;
     FDTable4DATE: TDateField;
     FDTable4REQUEST: TWideMemoField;
+    FDTable2DBNUM: TIntegerField;
+    FDTable2NUMBER: TIntegerField;
+    FDTable2TITLE: TWideStringField;
+    FDTable2NAME: TWideStringField;
+    FDTable2COMMENT: TWideMemoField;
+    FDTable2RAW: TWideMemoField;
+    FDTable2DATE: TDateField;
+    FDTable3TITLE: TWideStringField;
+    FDTable3TITLE2: TWideStringField;
+    FDTable3MENTE: TBooleanField;
+    FDTable3INFO: TIntegerField;
     FDTable3COUNT: TIntegerField;
+    FDTable2PASS: TIntegerField;
   private
     { Private êÈåæ }
   public

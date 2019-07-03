@@ -19,7 +19,7 @@ object DataModule1: TDataModule1
       FieldName = 'DATABASE'
       Origin = '"DATABASE"'
       Required = True
-      Size = 160
+      Size = 80
     end
   end
   object FDConnection1: TFDConnection
@@ -40,6 +40,8 @@ object DataModule1: TDataModule1
     MasterSource = DataSource1
     MasterFields = 'DBNUM'
     Connection = FDConnection1
+    FetchOptions.AssignedValues = [evLiveWindowParanoic]
+    FetchOptions.LiveWindowParanoic = True
     UpdateOptions.UpdateTableName = 'ARTICLE'
     TableName = 'ARTICLE'
     Left = 96
@@ -47,6 +49,7 @@ object DataModule1: TDataModule1
     object FDTable2DBNUM: TIntegerField
       FieldName = 'DBNUM'
       Origin = 'DBNUM'
+      ProviderFlags = [pfInUpdate, pfInWhere, pfInKey]
       Required = True
     end
     object FDTable2NUMBER: TIntegerField
@@ -55,14 +58,15 @@ object DataModule1: TDataModule1
       ProviderFlags = [pfInUpdate, pfInWhere, pfInKey]
       Required = True
     end
-    object FDTable2TITLE: TStringField
+    object FDTable2TITLE: TWideStringField
       FieldName = 'TITLE'
       Origin = 'TITLE'
-      Size = 40
+      Size = 160
     end
-    object FDTable2NAME: TStringField
+    object FDTable2NAME: TWideStringField
       FieldName = 'NAME'
       Origin = 'NAME'
+      Size = 160
     end
     object FDTable2COMMENT: TWideMemoField
       FieldName = 'COMMENT'
@@ -77,7 +81,10 @@ object DataModule1: TDataModule1
     object FDTable2DATE: TDateField
       FieldName = 'DATE'
       Origin = '"DATE"'
-      Required = True
+    end
+    object FDTable2PASS: TIntegerField
+      FieldName = 'PASS'
+      Origin = 'PASS'
     end
   end
   object FDTable3: TFDTable
@@ -90,7 +97,7 @@ object DataModule1: TDataModule1
     object FDTable3TITLE: TWideStringField
       FieldName = 'TITLE'
       Origin = 'TITLE'
-      Size = 80
+      Size = 160
     end
     object FDTable3TITLE2: TWideStringField
       FieldName = 'TITLE2'
