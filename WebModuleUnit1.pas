@@ -69,6 +69,8 @@ type
     procedure adminFormatCell(Sender: TObject; CellRow, CellColumn: Integer;
       var BgColor: THTMLBgColor; var Align: THTMLAlign; var VAlign: THTMLVAlign;
       var CustomAttrs, CellData: string);
+    procedure TWebModule1admdelAction(Sender: TObject; Request: TWebRequest;
+      Response: TWebResponse; var Handled: Boolean);
   private
     { private éŒ¾ }
     ss: TStringList;
@@ -413,24 +415,58 @@ begin
     ReplaceText := DataModule1.FDTable1.Lookup('dbnum',
       DataModule1.FDTable3.FieldByName('info').AsInteger, 'database')
   else if TagString = 'css' then
-    if TagParams.Values['id'] = '1' then
-      ReplaceText := css1.Content
-    else if TagParams.Values['id'] = '3' then
-      ReplaceText := css3.Content;
+    case TagParams.Values['id'].ToInteger of
+      1:
+        ReplaceText := css1.Content;
+      3:
+        ReplaceText := css3.Content;
+    end;
+end;
+
+procedure TTWebModule1.TWebModule1admdelAction(Sender: TObject;
+  Request: TWebRequest; Response: TWebResponse; var Handled: Boolean);
+var
+  i: Integer;
+begin
+  with DataModule1.FDTable2 do
+    for i := RecordCount - 1 downto 0 do
+      if Request.ContentFields.IndexOf('check=' + i.ToString) > -1 then
+      begin
+        RecNo := i;
+        Delete;
+      end;
+  Response.SendRedirect('/admin?db=');
 end;
 
 procedure TTWebModule1.TWebModule1adminAction(Sender: TObject;
   Request: TWebRequest; Response: TWebResponse; var Handled: Boolean);
 var
   s: string;
+  max: Integer;
 begin
-  DataModule1.FDTable1.Locate('database', Request.QueryFields.Values['db'], []);
+  s := TNetEncoding.URL.Decode(Request.QueryFields.Values['db']);
+  DataModule1.FDTable1.Locate('database', s, []);
+  s := Request.QueryFields.Values['num'];
+  max := DataModule1.FDTable3.FieldByName('count').AsInteger;
+  if s <> '' then
+  begin
+    tmpint := s.ToInteger;
+    DataModule1.FDTable2.RecNo := (tmpint - 1) * max - 1;
+  end
+  else
+    with DataModule1.FDTable2 do
+      RecNo := 1 + RecordCount - RecordCount mod max;
   s := '/admin';
   footer.Tag := Integer(@s);
+  ss := TStringList.Create;
+  try
+    ss.Assign(admin.footer);
+    ss.Insert(2, footer.HTMLDoc.Text);
+    admin.footer.Text := footer.ContentFromString(ss.Text);
+  finally
+    ss.Free;
+  end;
   Response.ContentType := 'text/html;charset=utf-8';
-  footer.HTMLDoc.Insert(1,footer.HTMLDoc.Text);
-  admin.footer.Text := footer.ContentFromString
-    (footer.HTMLDoc.Text);
   Response.Content := admin.Content;
 end;
 

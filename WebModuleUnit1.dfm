@@ -45,12 +45,11 @@ object TWebModule1: TTWebModule1
       OnAction = TWebModule1alertAction
     end
     item
-      Name = 'delete'
+      Name = 'usrdel'
       PathInfo = '/userdel'
       OnAction = TWebModule1deleteAction
     end
     item
-      MethodType = mtGet
       Name = 'jump'
       PathInfo = '/jump'
       OnAction = TWebModule1jumpAction
@@ -60,6 +59,12 @@ object TWebModule1: TTWebModule1
       Name = 'link'
       PathInfo = '/link'
       OnAction = TWebModule1linkAction
+    end
+    item
+      MethodType = mtPost
+      Name = 'admdel'
+      PathInfo = '/admindel'
+      OnAction = TWebModule1admdelAction
     end>
   Height = 353
   Width = 436
@@ -112,7 +117,7 @@ object TWebModule1: TTWebModule1
       '      <input type="submit" value="'#21066#38500'">'
       '    </form>'
       '    <form action=/jump?db=<#database> method=post id=search>'
-      '      <label><p>'#35352#20107'No</p><input name=number></label>'
+      '      <label><p>'#35352#20107'No</p><input name=num></label>'
       '      <input type=submit value='#31227#21205'>'
       '    </form>'
       '    <p><a href=/search?db=<#database>>'#26908#32034#12506#12540#12472'</a></p>'
