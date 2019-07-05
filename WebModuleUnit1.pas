@@ -74,7 +74,6 @@ type
   private
     { private êÈåæ }
     ss: TStringList;
-    tmpint: Integer;
     error: string;
     checkbox: Boolean;
     procedure pages(count: Integer; var page: Integer);
@@ -143,15 +142,16 @@ begin
   if TagString = 'link' then
   begin
     for i := 1 to 10 do
-      if i = tmpint then
+      if i = index.Tag then
         ReplaceText := ReplaceText + ' ' + i.ToString + ' '
       else
         ReplaceText := ReplaceText +
-          Format('<a style=text-decoration-line:none href=%s?db=%s&num=%d> %d </a>',
-          [PString(Self.Tag)^, Request.QueryFields.Values['db'], i, i]);
+          Format(' <a style=text-decoration-line:none href=%s?db=%s&num=%d>%d</a> ',
+          [PString(Self.Tag)^,
+          TNetEncoding.URL.Decode(Request.QueryFields.Values['db']), i, i]);
   end
   else if TagString = 'recent' then
-    if tmpint = -1 then
+    if index.Tag = -1 then
       ReplaceText := TagString
     else
       ReplaceText := '<a style=text-decoration-line:none href=' +
@@ -195,7 +195,8 @@ begin
         ReplaceText := ReplaceText + articles.Content
       else
         ReplaceText := articles.Content + ReplaceText;
-      DataModule1.FDTable2.Next;
+      if DataModule1.FDTable2.Eof = false then
+        DataModule1.FDTable2.Next;
     end;
   end
   else if TagString = 'footer' then
@@ -426,46 +427,65 @@ end;
 procedure TTWebModule1.TWebModule1admdelAction(Sender: TObject;
   Request: TWebRequest; Response: TWebResponse; var Handled: Boolean);
 var
-  i: Integer;
+  i, j, k, m: Integer;
+  reg: TRegEx;
+  match: TMatch;
 begin
-  with DataModule1.FDTable2 do
-    for i := RecordCount - 1 downto 0 do
-      if Request.ContentFields.IndexOf('check=' + i.ToString) > -1 then
-      begin
-        RecNo := i;
-        Delete;
-      end;
-  Response.SendRedirect('/admin?db=');
+  j := 0;
+  DataModule1.FDTable2.RecNo := admin.Tag;
+  for i := 0 to Request.ContentFields.count - 1 do
+  begin
+    reg := TRegEx.Create('\d+');
+    match := reg.match(Request.ContentFields[i]);
+    if match.Success = true then
+    begin
+      k := match.Value.ToInteger - j - 1;
+      j := match.Value.ToInteger;
+      for m := 1 to k do
+        DataModule1.FDTable2.Next;
+      DataModule1.FDTable2.Delete;
+    end;
+  end;
+  Response.SendRedirect('/admin?db=' + TNetEncoding.URL.Encode
+    (DataModule1.FDTable1.FieldByName('database').AsString));
 end;
 
 procedure TTWebModule1.TWebModule1adminAction(Sender: TObject;
   Request: TWebRequest; Response: TWebResponse; var Handled: Boolean);
 var
   s: string;
-  max: Integer;
+  i, max: Integer;
 begin
   s := TNetEncoding.URL.Decode(Request.QueryFields.Values['db']);
   DataModule1.FDTable1.Locate('database', s, []);
   s := Request.QueryFields.Values['num'];
   max := DataModule1.FDTable3.FieldByName('count').AsInteger;
+  index.Tag := -1;
   if s <> '' then
   begin
-    tmpint := s.ToInteger;
-    DataModule1.FDTable2.RecNo := (tmpint - 1) * max - 1;
+    index.Tag := s.ToInteger;
+    DataModule1.FDTable2.RecNo := (index.Tag - 1) * max - 1;
   end
   else
     with DataModule1.FDTable2 do
       RecNo := 1 + RecordCount - RecordCount mod max;
   s := '/admin';
   footer.Tag := Integer(@s);
-  ss := TStringList.Create;
-  try
-    ss.Assign(admin.footer);
-    ss.Insert(2, footer.HTMLDoc.Text);
-    admin.footer.Text := footer.ContentFromString(ss.Text);
-  finally
-    ss.Free;
+  if admin.Tag = -1 then
+  begin
+    ss := TStringList.Create;
+    try
+      ss.Assign(admin.footer);
+      ss.Insert(2, footer.HTMLDoc.Text);
+      admin.footer.Text := footer.ContentFromString(ss.Text);
+    finally
+      ss.Free;
+    end;
   end;
+  i := DataModule1.FDTable2.RecNo;
+  admin.Tag := i;
+  pages(max, i);
+  index.Tag := i;
   Response.ContentType := 'text/html;charset=utf-8';
   Response.Content := admin.Content;
 end;
@@ -543,7 +563,7 @@ begin
   DataModule1.FDTable1.Locate('database', Request.QueryFields.Values['db'], []);
   int := StrToIntDef(Request.QueryFields.Values['num'], -1);
   pages(DataModule1.FDTable2.RecordCount, int);
-  tmpint := int;
+  index.Tag := int;
   s := '/index';
   Self.Tag := Integer(@s);
   Response.ContentType := 'text/html; charset="utf-8"';
@@ -723,6 +743,7 @@ begin
     DataModule1.FDTable3.AppendRecord
       (['Ç∆ÇÈÇÀÅ`Ç«çÜ', '<p style=font-color:gray>Ç∆ÇÈÇÀÅ`Ç«çÜ</p>', false, a, 30]);
   end;
+  admin.Tag := -1;
 end;
 
 end.

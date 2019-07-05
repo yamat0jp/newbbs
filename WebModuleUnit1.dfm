@@ -163,7 +163,8 @@ object TWebModule1: TTWebModule1
       '</form>'
       '<p style=text-align:center><a href=/index?db=<#database>>'#25147#12427'</a>')
     Header.Strings = (
-      '<form action=/admindel>')
+      '<form action=/admindel method=post>')
+    MaxRows = 30
     DataSet = DataModule1.FDTable2
     OnFormatCell = adminFormatCell
     Left = 176
