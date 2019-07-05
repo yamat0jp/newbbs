@@ -23,6 +23,7 @@ type
     css3: TPageProducer;
     css4: TPageProducer;
     header: TDataSetPageProducer;
+    login: TDataSetPageProducer;
     procedure indexHTMLTag(Sender: TObject; Tag: TTag; const TagString: string;
       TagParams: TStrings; var ReplaceText: string);
     procedure TWebModule1indexpageAction(Sender: TObject; Request: TWebRequest;
@@ -70,6 +71,8 @@ type
       var BgColor: THTMLBgColor; var Align: THTMLAlign; var VAlign: THTMLVAlign;
       var CustomAttrs, CellData: string);
     procedure TWebModule1admdelAction(Sender: TObject; Request: TWebRequest;
+      Response: TWebResponse; var Handled: Boolean);
+    procedure TWebModule1loginAction(Sender: TObject; Request: TWebRequest;
       Response: TWebResponse; var Handled: Boolean);
   private
     { private 宣言 }
@@ -172,8 +175,11 @@ begin
   end
   else if (TagString = 'check') and (checkbox = true) then
     ReplaceText := 'checked'
-  else if (TagString = 'raw') and (header.Tag <> 0) then
-    ReplaceText := DataModule1.FDTable2.FieldByName('raw').AsString;
+  else if (TagString = 'preview') and (header.Tag <> 0) then
+  begin
+    ReplaceText := PString(header.Tag)^;
+    Dispose(Pointer(header.Tag));
+  end;
 end;
 
 procedure TTWebModule1.indexHTMLTag(Sender: TObject; Tag: TTag;
@@ -203,16 +209,11 @@ begin
     ReplaceText := footer.Content
   else if TagString = 'header' then
   begin
-    if header.Tag <> 0 then
-    begin
-      s := PString(header.Tag)^;
-      Dispose(Pointer(header.Tag));
-    end;
     i := DataModule1.FDTable3.FieldByName('count').AsInteger;
     if 10 * i < DataModule1.FDTable2.RecordCount then
       ReplaceText := 'これ以上投稿できません.'
     else
-      ReplaceText := header.Content + s;
+      ReplaceText := header.Content;
   end
   else if TagString = 'css' then
     ReplaceText := css2.Content;
@@ -461,6 +462,11 @@ var
   s: string;
   i: Integer;
 begin
+  if Request.CookieFields.Values['user'] <> 'admin' then
+  begin
+    Response.SendRedirect('/login');
+    Exit;
+  end;
   admin.MaxRows := DataModule1.FDTable3.FieldByName('count').AsInteger;
   s := TNetEncoding.URL.Decode(Request.QueryFields.Values['db']);
   DataModule1.FDTable1.Locate('database', s, []);
@@ -610,6 +616,27 @@ begin
   end;
 end;
 
+procedure TTWebModule1.TWebModule1loginAction(Sender: TObject;
+  Request: TWebRequest; Response: TWebResponse; var Handled: Boolean);
+var
+  s: string;
+begin
+  if Request.MethodType = mtGet then
+  begin
+    Response.ContentType := 'text/html;charset=utf-8';
+    Response.Content := login.Content;
+    Exit;
+  end;
+  with Response.Cookies.Add do
+  begin
+    Name := 'user';
+    Value := 'admin';
+    Secure := true;
+  end;
+  s := Request.ContentFields.Values['record'];
+  Response.SendRedirect('/admin?db=' + TNetEncoding.URL.Encode(s));
+end;
+
 procedure TTWebModule1.TWebModule1masterAction(Sender: TObject;
   Request: TWebRequest; Response: TWebResponse; var Handled: Boolean);
 begin
@@ -621,11 +648,10 @@ procedure TTWebModule1.TWebModule1registAction(Sender: TObject;
   Request: TWebRequest; Response: TWebResponse; var Handled: Boolean);
 var
   number: Integer;
-  title, na, raw, pass, kotoba, db, error: string;
+  title, na, raw, pass, kotoba, db, error, URL: string;
   p: PString;
   comment: TStringList;
   i: Integer;
-  x: Boolean;
   function scan(Text: string): string;
   var
     reg: TRegEx;
@@ -670,7 +696,10 @@ begin
   with Response.Cookies.Add do
   begin
     Name := 'name';
-    Value := na;
+    if na = '' then
+      Value := '誰かさん.'
+    else
+      Value := na;
     Expires := Now + 14;
   end;
   if error = '' then
@@ -692,7 +721,7 @@ begin
       end;
       comment[i] := '<p>' + scan(comment[i]);
     end;
-    x := false;
+    URL := '/index?db=' + TNetEncoding.URL.Encode(db);
     if error <> '' then
       error := error + '</section>'
     else if Request.ContentFields.Values['show'] = 'true' then
@@ -700,6 +729,9 @@ begin
       error := '<p style=font-size:2.3em;color:blue>↓↓プレビュー↓↓<p>' +
         comment.Text;
       checkbox := false;
+      New(p);
+      p^ := error;
+      header.Tag := Integer(p);
     end
     else
     begin
@@ -708,18 +740,12 @@ begin
         raw, Now, pass]);
       checkbox := true;
       header.Tag := 0;
-      x := true;
+      URL := URL + '#article';
     end;
   finally
     comment.Free;
   end;
-  New(p);
-  p^ := error;
-  header.Tag := Integer(p);
-  if x = true then
-    Response.SendRedirect('/index?db=' + db + '#article')
-  else
-    TWebModule1indexpageAction(nil, Request, Response, Handled);
+  Response.SendRedirect(URL);
 end;
 
 procedure TTWebModule1.TWebModule1searchAction(Sender: TObject;

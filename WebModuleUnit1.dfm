@@ -19,6 +19,7 @@ object TWebModule1: TTWebModule1
       OnAction = TWebModule1registAction
     end
     item
+      MethodType = mtGet
       Name = 'admin'
       PathInfo = '/admin'
       OnAction = TWebModule1adminAction
@@ -66,6 +67,11 @@ object TWebModule1: TTWebModule1
       Name = 'admdel'
       PathInfo = '/admindel'
       OnAction = TWebModule1admdelAction
+    end
+    item
+      Name = 'login'
+      PathInfo = '/login'
+      OnAction = TWebModule1loginAction
     end>
   Height = 353
   Width = 436
@@ -1315,10 +1321,35 @@ object TWebModule1: TTWebModule1
       '        </td></tr>'
       '      </table>'
       '    </form>'
-      '    </header>')
+      '    </header><#preview>')
     DataSet = DataModule1.FDTable1
     OnHTMLTag = headerHTMLTag
     Left = 240
     Top = 192
+  end
+  object login: TDataSetPageProducer
+    HTMLDoc.Strings = (
+      '<!DOCTYPE HTML>'
+      '  <head>'
+      '    <meta charset=utf-8>'
+      '    <title>'#12525#12464#12452#12531'</title>'
+      '  </head>'
+      '  <body>'
+      '    <p style=text-align:center>'#31649#29702#32773#29992#12525#12464#12452#12531#30011#38754
+      '</p>'
+      '    <br>'
+      '    <form action=/login method="post">'
+      '    <p style=text-align:center>'
+      '      <input type=text name=record value=<#database>>'
+      '    '#9'  <input style=height:25px type="password" name="password">'
+      '      <input type="submit" value="'#12525#12464#12452#12531'">'
+      '    </p>'
+      '    </form>'
+      '      <p style=text-align:center><br><a href=/ >TOP'#12408#31227#21205'</a></p>'
+      '  </body>'
+      '</html>')
+    DataSet = DataModule1.FDTable1
+    Left = 304
+    Top = 144
   end
 end
