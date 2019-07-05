@@ -161,7 +161,7 @@ object TWebModule1: TTWebModule1
     Footer.Strings = (
       '<input type=submit value='#21066#38500#12377#12427'><input type=submit value='#12522#12475#12483#12488'>'
       '</form>'
-      '<p style=text-align:center><a href=/index?db=<#database>>'#25147#12427'</a>')
+      '')
     Header.Strings = (
       '<form action=/admindel method=post>')
     MaxRows = 30
@@ -379,8 +379,7 @@ object TWebModule1: TTWebModule1
   end
   object footer: TDataSetPageProducer
     HTMLDoc.Strings = (
-      '<p style=text-align:center>[ <#link> ] <#recent>'
-      '')
+      '<p style=text-align:center>[ <#link> ] <#recent>')
     DataSet = DataModule1.FDTable1
     OnHTMLTag = footerHTMLTag
     Left = 112

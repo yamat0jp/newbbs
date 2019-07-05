@@ -454,38 +454,30 @@ procedure TTWebModule1.TWebModule1adminAction(Sender: TObject;
   Request: TWebRequest; Response: TWebResponse; var Handled: Boolean);
 var
   s: string;
-  i, max: Integer;
+  i: Integer;
 begin
+  admin.MaxRows := DataModule1.FDTable3.FieldByName('count').AsInteger;
   s := TNetEncoding.URL.Decode(Request.QueryFields.Values['db']);
   DataModule1.FDTable1.Locate('database', s, []);
   s := Request.QueryFields.Values['num'];
-  max := DataModule1.FDTable3.FieldByName('count').AsInteger;
-  index.Tag := -1;
-  if s <> '' then
-  begin
-    index.Tag := s.ToInteger;
-    DataModule1.FDTable2.RecNo := (index.Tag - 1) * max - 1;
-  end
-  else
-    with DataModule1.FDTable2 do
-      RecNo := 1 + RecordCount - RecordCount mod max;
+  i := StrToIntDef(s, -1);
+  pages(DataModule1.FDTable2.RecordCount, i);
+  index.Tag := i;
   s := '/admin';
   footer.Tag := Integer(@s);
-  if admin.Tag = -1 then
+  i := footer.HTMLDoc.Add
+    ('<p style=text-align:center><a href=/index?db=<#database>>ñﬂÇÈ</a>');
+  if admin.Tag = 0 then
   begin
-    ss := TStringList.Create;
-    try
-      ss.Assign(admin.footer);
-      ss.Insert(2, footer.HTMLDoc.Text);
-      admin.footer.Text := footer.ContentFromString(ss.Text);
-    finally
-      ss.Free;
-    end;
+    admin.footer.Insert(3, footer.Content);
+    admin.Tag := 1;
+  end
+  else
+  begin
+    admin.footer.Delete(3);
+    admin.footer.Insert(3, footer.Content);
   end;
-  i := DataModule1.FDTable2.RecNo;
-  admin.Tag := i;
-  pages(max, i);
-  index.Tag := i;
+  footer.HTMLDoc.Delete(i);
   Response.ContentType := 'text/html;charset=utf-8';
   Response.Content := admin.Content;
 end;
@@ -743,7 +735,6 @@ begin
     DataModule1.FDTable3.AppendRecord
       (['Ç∆ÇÈÇÀÅ`Ç«çÜ', '<p style=font-color:gray>Ç∆ÇÈÇÀÅ`Ç«çÜ</p>', false, a, 30]);
   end;
-  admin.Tag := -1;
 end;
 
 end.
