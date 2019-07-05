@@ -74,7 +74,6 @@ type
   private
     { private êÈåæ }
     ss: TStringList;
-    error: string;
     checkbox: Boolean;
     procedure pages(count: Integer; var page: Integer);
   public
@@ -173,7 +172,7 @@ begin
   end
   else if (TagString = 'check') and (checkbox = true) then
     ReplaceText := 'checked'
-  else if (TagString = 'raw') and (error <> '') then
+  else if (TagString = 'raw') and (header.Tag <> 0) then
     ReplaceText := DataModule1.FDTable2.FieldByName('raw').AsString;
 end;
 
@@ -182,6 +181,7 @@ procedure TTWebModule1.indexHTMLTag(Sender: TObject; Tag: TTag;
 var
   i: Integer;
   x: Boolean;
+  s: string;
 begin
   if TagString = 'article' then
   begin
@@ -203,11 +203,16 @@ begin
     ReplaceText := footer.Content
   else if TagString = 'header' then
   begin
+    if header.Tag <> 0 then
+    begin
+      s := PString(header.Tag)^;
+      Dispose(Pointer(header.Tag));
+    end;
     i := DataModule1.FDTable3.FieldByName('count').AsInteger;
     if 10 * i < DataModule1.FDTable2.RecordCount then
       ReplaceText := 'Ç±ÇÍà»è„ìäçeÇ≈Ç´Ç‹ÇπÇÒ.'
     else
-      ReplaceText := header.Content + error;
+      ReplaceText := header.Content + s;
   end
   else if TagString = 'css' then
     ReplaceText := css2.Content;
@@ -511,22 +516,24 @@ var
   num: Integer;
   s: string;
 begin
-  s := Request.QueryFields.Values['number'];
+  s := Request.ContentFields.Values['number'];
   if s = '' then
     Exit;
   num := s.ToInteger;
-  s := Request.QueryFields.Values['password'];
+  s := Request.ContentFields.Values['password'];
   with DataModule1.FDTable2 do
-    if Locate('number;password', VarArrayOf([num, s])) = true then
+    if Locate('number;pass', VarArrayOf([num, s])) = true then
     begin
       Edit;
       FieldByName('title').AsString := '';
-      FieldByName('name').AsString;
+      FieldByName('name').AsString := '---';
       FieldByName('comment').AsString := '<em>ìäçeé“Ç…ÇÊÇËçÌèúÇ≥ÇÍÇ‹ÇµÇΩ.</em>';
       FieldByName('raw').AsString := '';
       FieldByName('date').AsDateTime := Now;
       Post;
     end;
+  Response.SendRedirect('/index?db=' + DataModule1.FDTable1.FieldByName
+    ('database').AsString);
 end;
 
 procedure TTWebModule1.TWebModule1helpAction(Sender: TObject;
@@ -614,9 +621,11 @@ procedure TTWebModule1.TWebModule1registAction(Sender: TObject;
   Request: TWebRequest; Response: TWebResponse; var Handled: Boolean);
 var
   number: Integer;
-  title, na, raw, pass, kotoba, db: string;
+  title, na, raw, pass, kotoba, db, error: string;
+  p: PString;
   comment: TStringList;
   i: Integer;
+  x: Boolean;
   function scan(Text: string): string;
   var
     reg: TRegEx;
@@ -683,6 +692,7 @@ begin
       end;
       comment[i] := '<p>' + scan(comment[i]);
     end;
+    x := false;
     if error <> '' then
       error := error + '</section>'
     else if Request.ContentFields.Values['show'] = 'true' then
@@ -697,11 +707,19 @@ begin
       DataModule1.FDTable2.AppendRecord([i, number, title, na, comment.Text,
         raw, Now, pass]);
       checkbox := true;
+      header.Tag := 0;
+      x := true;
     end;
   finally
     comment.Free;
   end;
-  TWebModule1indexpageAction(Sender, Request, Response, Handled);
+  New(p);
+  p^ := error;
+  header.Tag := Integer(p);
+  if x = true then
+    Response.SendRedirect('/index?db=' + db + '#article')
+  else
+    TWebModule1indexpageAction(nil, Request, Response, Handled);
 end;
 
 procedure TTWebModule1.TWebModule1searchAction(Sender: TObject;
@@ -735,6 +753,7 @@ begin
     DataModule1.FDTable3.AppendRecord
       (['Ç∆ÇÈÇÀÅ`Ç«çÜ', '<p style=font-color:gray>Ç∆ÇÈÇÀÅ`Ç«çÜ</p>', false, a, 30]);
   end;
+  checkbox := true;
 end;
 
 end.

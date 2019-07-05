@@ -39,7 +39,7 @@ type
     FDTable3MENTE: TBooleanField;
     FDTable3INFO: TIntegerField;
     FDTable3COUNT: TIntegerField;
-    FDTable2PASS: TIntegerField;
+    FDTable2PASS: TStringField;
   private
     { Private êÈåæ }
   public

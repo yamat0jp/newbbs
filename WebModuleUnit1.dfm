@@ -45,6 +45,7 @@ object TWebModule1: TTWebModule1
       OnAction = TWebModule1alertAction
     end
     item
+      MethodType = mtPost
       Name = 'usrdel'
       PathInfo = '/userdel'
       OnAction = TWebModule1deleteAction

@@ -82,9 +82,10 @@ object DataModule1: TDataModule1
       FieldName = 'DATE'
       Origin = '"DATE"'
     end
-    object FDTable2PASS: TIntegerField
+    object FDTable2PASS: TStringField
       FieldName = 'PASS'
       Origin = 'PASS'
+      Size = 40
     end
   end
   object FDTable3: TFDTable
