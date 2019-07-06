@@ -112,8 +112,12 @@ object TWebModule1: TTWebModule1
       
         '    <script type=text/javascript src=//ajax.googleapis.com/ajax/' +
         'libs/jquery/1.8.1/jquery.min.js></script>'
-      '    <#scr id=1>'
-      '    <#scr id=2>'
+      '    <script>'
+      '    <!--'
+      '    <#js id=1>'
+      '    <#js id=2>'
+      '    -->'
+      '    </script>'
       '    <title>'
       '    <#title>'
       '    </title>'
@@ -1365,8 +1369,6 @@ object TWebModule1: TTWebModule1
   end
   object js1: TPageProducer
     HTMLDoc.Strings = (
-      '<script>'
-      '<!--'
       '$(function(){'
       #9'$('#39'.livepreview'#39').livePreview({position:'#39'top'#39'});'
       
@@ -1439,16 +1441,12 @@ object TWebModule1: TTWebModule1
         'Height});'
       #9#9'};'
       #9'});'
-      '});'
-      '-->'
-      '</script>')
+      '});')
     Left = 304
     Top = 272
   end
   object js2: TPageProducer
     HTMLDoc.Strings = (
-      '<script>'
-      '<!--'
       '/* =========================================================='
       ' * jquery-live-preview.js v1.1.0'
       ' * https://github.com/alanphoon/jquery-live-preview'
@@ -1634,9 +1632,7 @@ object TWebModule1: TTWebModule1
       '         });'
       '     }'
       '  });'
-      '})(jQuery);'
-      '-->'
-      '</script>')
+      '})(jQuery);')
     Left = 256
     Top = 272
   end
