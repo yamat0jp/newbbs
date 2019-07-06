@@ -26,6 +26,10 @@ type
     login: TDataSetPageProducer;
     js1: TPageProducer;
     js2: TPageProducer;
+    js3: TPageProducer;
+    js4: TPageProducer;
+    js5: TPageProducer;
+    js6: TPageProducer;
     procedure indexHTMLTag(Sender: TObject; Tag: TTag; const TagString: string;
       TagParams: TStrings; var ReplaceText: string);
     procedure TWebModule1indexpageAction(Sender: TObject; Request: TWebRequest;
@@ -230,7 +234,7 @@ begin
     else
       ReplaceText := header.Content;
   end
-  else if (TagString = 'css')or(TagString = 'js') then
+  else if (TagString = 'css') or (TagString = 'js') then
     ReplaceText := detail;
 end;
 
@@ -498,15 +502,13 @@ begin
   i := footer.HTMLDoc.Add
     ('<p style=text-align:center><a href=/index?db=<#database>>–ß‚é</a>');
   if admin.Tag = 0 then
-  begin
-    admin.footer.Insert(3, footer.Content);
-    admin.Tag := 1;
-  end
+    admin.footer.Insert(3, footer.Content)
   else
   begin
     admin.footer.Delete(3);
     admin.footer.Insert(3, footer.Content);
   end;
+  admin.Tag := DataModule1.FDTable2.RecNo;
   footer.HTMLDoc.Delete(i);
   Response.ContentType := 'text/html;charset=utf-8';
   Response.Content := admin.Content;
@@ -676,7 +678,7 @@ var
     reg: TRegEx;
     coll: TMatchCollection;
     j: Integer;
-    s: string;
+    s, t: string;
   begin
     Text := TNetEncoding.HTML.Encode(Text);
     s := TNetEncoding.HTML.Encode('>>');
@@ -685,10 +687,10 @@ var
     for j := coll.count - 1 downto 0 do
     begin
       Delete(Text, coll[i].index, coll[i].Length);
-      s := Copy(coll[j].Value, Length(s) + 1, coll[j].Length);
+      t := Copy(coll[j].Value, Length(s) + 1, coll[j].Length);
       result := Format
         ('<a class=minpreview data-preview-url=/link?num=%s href=/jump?num=%s>>>%s</a>',
-        [s, s, s]);
+        [t, t, t]);
       Insert(result, Text, coll[j].index);
     end;
     result := Text;

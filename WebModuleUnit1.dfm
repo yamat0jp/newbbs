@@ -297,12 +297,16 @@ object TWebModule1: TTWebModule1
       '</title>'
       '<#css id=1>'
       '<#css id=3>'
+      '<script>'
+      '<!--'
       #9'<script src="{{static_url(js/jquery-1.10.2.min.js"></script>'
-      #9'<script src="{{static_url(js/top.js"></script>'
+      #9'<#js id=3>'
       #9'<script src="{{static_url(js/modernizr.custom.min.js"></script>'
       
         #9'<script src="{{static_url(js/jquery-ui-1.10.3.custom.min.js"></' +
         'script>'
+      '-->'
+      '</script>'
       '</head>'
       '<body>'
       '<div id="fb-root"></div>'
@@ -1634,6 +1638,111 @@ object TWebModule1: TTWebModule1
       '  });'
       '})(jQuery);')
     Left = 256
+    Top = 272
+  end
+  object js3: TPageProducer
+    HTMLDoc.Strings = (
+      '$(function(){'
+      #9'$('#39'.slideshow'#39').each(function(){'
+      #9#9'var $container = $(this),'
+      #9#9#9'$slideGroup = $container.find('#39'.slideshow-slides'#39'),'
+      #9#9#9'$slides = $slideGroup.find('#39'.slide'#39'),'
+      #9#9#9'$nav = $container.find('#39'.slideshow-nav'#39'),'
+      #9#9#9'$indicator = $container.find('#39'.slideshow-indicator'#39'),'
+      #9#9#9'$images = $slides.find('#39'img'#39'),'
+      #9#9#9
+      #9#9#9'slideCount = $slides.length,'
+      #9#9#9'indicatorHTML = '#39#39','
+      #9#9#9'currentIndex = 0,'
+      #9#9#9'duration = 500,'
+      #9#9#9'easing = '#39'easeInOutExpo'#39','
+      #9#9#9'interval = 7500,'
+      #9#9#9'timer;'
+      #9#9#9#9
+      #9#9
+      #9#9'$slides.each(function(i){'
+      #9#9#9'$(this).css({left:100*i+'#39'%'#39'});'
+      #9#9#9'indicatorHTML += '#39'<a href="#">'#39'+(i+1)+'#39'</a>'#39';'
+      #9#9'});'
+      #9#9
+      #9#9'$indicator.html(indicatorHTML);'
+      #9#9
+      #9#9'function goToSlide(index){'
+      #9#9#9'$slideGroup.animate({left:-100*index+'#39'%'#39'},duration,easing);'
+      #9#9#9'currentIndex = index;'
+      #9#9#9'updateNav();'
+      #9#9'}'
+      #9#9
+      #9#9'function updateNav(){'
+      #9#9#9'var $navPrev = $nav.find('#39'.prev'#39'),'
+      #9#9#9#9'$navNext = $nav.find('#39'.next'#39');'
+      #9#9#9'if (currentIndex === 0){'
+      #9#9#9#9'$navPrev.addClass('#39'disabled'#39');'
+      #9#9#9'} else {'
+      #9#9#9#9'$navPrev.removeClass('#39'disabled'#39');'
+      #9#9#9'}'
+      #9#9#9'if (currentIndex === slideCount-1){'
+      #9#9#9#9'$navNext.addClass('#39'disabled'#39');'
+      #9#9#9'} else {'
+      #9#9#9#9'$navNext.removeClass('#39'disabled'#39');'
+      #9#9#9'}'
+      #9#9#9'$indicator.find('#39'a'#39').removeClass('#39'active'#39')'
+      #9#9#9#9'.eq(currentIndex).addClass('#39'active'#39');'
+      #9#9'}'
+      ''
+      #9#9'function startTimer(){'
+      #9#9'    timer = setInterval(function(){'
+      #9'            var nextIndex = (currentIndex + 1) % slideCount;'
+      #9'            goToSlide(nextIndex);'
+      '            }, interval)'
+      #9#9'}'
+      ''
+      #9#9'function stopTimer(){'
+      #9#9'    clearInterval(timer);'
+      #9#9'}'
+      #9#9#9
+      #9#9'$nav.on('#39'click'#39','#39'a'#39',function(event){'
+      #9#9#9'event.preventDefault();'
+      #9#9#9'if ($(this).hasClass('#39'prev'#39')){'
+      #9#9#9#9'goToSlide(currentIndex-1);'
+      #9#9#9'} else {'
+      #9#9#9#9'goToSlide(currentIndex+1);'
+      #9#9#9'}'
+      #9#9'});'
+      #9#9
+      #9#9'$indicator.on('#39'click'#39','#39'a'#39',function(event){'
+      #9#9#9'event.preventDefault();'
+      #9#9#9'if (!$(this).hasClass('#39'active'#39')){'
+      #9#9#9#9'goToSlide($(this).index());'
+      #9#9#9'}'
+      #9#9'});'
+      ''
+      #9#9'$container.on({'
+      #9#9'    mouseenter: stopTimer,'
+      #9#9'    mouseleave: startTimer'
+      #9#9'});'
+      ''
+      #9#9#9
+      #9#9'goToSlide(currentIndex);'
+      ''
+      #9#9'startTimer();'
+      #9#9
+      #9'});'
+      #9
+      '});')
+    Left = 200
+    Top = 272
+  end
+  object js4: TPageProducer
+    Left = 152
+    Top = 272
+  end
+  object js5: TPageProducer
+    Left = 104
+    Top = 272
+  end
+  object js6: TPageProducer
+    Left = 56
     Top = 272
   end
 end
