@@ -179,6 +179,11 @@ begin
   begin
     ReplaceText := PString(header.Tag)^;
     Dispose(Pointer(header.Tag));
+  end
+  else if (TagString = 'raw') and (articles.Tag <> 0) then
+  begin
+    ReplaceText:=PString(articles.Tag)^;
+    Dispose(Pointer(articles.Tag));
   end;
 end;
 
@@ -187,7 +192,6 @@ procedure TTWebModule1.indexHTMLTag(Sender: TObject; Tag: TTag;
 var
   i: Integer;
   x: Boolean;
-  s: string;
 begin
   if TagString = 'article' then
   begin
@@ -631,7 +635,7 @@ begin
   begin
     Name := 'user';
     Value := 'admin';
-    Secure := true;
+    Expires := Now + 14;
   end;
   s := Request.ContentFields.Values['record'];
   Response.SendRedirect('/admin?db=' + TNetEncoding.URL.Encode(s));
@@ -732,6 +736,9 @@ begin
       New(p);
       p^ := error;
       header.Tag := Integer(p);
+      New(p);
+      p^:=raw;
+      articles.Tag:=Integer(p);
     end
     else
     begin
