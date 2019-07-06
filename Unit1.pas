@@ -40,6 +40,7 @@ type
     FDTable3INFO: TIntegerField;
     FDTable3COUNT: TIntegerField;
     FDTable2PASS: TStringField;
+    FDTable4ID: TIntegerField;
   private
     { Private éŒ¾ }
   public

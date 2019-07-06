@@ -140,6 +140,11 @@ object DataModule1: TDataModule1
     TableName = 'REQ'
     Left = 224
     Top = 88
+    object FDTable4ID: TIntegerField
+      FieldName = 'ID'
+      Origin = 'ID'
+      Required = True
+    end
     object FDTable4DBNAME: TIntegerField
       FieldName = 'DBNAME'
       Origin = 'DBNAME'

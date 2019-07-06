@@ -80,6 +80,7 @@ type
       Response: TWebResponse; var Handled: Boolean);
     procedure TWebModule1loginAction(Sender: TObject; Request: TWebRequest;
       Response: TWebResponse; var Handled: Boolean);
+    procedure WebModuleDestroy(Sender: TObject);
   private
     { private 宣言 }
     ss: TStringList;
@@ -180,15 +181,9 @@ begin
   else if (TagString = 'check') and (checkbox = true) then
     ReplaceText := 'checked'
   else if (TagString = 'preview') and (header.Tag <> 0) then
-  begin
-    ReplaceText := PString(header.Tag)^;
-    Dispose(Pointer(header.Tag));
-  end
+    ReplaceText := PString(header.Tag)^
   else if (TagString = 'raw') and (articles.Tag <> 0) then
-  begin
     ReplaceText := PString(articles.Tag)^;
-    Dispose(Pointer(articles.Tag));
-  end;
 end;
 
 procedure TTWebModule1.indexHTMLTag(Sender: TObject; Tag: TTag;
@@ -475,8 +470,8 @@ begin
       DataModule1.FDTable2.Delete;
     end;
   end;
-  Response.SendRedirect('/admin?db=' + TNetEncoding.URL.Encode
-    (DataModule1.FDTable1.FieldByName('database').AsString));
+  Response.SendRedirect('/admin?db=' + DataModule1.FDTable1.FieldByName
+    ('database').AsString);
 end;
 
 procedure TTWebModule1.TWebModule1adminAction(Sender: TObject;
@@ -498,7 +493,7 @@ begin
   pages(DataModule1.FDTable2.RecordCount, i);
   index.Tag := i;
   s := '/admin';
-  footer.Tag := Integer(@s);
+  Self.Tag := Integer(@s);
   i := footer.HTMLDoc.Add
     ('<p style=text-align:center><a href=/index?db=<#database>>戻る</a>');
   if admin.Tag = 0 then
@@ -521,7 +516,7 @@ var
   s: string;
 begin
   s := Request.QueryFields.Values['db'];
-  num1 := DataModule1.FDTable1.Lookup('database', s, 'dbnum');
+  num1 := DataModule1.FDTable1.FieldByName('dbnum').AsInteger;
   num2 := Request.QueryFields.Values['num'].ToInteger;
   if Request.MethodType = mtGet then
   begin
@@ -698,7 +693,6 @@ var
 
 begin
   error := '';
-  db := Request.QueryFields.Values['db'];
   kotoba := Request.ContentFields.Values['aikotoba'];
   if kotoba <> 'げんき' then
     error := '<section style=color:red><p>合言葉がちがいます.';
@@ -742,7 +736,7 @@ begin
       end;
       comment[i] := '<p>' + scan(comment[i]);
     end;
-    URL := '/index?db=' + TNetEncoding.URL.Encode(db);
+    URL := '/index?db=' + DataModule1.FDTable1.FieldByName('database').AsString;
     if error <> '' then
       error := error + '</section>'
     else if Request.ContentFields.Values['show'] = 'true' then
@@ -750,10 +744,16 @@ begin
       error := '<p style=font-size:2.3em;color:blue>↓↓プレビュー↓↓<p>' +
         comment.Text;
       checkbox := false;
-      New(p);
+      if header.Tag = 0 then
+        New(p)
+      else
+        p:=Pointer(header.Tag);
       p^ := error;
       header.Tag := Integer(p);
-      New(p);
+      if articles.Tag = 0 then
+        New(p)
+      else
+        p:=Pointer(articles.Tag);
       p^ := raw;
       articles.Tag := Integer(p);
     end
@@ -763,8 +763,6 @@ begin
       DataModule1.FDTable2.AppendRecord([i, number, title, na, comment.Text,
         raw, Now, pass]);
       checkbox := true;
-      header.Tag := 0;
-      articles.Tag := 0;
       URL := URL + '#article';
     end;
   finally
@@ -805,6 +803,12 @@ begin
       (['とるね～ど号', '<p style=font-color:gray>とるね～ど号</p>', false, a, 30]);
   end;
   checkbox := true;
+end;
+
+procedure TTWebModule1.WebModuleDestroy(Sender: TObject);
+begin
+  Dispose(Pointer(header.Tag));
+  Dispose(Pointer(articles.Tag));
 end;
 
 end.
