@@ -681,7 +681,7 @@ var
     coll := reg.Matches(Text);
     for j := coll.count - 1 downto 0 do
     begin
-      Delete(Text, coll[i].index, coll[i].Length);
+      Delete(Text, coll[j].index, coll[j].Length);
       t := Copy(coll[j].Value, Length(s) + 1, coll[j].Length);
       result := Format
         ('<a class=minpreview data-preview-url=/link?num=%s href=/jump?num=%s>>>%s</a>',
