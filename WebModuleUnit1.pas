@@ -24,6 +24,8 @@ type
     css4: TPageProducer;
     header: TDataSetPageProducer;
     login: TDataSetPageProducer;
+    js1: TPageProducer;
+    js2: TPageProducer;
     procedure indexHTMLTag(Sender: TObject; Tag: TTag; const TagString: string;
       TagParams: TStrings; var ReplaceText: string);
     procedure TWebModule1indexpageAction(Sender: TObject; Request: TWebRequest;
@@ -182,7 +184,7 @@ begin
   end
   else if (TagString = 'raw') and (articles.Tag <> 0) then
   begin
-    ReplaceText:=PString(articles.Tag)^;
+    ReplaceText := PString(articles.Tag)^;
     Dispose(Pointer(articles.Tag));
   end;
 end;
@@ -192,6 +194,17 @@ procedure TTWebModule1.indexHTMLTag(Sender: TObject; Tag: TTag;
 var
   i: Integer;
   x: Boolean;
+  function detail(id: string): string;
+  var
+    s: string;
+    j: Integer;
+  begin
+    s := TagParams.Values['id'];
+    for j := 0 to ComponentCount - 1 do
+      if Components[j].Name = id + s then
+        result := (Components[j] as TPageProducer).Content;
+  end;
+
 begin
   if TagString = 'article' then
   begin
@@ -220,7 +233,7 @@ begin
       ReplaceText := header.Content;
   end
   else if TagString = 'css' then
-    ReplaceText := css2.Content;
+    ReplaceText := detail(TagString);
 end;
 
 procedure TTWebModule1.itemsHTMLTag(Sender: TObject; Tag: TTag;
@@ -270,15 +283,17 @@ begin
     with DataModule1.FDTable4 do
     begin
       First;
+      ReplaceText:='<table border=1>';
       while Eof = false do
       begin
         i := FieldByName('dbname').AsInteger;
         j := FieldByName('posnum').AsInteger;
         DataModule1.FDTable2.Locate('dbnum;number', VarArrayOf([i, j]), []);
         s := FieldByName('request').AsString;
-        ReplaceText := ReplaceText + alert.Content + s;
+        ReplaceText := ReplaceText + '<tr><td>' + alert.Content +'</td><td>'+ s+'</td></tr>';
         Next;
       end;
+      ReplaceText:=ReplaceText+'</table>';
     end;
 end;
 
@@ -308,7 +323,9 @@ begin
     ReplaceText := alert.Content
   else if TagString = 'query' then
     ReplaceText := '?' + Request.Query + '#' +
-      Request.QueryFields.Values['num'];
+      Request.QueryFields.Values['num']
+  else if TagString = 'number' then
+    ReplaceText:=Request.QueryFields.Values['num'];
 end;
 
 procedure TTWebModule1.searchHTMLTag(Sender: TObject; Tag: TTag;
@@ -504,7 +521,7 @@ var
   s: string;
 begin
   s := Request.QueryFields.Values['db'];
-  num1 := DataModule1.FDTable1.Lookup('database', s, 'dbnum');
+  num1 := DataModule1.FDTable1.Lookup('database',s,'dbnum');
   num2 := Request.QueryFields.Values['num'].ToInteger;
   if Request.MethodType = mtGet then
   begin
@@ -737,8 +754,8 @@ begin
       p^ := error;
       header.Tag := Integer(p);
       New(p);
-      p^:=raw;
-      articles.Tag:=Integer(p);
+      p^ := raw;
+      articles.Tag := Integer(p);
     end
     else
     begin
@@ -747,6 +764,7 @@ begin
         raw, Now, pass]);
       checkbox := true;
       header.Tag := 0;
+      articles.Tag := 0;
       URL := URL + '#article';
     end;
   finally

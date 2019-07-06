@@ -3,11 +3,13 @@ object TWebModule1: TTWebModule1
   OnCreate = WebModuleCreate
   Actions = <
     item
+      MethodType = mtGet
       Name = 'top'
       PathInfo = '/'
       OnAction = TWebModule1topAction
     end
     item
+      MethodType = mtGet
       Name = 'indexpage'
       PathInfo = '/index'
       OnAction = TWebModule1indexpageAction
@@ -103,6 +105,15 @@ object TWebModule1: TTWebModule1
       '  <head>'
       '    <meta charset="utf-8">'
       '    <#css id=2>'
+      '    <#css id=4>'
+      
+        '    <script src=//cdn.rawgit.com/google/code-prettify/master/loa' +
+        'der/run_prettify.js></script>'
+      
+        '    <script type=text/javascript src=//ajax.googleapis.com/ajax/' +
+        'libs/jquery/1.8.1/jquery.min.js></script>'
+      '    <#scr id=1>'
+      '    <#scr id=2>'
       '    <title>'
       '    <#title>'
       '    </title>'
@@ -371,7 +382,7 @@ object TWebModule1: TTWebModule1
       '<p style=text-align:center><a href=/>'#25147#12427'</a>'
       '</body></html>')
     OnHTMLTag = masterHTMLTag
-    Left = 56
+    Left = 48
     Top = 144
   end
   object alert: TDataSetPageProducer
@@ -381,7 +392,7 @@ object TWebModule1: TTWebModule1
       '<hr>')
     DataSet = DataModule1.FDTable4
     OnHTMLTag = alertHTMLTag
-    Left = 56
+    Left = 48
     Top = 192
   end
   object footer: TDataSetPageProducer
@@ -398,9 +409,9 @@ object TWebModule1: TTWebModule1
       '<html>'
       '<head><meta charset=utf-8></head>'
       '<body>'
-      '<form action=/alert method=post>'
+      '<form action=/alert<#query>  method=post>'
       '  <#content>'
-      '<textarea></textarea>'
+      '<textarea name=request></textarea>'
       '<input type=submit>'
       '<p style=text-align:center><a href=/index<#query>>'#25147#12427'</a>'
       '</form>'
@@ -1351,5 +1362,282 @@ object TWebModule1: TTWebModule1
     DataSet = DataModule1.FDTable1
     Left = 304
     Top = 144
+  end
+  object js1: TPageProducer
+    HTMLDoc.Strings = (
+      '<script>'
+      '<!--'
+      '$(function(){'
+      #9'$('#39'.livepreview'#39').livePreview({position:'#39'top'#39'});'
+      
+        #9'$('#39'.minpreview'#39').livePreview({scale:1,viewWidth:900,viewHeight:' +
+        '600});'
+      #9
+      #9'var $window = $(window),'
+      #9#9'$header = $('#39'header'#39'),'
+      #9#9'$button = $header.find('#39'button'#39'),'
+      #9#9'$headerClone = $header.clone(),'
+      
+        #9#9'$headerCloneContainer = $('#39'<div class=clone style=position:fix' +
+        'ed;width:100%></div>'#39'),'
+      #9#9'$clonebutton = $headerCloneContainer.find('#39'button'#39'),'
+      #9#9'headerOffsetTop = $header.offset().top,'
+      #9#9'headerHeight = $header.outerHeight();'
+      #9
+      #9'$button.on('#39'click'#39',function(){'
+      #9#9'if ($window.scrollTop() > headerOffsetTop){'
+      #9#9#9'$headerCloneContainer'
+      #9#9#9#9'.css({'
+      #9#9#9#9#9'opacity:1,'
+      #9#9#9#9#9'top:-$window.scrollTop()+headerOffsetTop'
+      #9#9#9#9'})'#9#9#9#9
+      #9#9#9#9'.animate({top:0},300)'
+      #9#9#9#9'.find('#39'textarea'#39').val($header.find('#39'textarea'#39').val());'
+      
+        #9#9#9'$headerCloneContainer.find('#39'.name'#39').val($header.find('#39'.name'#39')' +
+        '.val());'
+      
+        #9#9#9'$headerCloneContainer.find('#39'.title'#39').val($header.find('#39'.title' +
+        #39').val());'
+      #9#9#9'$header.addClass('#39'open'#39');'
+      #9#9'};'
+      #9'}).css({top:headerOffsetTop+headerHeight});'
+      #9'$headerCloneContainer.append($headerClone);'
+      #9'$headerCloneContainer.appendTo('#39'body'#39');'
+      #9'$headerCloneContainer'
+      #9#9'.css({'#39'opacity'#39':0})'
+      #9#9'.find('#39'button'#39').text('#39'close'#39').on('#39'click'#39',function(){'#9#9#9
+      #9#9#9'var wintop = $window.scrollTop();'#9#9#9#9
+      ''
+      
+        #9#9#9'$header.find('#39'textarea'#39').val($headerCloneContainer.find('#39'text' +
+        'area'#39').val());'
+      #9#9#9'$headerCloneContainer'
+      #9#9#9#9'.animate({top:-wintop+headerOffsetTop},300)'
+      #9#9#9#9'.animate({opacity:0,top:-headerHeight},0);'
+      
+        #9#9#9'$header.find('#39'.name'#39').val($headerCloneContainer.find('#39'.name'#39')' +
+        '.val());'
+      
+        #9#9#9'$header.find('#39'.title'#39').val($headerCloneContainer.find('#39'.title' +
+        #39').val());'
+      #9#9#9'$header.removeClass('#39'open'#39');'
+      #9#9'});'
+      #9'$window.on('#39'scroll'#39',function(){'
+      #9#9'var wintop = $window.scrollTop();'
+      #9#9
+      #9#9'if ($header.hasClass('#39'open'#39')&&(wintop < headerOffsetTop)){'
+      #9#9#9'$headerCloneContainer.css({opacity:0,top:-headerHeight});'
+      #9#9#9'$header.removeClass('#39'open'#39');'
+      #9#9#9'$window.trigger('#39'scroll'#39');'
+      #9#9'};'
+      #9#9'if (wintop > headerOffsetTop+headerHeight){'
+      #9#9#9'$button.addClass('#39'sticky'#39').css({top:0});'
+      #9#9'}else{'
+      
+        #9#9#9'$button.removeClass('#39'sticky'#39').css({top:headerOffsetTop+header' +
+        'Height});'
+      #9#9'};'
+      #9'});'
+      '});'
+      '-->'
+      '</script>')
+    Left = 304
+    Top = 272
+  end
+  object js2: TPageProducer
+    HTMLDoc.Strings = (
+      '<script>'
+      '<!--'
+      '/* =========================================================='
+      ' * jquery-live-preview.js v1.1.0'
+      ' * https://github.com/alanphoon/jquery-live-preview'
+      ' * =========================================================='
+      ' * Copyright 2015 Alan Phoon, www.ampedupdesigns.com'
+      ' * The MIT License'
+      ' *'
+      
+        ' * Permission is hereby granted, free of charge, to any person o' +
+        'btaining a copy'
+      
+        ' * of this software and associated documentation files (the "Sof' +
+        'tware"), to deal'
+      
+        ' * in the Software without restriction, including without limita' +
+        'tion the rights'
+      
+        ' * to use, copy, modify, merge, publish, distribute, sublicense,' +
+        ' and/or sell'
+      
+        ' * copies of the Software, and to permit persons to whom the Sof' +
+        'tware is'
+      ' * furnished to do so, subject to the following conditions:'
+      ' * '
+      
+        ' * The above copyright notice and this permission notice shall b' +
+        'e included in'
+      ' * all copies or substantial portions of the Software.'
+      ' * '
+      
+        ' * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIN' +
+        'D, EXPRESS OR'
+      
+        ' * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCH' +
+        'ANTABILITY,'
+      
+        ' * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO E' +
+        'VENT SHALL THE'
+      
+        ' * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES' +
+        ' OR OTHER'
+      
+        ' * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWIS' +
+        'E, ARISING FROM,'
+      
+        ' * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER' +
+        ' DEALINGS IN'
+      ' * THE SOFTWARE.'
+      ' * ========================================================== */'
+      ''
+      '(function($) {'
+      '  $.fn.extend({'
+      '     livePreview: function(options) {'
+      '         '
+      '         var defaults = {'
+      '             trigger: '#39'hover'#39','
+      '             targetWidth : 1000,'
+      '             targetHeight: 800,'
+      '             viewWidth: 300,'
+      '             viewHeight: 200,'
+      '             position: '#39'right'#39','
+      '             positionOffset: 40,'
+      '         };'
+      ''
+      '         var options = $.extend(defaults, options);'
+      '         //calculate appropriate scaling based on width.'
+      
+        '         var scale_w = (options.viewWidth / options.targetWidth)' +
+        ';'
+      
+        '         var scale_h = (options.viewHeight / options.targetHeigh' +
+        't);'
+      '         var scale_f = 1;'
+      '         var preview_id = '#39'livepreview_dialog'#39';'
+      ''
+      '         if(typeof options.scale != '#39'undefined'#39')'
+      '             scale_f = options.scale;'
+      '         else'
+      '         {'
+      '             if(scale_w > scale_h)'
+      '                 scale_f = scale_w;'
+      '             else'
+      '                 scale_f = scale_h;'
+      '         }'
+      '         '
+      '         var showPreview = function(event) {'
+      '             var triggerType = event.data.triggerType;'
+      '             var obj = event.data.target;'
+      '             var href = event.data.href;'
+      '             var s = event.data.scale;'
+      '             '
+      
+        '             if( (triggerType == '#39'click'#39') && ($('#39'#'#39' + preview_id' +
+        ').length == 0) ) {'
+      '                 event.preventDefault();'
+      '             }'
+      ''
+      '             var currentPos = options.position;'
+      '              if(obj.attr("data-position"))'
+      '                 currentPos = obj.attr("data-position");'
+      ''
+      '             var currentOffset = options.positionOffset;'
+      '             if(obj.attr("data-positionOffset"))'
+      
+        '                 currentOffset = obj.attr("data-positionOffset")' +
+        ';'
+      ''
+      '             if(obj.attr("data-scale"))'
+      '                 s = obj.attr("data-scale");'
+      ''
+      '             var pos = $(this).offset();'
+      '             var width = $(this).width();'
+      '             var height = $(this).height();'
+      '             var toppos = pos.top - (options.viewHeight/2);'
+      '             var leftpos = pos.left + width + currentOffset;'
+      ''
+      '             if(currentPos == '#39'left'#39') {'
+      
+        '                leftpos = pos.left - options.viewWidth - current' +
+        'Offset;'
+      '             }'
+      '            '
+      '             if(currentPos == '#39'top'#39') {'
+      
+        '                leftpos = pos.left + (width/2) - (options.viewWi' +
+        'dth/2);'
+      
+        '                toppos = pos.top - options.viewHeight - currentO' +
+        'ffset;'
+      '             }'
+      ''
+      '             if(currentPos == '#39'bottom'#39') {'
+      
+        '                leftpos = pos.left + (width/2) - (options.viewWi' +
+        'dth/2);'
+      '                toppos = pos.top + (height/2) + currentOffset;'
+      '             }'
+      '             '
+      '             //hover on '
+      
+        '             $('#39'body'#39').append('#39'<div id="livepreview_dialog" clas' +
+        's="'#39' + currentPos + '#39'" style="display:none; padding:0px; left: '#39 +
+        ' + leftpos + '#39'px; top:'#39' + toppos + '#39'px; width: '#39' + options.viewW' +
+        'idth + '#39'px; height: '#39' + options.viewHeight + '#39'px"><div class="li' +
+        'vepreview-container" style="overflow:hidden; width: '#39' + options.' +
+        'viewWidth + '#39'px; height: '#39' + options.viewHeight + '#39'px"><iframe i' +
+        'd="livepreview_iframe" src="'#39' + href + '#39'" style="height:'#39' + opti' +
+        'ons.targetHeight + '#39'px; width:'#39' + options.targetWidth + '#39'px;-moz' +
+        '-transform: scale('#39'+ s + '#39');-moz-transform-origin: 0 0;-o-transf' +
+        'orm: scale('#39'+ s + '#39');-o-transform-origin: 0 0;-webkit-transform:' +
+        ' scale('#39'+ s + '#39');-webkit-transform-origin: 0 0;"></iframe></div>' +
+        '</div>'#39');'
+      '             $('#39'#'#39' + preview_id).fadeIn(100);'
+      '         };'
+      ''
+      '         return this.each(function() {'
+      '            var o = options;'
+      '            var s = scale_f;'
+      '            var obj = $(this);'
+      
+        '            var href = obj.attr("data-preview-url") || obj.attr(' +
+        '"href");'
+      '            var triggerType = options.trigger;'
+      ''
+      '            if(obj.attr("data-trigger")) {'
+      '                triggerType = obj.attr("data-trigger");'
+      '            }'
+      ''
+      '            if(triggerType != '#39'click'#39') {'
+      '                triggerType = '#39'mouseenter'#39';'
+      '                obj.on('#39'click'#39', function() {'
+      '                    $('#39'#'#39' + preview_id).remove();'
+      '                });'
+      '            }'
+      '            '
+      
+        '            obj.on(triggerType, null, { triggerType: triggerType' +
+        ', target: obj, href: href, scale: s }, showPreview);'
+      '            obj.on('#39'mouseleave'#39', function() {'
+      '                $('#39'#'#39' + preview_id).remove();'
+      '            });'
+      ''
+      '         });'
+      '     }'
+      '  });'
+      '})(jQuery);'
+      '-->'
+      '</script>')
+    Left = 256
+    Top = 272
   end
 end
