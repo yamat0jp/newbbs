@@ -37,7 +37,6 @@ object TWebModule1: TTWebModule1
       OnAction = TWebModule1helpAction
     end
     item
-      MethodType = mtGet
       Name = 'master'
       PathInfo = '/master'
       OnAction = TWebModule1masterAction
@@ -385,8 +384,12 @@ object TWebModule1: TTWebModule1
       '<meta charset=utf-8>'
       '</head>'
       '<body>'
-      ''
+      '<form action=/master method=post>'
       '<p><#request>'
+      '<input type=radio name=delete value=some checked>'#21066#38500#28168#12415#12434#28040#21435#12288
+      '<input type=radio name=delete value=all>'#12377#12409#12390#28040#21435
+      '<input type=submit value="'#36865#20449'">'
+      '</form>'
       '<p style=text-align:center><a href=/>'#25147#12427'</a>'
       '</body></html>')
     OnHTMLTag = masterHTMLTag

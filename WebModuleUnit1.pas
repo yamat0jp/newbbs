@@ -297,7 +297,7 @@ begin
     with DataModule1.FDTable4 do
     begin
       First;
-      ReplaceText := '<table border=1>';
+      ReplaceText := '<table border=1 align=center>';
       while Eof = false do
       begin
         ReplaceText := ReplaceText + alert.Content;
@@ -668,7 +668,36 @@ end;
 
 procedure TTWebModule1.TWebModule1masterAction(Sender: TObject;
   Request: TWebRequest; Response: TWebResponse; var Handled: Boolean);
+var
+  s: string;
+  i: Integer;
 begin
+  if Request.MethodType = mtPost then
+  begin
+    s := Request.ContentFields.Values['delete'];
+    if s = 'all' then
+      with DataModule1.FDTable4 do
+        while (Bof = false) or (Eof = false) do
+          Delete
+    else
+    begin
+      DataModule1.FDTable4.First;
+      while DataModule1.FDTable4.Eof = false do
+      begin
+        i := DataModule1.FDTable4.FieldByName('dbname').AsInteger;
+        if DataModule1.FDTable1.Locate('dbnum', i) = true then
+        begin
+          i := DataModule1.FDTable4.FieldByName('posnum').AsInteger;
+          if DataModule1.FDTable2.Locate('number', i) = false then
+          begin
+            DataModule1.FDTable4.Delete;
+            continue;
+          end;
+        end;
+        DataModule1.FDTable4.Next;
+      end;
+    end;
+  end;
   Response.ContentType := 'text/html;charset=utf-8';
   Response.Content := master.Content;
 end;
@@ -758,7 +787,7 @@ begin
     begin
       error := '<p style=font-size:2.3em;color:blue>Å´Å´ÉvÉåÉrÉÖÅ[Å´Å´<p>' +
         comment.Text;
-      Request.ContentFields.Delete(Request.ContentFields.IndexOfName('show'));
+      Request.ContentFields.Values['show'] := 'false';
       Request.ContentFields.Add('preview=' + error);
       Request.ContentFields.Add('raw=' + raw);
     end
