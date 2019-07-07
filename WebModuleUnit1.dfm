@@ -1,7 +1,6 @@
 object TWebModule1: TTWebModule1
   OldCreateOrder = False
   OnCreate = WebModuleCreate
-  OnDestroy = WebModuleDestroy
   Actions = <
     item
       MethodType = mtGet

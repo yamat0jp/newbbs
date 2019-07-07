@@ -80,7 +80,6 @@ type
       Response: TWebResponse; var Handled: Boolean);
     procedure TWebModule1loginAction(Sender: TObject; Request: TWebRequest;
       Response: TWebResponse; var Handled: Boolean);
-    procedure WebModuleDestroy(Sender: TObject);
   private
     { private 宣言 }
     ss: TStringList;
@@ -198,10 +197,10 @@ begin
   end
   else if (TagString = 'check') and (checkbox = true) then
     ReplaceText := 'checked'
-  else if (TagString = 'preview') and (header.Tag <> 0) then
-    ReplaceText := PString(header.Tag)^
-  else if (TagString = 'raw') and (articles.Tag <> 0) then
-    ReplaceText := PString(articles.Tag)^;
+  else if TagString = 'preview' then
+    ReplaceText := Request.ContentFields.Values['preview']
+  else if TagString = 'raw' then
+    ReplaceText := Request.ContentFields.Values['raw'];
 end;
 
 procedure TTWebModule1.indexHTMLTag(Sender: TObject; Tag: TTag;
@@ -678,7 +677,7 @@ procedure TTWebModule1.TWebModule1registAction(Sender: TObject;
   Request: TWebRequest; Response: TWebResponse; var Handled: Boolean);
 var
   number: Integer;
-  title, na, raw, pass, kotoba, error, URL: string;
+  title, na, raw, pass, kotoba, error: string;
   p: PString;
   comment: TStringList;
   i: Integer;
@@ -717,10 +716,13 @@ begin
   end;
   with Request.ContentFields do
   begin
+    title := Values['title'];
     na := Values['name'];
     raw := Values['comment'];
     pass := Values['password'];
   end;
+  if title = '' then
+    title:='タイトルなし.';
   with Response.Cookies.Add do
   begin
     Name := 'name';
@@ -749,7 +751,6 @@ begin
       end;
       comment[i] := '<p>' + scan(comment[i]);
     end;
-    URL := 'index?db=' + getdbname;
     if error <> '' then
       error := error + '</section>'
     else if Request.ContentFields.Values['show'] = 'true' then
@@ -757,18 +758,8 @@ begin
       error := '<p style=font-size:2.3em;color:blue>↓↓プレビュー↓↓<p>' +
         comment.Text;
       checkbox := false;
-      if header.Tag = 0 then
-        New(p)
-      else
-        p := Pointer(header.Tag);
-      p^ := error;
-      header.Tag := Integer(p);
-      if articles.Tag = 0 then
-        New(p)
-      else
-        p := Pointer(articles.Tag);
-      p^ := raw;
-      articles.Tag := Integer(p);
+      Request.ContentFields.Add('preview='+error);
+      Request.ContentFields.Add('raw='+raw);
     end
     else
     begin
@@ -776,12 +767,13 @@ begin
       DataModule1.FDTable2.AppendRecord([i, number, title, na, comment.Text,
         raw, Now, pass]);
       checkbox := true;
-      URL := URL + '#article';
+      Response.SendRedirect('index?db=' + getdbname + '#article');
+      Exit;
     end;
   finally
     comment.Free;
   end;
-  Response.SendRedirect(URL);
+  TWebModule1indexpageAction(nil,Request,Response,Handled);
 end;
 
 procedure TTWebModule1.TWebModule1searchAction(Sender: TObject;
@@ -816,12 +808,6 @@ begin
       (['とるね～ど号', '<p style=font-color:gray>とるね～ど号</p>', false, a, 30]);
   end;
   checkbox := true;
-end;
-
-procedure TTWebModule1.WebModuleDestroy(Sender: TObject);
-begin
-  Dispose(Pointer(header.Tag));
-  Dispose(Pointer(articles.Tag));
 end;
 
 end.
