@@ -119,6 +119,11 @@ var
 begin
   if TagString = 'article' then
   begin
+    with DataModule1 do
+    begin
+      FDTable1.Locate('dbnum', FDTable4.FieldByName('dbname').AsInteger);
+      FDTable2.Locate('number', FDTable4.FieldByName('posnum').AsInteger);
+    end;
     s := TStringList.Create;
     try
       s.Text := articles.Content;
@@ -132,7 +137,9 @@ begin
     finally
       s.Free;
     end;
-  end;
+  end
+  else if TagString = 'request' then
+    ReplaceText := DataModule1.FDTable4.FieldByName('request').AsString;
 end;
 
 procedure TTWebModule1.articlesHTMLTag(Sender: TObject; Tag: TTag;
@@ -175,8 +182,8 @@ begin
   if result = '' then
     result := TNetEncoding.URL.Encode
       (DataModule1.FDTable1.FieldByName('database').AsString)
-  else
-    DataModule1.FDTable1.Locate('database', result, []);
+  else if DataModule1.FDTable1.Locate('database', result, []) = false then
+    result := '';
 end;
 
 procedure TTWebModule1.headerHTMLTag(Sender: TObject; Tag: TTag;
@@ -294,12 +301,7 @@ begin
       ReplaceText := '<table border=1>';
       while Eof = false do
       begin
-        i := FieldByName('dbname').AsInteger;
-        j := FieldByName('posnum').AsInteger;
-        DataModule1.FDTable2.Locate('dbnum;number', VarArrayOf([i, j]), []);
-        s := FieldByName('request').AsString;
-        ReplaceText := ReplaceText + '<tr><td>' + alert.Content + '</td><td>' +
-          s + '</td></tr>';
+        ReplaceText := ReplaceText + alert.Content;
         Next;
       end;
       ReplaceText := ReplaceText + '</table>';
@@ -329,7 +331,7 @@ procedure TTWebModule1.mailHTMLTag(Sender: TObject; Tag: TTag;
   const TagString: string; TagParams: TStrings; var ReplaceText: string);
 begin
   if TagString = 'content' then
-    ReplaceText := alert.Content
+    ReplaceText := articles.Content
   else if TagString = 'query' then
     ReplaceText := '?' + Request.Query + '#' + Request.QueryFields.Values['num']
   else if TagString = 'number' then

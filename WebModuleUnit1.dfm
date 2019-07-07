@@ -396,9 +396,10 @@ object TWebModule1: TTWebModule1
   end
   object alert: TDataSetPageProducer
     HTMLDoc.Strings = (
+      '<tr><td>'
       '<p>[ <#dbname>-<#posnum> ]<#date>'
-      '<p><#article>'
-      '<hr>')
+      '<p><#article></td><td><#request>'
+      '</td><tr>')
     DataSet = DataModule1.FDTable4
     OnHTMLTag = alertHTMLTag
     Left = 48
