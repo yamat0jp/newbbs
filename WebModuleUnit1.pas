@@ -83,7 +83,6 @@ type
   private
     { private 宣言 }
     ss: TStringList;
-    checkbox: Boolean;
     procedure pages(count: Integer; var page: Integer);
     function getdbname: string;
   public
@@ -195,7 +194,8 @@ begin
     s := TagParams.Values['param'];
     ReplaceText := TNetEncoding.URL.Decode(Request.CookieFields.Values[s]);
   end
-  else if (TagString = 'check') and (checkbox = true) then
+  else if (TagString = 'check') and
+    (Request.ContentFields.Values['show'] <> 'false') then
     ReplaceText := 'checked'
   else if TagString = 'preview' then
     ReplaceText := Request.ContentFields.Values['preview']
@@ -676,11 +676,11 @@ end;
 procedure TTWebModule1.TWebModule1registAction(Sender: TObject;
   Request: TWebRequest; Response: TWebResponse; var Handled: Boolean);
 var
-  number: Integer;
+  number, i: Integer;
   title, na, raw, pass, kotoba, error: string;
   p: PString;
   comment: TStringList;
-  i: Integer;
+  x: Boolean;
   function scan(Text: string): string;
   var
     reg: TRegEx;
@@ -722,7 +722,7 @@ begin
     pass := Values['password'];
   end;
   if title = '' then
-    title:='タイトルなし.';
+    title := 'タイトルなし.';
   with Response.Cookies.Add do
   begin
     Name := 'name';
@@ -751,29 +751,29 @@ begin
       end;
       comment[i] := '<p>' + scan(comment[i]);
     end;
+    x := Request.ContentFields.Values['show'] = 'true';
     if error <> '' then
       error := error + '</section>'
-    else if Request.ContentFields.Values['show'] = 'true' then
+    else if x = true then
     begin
       error := '<p style=font-size:2.3em;color:blue>↓↓プレビュー↓↓<p>' +
         comment.Text;
-      checkbox := false;
-      Request.ContentFields.Add('preview='+error);
-      Request.ContentFields.Add('raw='+raw);
+      Request.ContentFields.Delete(Request.ContentFields.IndexOfName('show'));
+      Request.ContentFields.Add('preview=' + error);
+      Request.ContentFields.Add('raw=' + raw);
     end
     else
     begin
       i := DataModule1.FDTable1.FieldByName('dbnum').AsInteger;
       DataModule1.FDTable2.AppendRecord([i, number, title, na, comment.Text,
         raw, Now, pass]);
-      checkbox := true;
       Response.SendRedirect('index?db=' + getdbname + '#article');
       Exit;
     end;
   finally
     comment.Free;
   end;
-  TWebModule1indexpageAction(nil,Request,Response,Handled);
+  TWebModule1indexpageAction(nil, Request, Response, Handled);
 end;
 
 procedure TTWebModule1.TWebModule1searchAction(Sender: TObject;
@@ -807,7 +807,6 @@ begin
     DataModule1.FDTable3.AppendRecord
       (['とるね～ど号', '<p style=font-color:gray>とるね～ど号</p>', false, a, 30]);
   end;
-  checkbox := true;
 end;
 
 end.
