@@ -86,6 +86,7 @@ type
     ss: TStringList;
     checkbox: Boolean;
     procedure pages(count: Integer; var page: Integer);
+    function getdbname: string;
   public
     { public êÈåæ }
   end;
@@ -166,6 +167,16 @@ begin
       ReplaceText := '<a style=text-decoration-line:none href=' +
         PString(Self.Tag)^ + '?db=' + DataModule1.FDTable1.FieldByName
         ('database').AsString + '>recent</a>';
+end;
+
+function TTWebModule1.getdbname: string;
+begin
+  result := Request.ContentFields.Values['db'];
+  if result = '' then
+    result := TNetEncoding.URL.Encode
+      (DataModule1.FDTable1.FieldByName('database').AsString)
+  else
+    DataModule1.FDTable1.Locate('database', result, []);
 end;
 
 procedure TTWebModule1.headerHTMLTag(Sender: TObject; Tag: TTag;
@@ -470,8 +481,7 @@ begin
       DataModule1.FDTable2.Delete;
     end;
   end;
-  Response.SendRedirect('/admin?db=' + DataModule1.FDTable1.FieldByName
-    ('database').AsString);
+  Response.SendRedirect('/admin?db=' + getdbname);
 end;
 
 procedure TTWebModule1.TWebModule1adminAction(Sender: TObject;
@@ -512,10 +522,10 @@ end;
 procedure TTWebModule1.TWebModule1alertAction(Sender: TObject;
   Request: TWebRequest; Response: TWebResponse; var Handled: Boolean);
 var
-  num1, num2: Integer;
+  num1, num2, i: Integer;
   s: string;
 begin
-  s := Request.QueryFields.Values['db'];
+  s := getdbname;
   num1 := DataModule1.FDTable1.FieldByName('dbnum').AsInteger;
   num2 := Request.QueryFields.Values['num'].ToInteger;
   if Request.MethodType = mtGet then
@@ -525,11 +535,15 @@ begin
     Response.Content := mail.Content;
   end
   else
-  begin
-    DataModule1.FDTable4.AppendRecord
-      ([num1, num2, Now, Request.ContentFields.Values['request']]);
-    Response.SendRedirect(Format('/index?db=%s&num=%d#%d', [s, Tag, num2]));
-  end;
+    with DataModule1.FDTable4 do
+    begin
+      Last;
+      i := FieldByName('id').AsInteger + 1;
+      AppendRecord([i, num1, num2, Now, Request.ContentFields.Values
+        ['request']]);
+      pages(DataModule1.FDTable2.RecNo, i);
+      Response.SendRedirect(Format('/index?db=%s&num=%d#%d', [s, i, num2]));
+    end;
 end;
 
 procedure TTWebModule1.TWebModule1deleteAction(Sender: TObject;
@@ -554,8 +568,7 @@ begin
       FieldByName('date').AsDateTime := Now;
       Post;
     end;
-  Response.SendRedirect('/index?db=' + DataModule1.FDTable1.FieldByName
-    ('database').AsString);
+  Response.SendRedirect('/index?db=' + getdbname);
 end;
 
 procedure TTWebModule1.TWebModule1helpAction(Sender: TObject;
@@ -611,8 +624,7 @@ begin
   DataModule1.FDTable2.Locate('number', s.ToInteger, []);
   page := 10;
   pages(DataModule1.FDTable2.RecNo, page);
-  Response.SendRedirect(Format('/index?db=%s&num=%d#%s',
-    [TNetEncoding.URL.Encode(db), page, s]));
+  Response.SendRedirect(Format('/index?db=%s&num=%d#%s', [getdbname, page, s]));
 end;
 
 procedure TTWebModule1.TWebModule1linkAction(Sender: TObject;
@@ -664,7 +676,7 @@ procedure TTWebModule1.TWebModule1registAction(Sender: TObject;
   Request: TWebRequest; Response: TWebResponse; var Handled: Boolean);
 var
   number: Integer;
-  title, na, raw, pass, kotoba, db, error, URL: string;
+  title, na, raw, pass, kotoba, error, URL: string;
   p: PString;
   comment: TStringList;
   i: Integer;
@@ -696,7 +708,6 @@ begin
   kotoba := Request.ContentFields.Values['aikotoba'];
   if kotoba <> 'Ç∞ÇÒÇ´' then
     error := '<section style=color:red><p>çáåæótÇ™ÇøÇ™Ç¢Ç‹Ç∑.';
-  DataModule1.FDTable1.Locate('database', na, []);
   with DataModule1.FDTable2 do
   begin
     Last;
@@ -736,7 +747,7 @@ begin
       end;
       comment[i] := '<p>' + scan(comment[i]);
     end;
-    URL := '/index?db=' + DataModule1.FDTable1.FieldByName('database').AsString;
+    URL := 'index?db=' + getdbname;
     if error <> '' then
       error := error + '</section>'
     else if Request.ContentFields.Values['show'] = 'true' then
@@ -747,13 +758,13 @@ begin
       if header.Tag = 0 then
         New(p)
       else
-        p:=Pointer(header.Tag);
+        p := Pointer(header.Tag);
       p^ := error;
       header.Tag := Integer(p);
       if articles.Tag = 0 then
         New(p)
       else
-        p:=Pointer(articles.Tag);
+        p := Pointer(articles.Tag);
       p^ := raw;
       articles.Tag := Integer(p);
     end
