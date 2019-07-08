@@ -73,6 +73,18 @@ object TWebModule1: TTWebModule1
       Name = 'login'
       PathInfo = '/login'
       OnAction = TWebModule1loginAction
+    end
+    item
+      MethodType = mtPost
+      Name = 'adminset'
+      PathInfo = '/adminset'
+      OnAction = TWebModule1adminsetAction
+    end
+    item
+      MethodType = mtGet
+      Name = 'logout'
+      PathInfo = '/logout'
+      OnAction = TWebModule1logoutAction
     end>
   Height = 353
   Width = 436
@@ -183,8 +195,6 @@ object TWebModule1: TTWebModule1
       '<input type=submit value='#21066#38500#12377#12427'><input type=submit value='#12522#12475#12483#12488'>'
       '</form>'
       '')
-    Header.Strings = (
-      '<form action=/admindel method=post>')
     MaxRows = 30
     DataSet = DataModule1.FDTable2
     OnFormatCell = adminFormatCell
@@ -1748,5 +1758,27 @@ object TWebModule1: TTWebModule1
   object js6: TPageProducer
     Left = 56
     Top = 272
+  end
+  object adhead: TDataSetPageProducer
+    HTMLDoc.Strings = (
+      '<form method=post action=/adminset style=text-align:center>'
+      '    <label><p>'#12497#12473#12527#12540#12489#12398#22793#26356
+      
+        '      <input type="password" style="HEIGHT: 23px; WIDTH: 85px" n' +
+        'ame="pass" value="<#password>">'
+      '      </p>'
+      '    </label>'
+      '    <p>'
+      
+        '    <input type="checkbox" value="on" name="mente" <#mente>>'#12513#12531#12486#12490 +
+        #12531#12473#34920#31034'</p>'
+      '    <p><input type="submit" value="'#22793#26356'"></p>'
+      '    <p><a href="/logout">'#12525#12464#12450#12454#12488'</a></p>'
+      '</form>'
+      '<form action=/admindel method=post>')
+    DataSet = DataModule1.FDTable3
+    OnHTMLTag = adheadHTMLTag
+    Left = 176
+    Top = 88
   end
 end

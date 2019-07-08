@@ -30,6 +30,7 @@ type
     js4: TPageProducer;
     js5: TPageProducer;
     js6: TPageProducer;
+    adhead: TDataSetPageProducer;
     procedure indexHTMLTag(Sender: TObject; Tag: TTag; const TagString: string;
       TagParams: TStrings; var ReplaceText: string);
     procedure TWebModule1indexpageAction(Sender: TObject; Request: TWebRequest;
@@ -80,6 +81,12 @@ type
       Response: TWebResponse; var Handled: Boolean);
     procedure TWebModule1loginAction(Sender: TObject; Request: TWebRequest;
       Response: TWebResponse; var Handled: Boolean);
+    procedure TWebModule1adminsetAction(Sender: TObject; Request: TWebRequest;
+      Response: TWebResponse; var Handled: Boolean);
+    procedure adheadHTMLTag(Sender: TObject; Tag: TTag; const TagString: string;
+      TagParams: TStrings; var ReplaceText: string);
+    procedure TWebModule1logoutAction(Sender: TObject; Request: TWebRequest;
+      Response: TWebResponse; var Handled: Boolean);
   private
     { private êÈåæ }
     ss: TStringList;
@@ -99,6 +106,14 @@ implementation
 uses Unit1;
 
 {$R *.dfm}
+
+procedure TTWebModule1.adheadHTMLTag(Sender: TObject; Tag: TTag;
+  const TagString: string; TagParams: TStrings; var ReplaceText: string);
+begin
+  if (TagString = 'mente') and (DataModule1.FDTable3.FieldByName('mente')
+    .AsBoolean = true) then
+    ReplaceText := 'checked';
+end;
 
 procedure TTWebModule1.adminFormatCell(Sender: TObject;
   CellRow, CellColumn: Integer; var BgColor: THTMLBgColor;
@@ -289,9 +304,6 @@ end;
 
 procedure TTWebModule1.masterHTMLTag(Sender: TObject; Tag: TTag;
   const TagString: string; TagParams: TStrings; var ReplaceText: string);
-var
-  i, j: Integer;
-  s: string;
 begin
   if TagString = 'request' then
     with DataModule1.FDTable4 do
@@ -491,7 +503,8 @@ var
   s: string;
   i: Integer;
 begin
-  if Request.CookieFields.Values['user'] <> 'admin' then
+  if Request.CookieFields.Values['user'] <> DataModule1.FDTable3.FieldByName
+    ('password').AsString then
   begin
     Response.SendRedirect('/login');
     Exit;
@@ -507,6 +520,7 @@ begin
   Self.Tag := Integer(@s);
   i := footer.HTMLDoc.Add
     ('<p style=text-align:center><a href=/index?db=<#database>>ñﬂÇÈ</a>');
+  admin.header.Text := adhead.Content;
   if admin.Tag = 0 then
     admin.footer.Insert(3, footer.Content)
   else
@@ -518,6 +532,20 @@ begin
   footer.HTMLDoc.Delete(i);
   Response.ContentType := 'text/html;charset=utf-8';
   Response.Content := admin.Content;
+end;
+
+procedure TTWebModule1.TWebModule1adminsetAction(Sender: TObject;
+  Request: TWebRequest; Response: TWebResponse; var Handled: Boolean);
+begin
+  with DataModule1.FDTable3 do
+  begin
+    Edit;
+    FieldByName('mente').AsBoolean := Request.ContentFields.Values
+      ['mente'] = 'on';
+    FieldByName('password').AsString := Request.ContentFields.Values['pass'];
+    Post;
+  end;
+  TWebModule1adminAction(nil, Request, Response, Handled);
 end;
 
 procedure TTWebModule1.TWebModule1alertAction(Sender: TObject;
@@ -659,11 +687,22 @@ begin
   with Response.Cookies.Add do
   begin
     Name := 'user';
-    Value := 'admin';
+    Value := DataModule1.FDTable3.FieldByName('password').AsString;
     Expires := Now + 14;
   end;
   s := Request.ContentFields.Values['record'];
   Response.SendRedirect('/admin?db=' + TNetEncoding.URL.Encode(s));
+end;
+
+procedure TTWebModule1.TWebModule1logoutAction(Sender: TObject;
+  Request: TWebRequest; Response: TWebResponse; var Handled: Boolean);
+begin
+  with Response.Cookies.Add do
+  begin
+    Name := 'user';
+    Expires := Now - 1;
+  end;
+  TWebModule1indexpageAction(nil, Request, Response, Handled);
 end;
 
 procedure TTWebModule1.TWebModule1masterAction(Sender: TObject;
@@ -707,7 +746,6 @@ procedure TTWebModule1.TWebModule1registAction(Sender: TObject;
 var
   number, i: Integer;
   title, na, raw, pass, kotoba, error: string;
-  p: PString;
   comment: TStringList;
   x: Boolean;
   function scan(Text: string): string;
@@ -834,7 +872,7 @@ begin
   begin
     a := DataModule1.FDTable1.Lookup('database', 'info', 'dbnum');
     DataModule1.FDTable3.AppendRecord
-      (['Ç∆ÇÈÇÀÅ`Ç«çÜ', '<p style=font-color:gray>Ç∆ÇÈÇÀÅ`Ç«çÜ</p>', false, a, 30]);
+      (['Ç∆ÇÈÇÀÅ`Ç«çÜ', '<p style=color:gray>Ç∆ÇÈÇÀÅ`Ç«çÜ</p>', false, a, 30, 'admin']);
   end;
 end;
 

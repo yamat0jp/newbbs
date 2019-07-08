@@ -9,7 +9,8 @@ uses
   FireDAC.Stan.Def, FireDAC.Stan.Pool, FireDAC.Phys, FireDAC.Phys.SQLite,
   FireDAC.Phys.SQLiteDef, FireDAC.Stan.ExprFuncs, Data.DB, FireDAC.Comp.Client,
   FireDAC.Comp.DataSet, FireDAC.Phys.IB, FireDAC.Phys.IBLiteDef,
-  FireDAC.VCLUI.Wait, FireDAC.Comp.UI;
+  FireDAC.VCLUI.Wait, FireDAC.Comp.UI, FireDAC.Phys.MySQL, FireDAC.Phys.MySQLDef,
+  FireDAC.Phys.IBDef;
 
 type
   TDataModule1 = class(TDataModule)
@@ -41,6 +42,7 @@ type
     FDTable3COUNT: TIntegerField;
     FDTable2PASS: TStringField;
     FDTable4ID: TIntegerField;
+    FDTable3PASSWORD: TWideStringField;
   private
     { Private êÈåæ }
   public

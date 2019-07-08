@@ -24,12 +24,12 @@ object DataModule1: TDataModule1
   end
   object FDConnection1: TFDConnection
     Params.Strings = (
-      'Database=C:\Users\yamat\Documents\GitHub\newbbs\MYDATA.IB'
       'CharacterSet=UTF8'
+      'OpenMode=OpenOrCreate'
+      'Database=C:\Users\yamat\Documents\GitHub\newbbs\MYDATA.IB'
       'User_Name=sysdba'
       'Password=masterkey'
-      'OpenMode=OpenOrCreate'
-      'DriverID=IBLite')
+      'DriverID=IB')
     Connected = True
     Left = 144
     Top = 24
@@ -116,6 +116,12 @@ object DataModule1: TDataModule1
     object FDTable3COUNT: TIntegerField
       FieldName = 'COUNT'
       Origin = '"COUNT"'
+    end
+    object FDTable3PASSWORD: TWideStringField
+      FieldName = 'PASSWORD'
+      Origin = '"PASSWORD"'
+      Required = True
+      Size = 80
     end
   end
   object FDGUIxWaitCursor1: TFDGUIxWaitCursor
