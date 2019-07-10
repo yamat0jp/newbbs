@@ -3,7 +3,8 @@ unit WebModuleUnit1;
 interface
 
 uses System.SysUtils, System.Classes, Web.HTTPApp, Web.DSProd, Web.HTTPProd,
-  Web.DBWeb, System.Variants, System.NetEncoding, System.RegularExpressions;
+  Web.DBWeb, System.Variants, System.NetEncoding, System.RegularExpressions,
+  IdHashSHA, IdGlobal;
 
 type
   TTWebModule1 = class(TWebModule)
@@ -92,6 +93,8 @@ type
     ss: TStringList;
     procedure pages(count: Integer; var page: Integer);
     function getdbname: string;
+    function hash(str: string): string;
+    function mente: Boolean;
   public
     { public 宣言 }
   end;
@@ -199,6 +202,20 @@ begin
     result := '';
 end;
 
+function TTWebModule1.hash(str: string): string;
+var
+  s: TIdHashSHA512;
+begin
+  s := TIdHashSHA512.Create;
+  try
+    result := s.HashStringAsHex(str, IndyTextEncoding_UTF8);
+  finally;
+    s.Free;
+  end;
+  if result = '' then
+    result := 'admin';
+end;
+
 procedure TTWebModule1.headerHTMLTag(Sender: TObject; Tag: TTag;
   const TagString: string; TagParams: TStrings; var ReplaceText: string);
 var
@@ -262,7 +279,9 @@ begin
       ReplaceText := header.Content;
   end
   else if (TagString = 'css') or (TagString = 'js') then
-    ReplaceText := detail;
+    ReplaceText := detail
+  else if TagString = 'database' then
+    ReplaceText := DataModule1.FDTable1.FieldByName('database').AsString;
 end;
 
 procedure TTWebModule1.itemsHTMLTag(Sender: TObject; Tag: TTag;
@@ -317,6 +336,19 @@ begin
       end;
       ReplaceText := ReplaceText + '</table>';
     end;
+end;
+
+function TTWebModule1.mente: Boolean;
+begin
+  if DataModule1.FDTable3.FieldByName('mente').AsBoolean = true then
+  begin
+    result := true;
+    Response.Content :=
+      '<p><br><h1 style=text-align:center>ただいまメンテナンス中です^_^</h1>' +
+      '<p style=text-align:center><a href=/admin>管理者用ログイン</a>'
+  end
+  else
+    result := false;
 end;
 
 procedure TTWebModule1.pages(count: Integer; var page: Integer);
@@ -542,7 +574,8 @@ begin
     Edit;
     FieldByName('mente').AsBoolean := Request.ContentFields.Values
       ['mente'] = 'on';
-    FieldByName('password').AsString := Request.ContentFields.Values['pass'];
+    FieldByName('password').AsString :=
+      hash(Request.ContentFields.Values['pass']);
     Post;
   end;
   TWebModule1adminAction(nil, Request, Response, Handled);
@@ -630,9 +663,7 @@ begin
   s := '/index';
   Self.Tag := Integer(@s);
   Response.ContentType := 'text/html; charset="utf-8"';
-  if DataModule1.FDTable3.FieldByName('mente').AsBoolean = true then
-    Response.Content := 'ただいまメンテナンス中です^_^'
-  else
+  if mente = false then
     Response.Content := index.Content;
 end;
 
@@ -687,7 +718,7 @@ begin
   with Response.Cookies.Add do
   begin
     Name := 'user';
-    Value := DataModule1.FDTable3.FieldByName('password').AsString;
+    Value := hash(Request.ContentFields.Values['password']);
     Expires := Now + 14;
   end;
   s := Request.ContentFields.Values['record'];
@@ -826,8 +857,8 @@ begin
       error := '<p style=font-size:2.3em;color:blue>↓↓プレビュー↓↓<p>' +
         comment.Text;
       Request.ContentFields.Values['show'] := 'false';
-      Request.ContentFields.Add('preview=' + error);
-      Request.ContentFields.Add('raw=' + raw);
+      Request.ContentFields.Values['preview'] := error;
+      Request.ContentFields.Values['raw'] := raw;
     end
     else
     begin
@@ -854,7 +885,8 @@ procedure TTWebModule1.TWebModule1topAction(Sender: TObject;
   Request: TWebRequest; Response: TWebResponse; var Handled: Boolean);
 begin
   Response.ContentType := 'text/html;charset=utf-8';
-  Response.Content := top.Content;
+  if mente = false then
+    Response.Content := top.Content;
 end;
 
 procedure TTWebModule1.WebModuleCreate(Sender: TObject);
@@ -872,7 +904,9 @@ begin
   begin
     a := DataModule1.FDTable1.Lookup('database', 'info', 'dbnum');
     DataModule1.FDTable3.AppendRecord
-      (['とるね～ど号', '<p style=color:gray>とるね～ど号</p>', false, a, 30, 'admin']);
+      (['とるね～ど号',
+      '<h1 style=color:maron;text-align:center;font-style:italic>とるね～ど号</h1>',
+      false, a, 30, hash('admin')]);
   end;
 end;
 

@@ -166,7 +166,7 @@ object TWebModule1: TTWebModule1
         #29702#32773#29992#12525#12464#12452#12531'</a></p>'
       '  </body>'
       '</html>')
-    DataSet = DataModule1.FDTable1
+    DataSet = DataModule1.FDTable3
     OnHTMLTag = indexHTMLTag
     Left = 112
     Top = 32
@@ -184,9 +184,6 @@ object TWebModule1: TTWebModule1
       end
       item
         FieldName = 'NAME'
-      end
-      item
-        FieldName = 'COMMENT'
       end
       item
         FieldName = 'DATE'
