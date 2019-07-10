@@ -3,8 +3,7 @@ unit WebModuleUnit1;
 interface
 
 uses System.SysUtils, System.Classes, Web.HTTPApp, Web.DSProd, Web.HTTPProd,
-  Web.DBWeb, System.Variants, System.NetEncoding, System.RegularExpressions,
-  IdHashSHA, IdGlobal;
+  Web.DBWeb, System.Variants, System.NetEncoding, System.RegularExpressions;
 
 type
   TTWebModule1 = class(TWebModule)
@@ -106,7 +105,7 @@ implementation
 
 { %CLASSGROUP 'Vcl.Controls.TControl' }
 
-uses Unit1;
+uses Unit1, IdHashSHA, IdGlobal, IdHash, IdHashMessageDigest;
 
 {$R *.dfm}
 
@@ -203,17 +202,15 @@ begin
 end;
 
 function TTWebModule1.hash(str: string): string;
-var
-  s: TIdHashSHA512;
 begin
-  s := TIdHashSHA512.Create;
-  try
-    result := s.HashStringAsHex(str, IndyTextEncoding_UTF8);
-  finally;
-    s.Free;
+  with TIdHashSHA1.Create do
+  begin
+    try
+      result := HashStringAsHex(str);
+    finally
+      Free;
+    end;
   end;
-  if result = '' then
-    result := 'admin';
 end;
 
 procedure TTWebModule1.headerHTMLTag(Sender: TObject; Tag: TTag;
@@ -232,7 +229,9 @@ begin
   else if TagString = 'preview' then
     ReplaceText := Request.ContentFields.Values['preview']
   else if TagString = 'raw' then
-    ReplaceText := Request.ContentFields.Values['raw'];
+    ReplaceText := Request.ContentFields.Values['raw']
+  else if TagString = 'pass' then
+    ReplaceText := Request.ContentFields.Values['password'];
 end;
 
 procedure TTWebModule1.indexHTMLTag(Sender: TObject; Tag: TTag;
@@ -572,16 +571,25 @@ end;
 
 procedure TTWebModule1.TWebModule1adminsetAction(Sender: TObject;
   Request: TWebRequest; Response: TWebResponse; var Handled: Boolean);
+var
+  s: string;
 begin
+  s := hash(Request.ContentFields.Values['pass']);
   with DataModule1.FDTable3 do
   begin
     Edit;
     FieldByName('mente').AsBoolean := Request.ContentFields.Values
       ['mente'] = 'on';
-    FieldByName('password').AsString :=
-      hash(Request.ContentFields.Values['pass']);
+    FieldByName('password').AsString := s;
     Post;
   end;
+  with Response.Cookies.Add do
+  begin
+    Name := 'user';
+    Value := s;
+    Expires := Now + 14;
+  end;
+  Request.CookieFields.Values['user'] := s;
   TWebModule1adminAction(nil, Request, Response, Handled);
 end;
 

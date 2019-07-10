@@ -1339,7 +1339,7 @@ object TWebModule1: TTWebModule1
       '        <tr><td>'
       
         '          <label><p>'#12497#12473#12527#12540#12489'</p><input name="password" type="passwo' +
-        'rd" placeholder="'#21066#38500#29992'">'
+        'rd" placeholder="'#21066#38500#29992'" value=<#pass>>'
       
         '          </label> / <input type="checkbox" name="show" value="t' +
         'rue" <#check>><p>'#12503#12524#12499#12517#12540'</p>'

@@ -40,9 +40,9 @@ type
     FDTable3MENTE: TBooleanField;
     FDTable3INFO: TIntegerField;
     FDTable3COUNT: TIntegerField;
-    FDTable2PASS: TStringField;
     FDTable4ID: TIntegerField;
     FDTable3PASSWORD: TWideStringField;
+    FDTable2PASS: TWideStringField;
   private
     { Private êÈåæ }
   public
