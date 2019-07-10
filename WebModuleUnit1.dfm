@@ -143,7 +143,7 @@ object TWebModule1: TTWebModule1
       
         '    <form action=/userdel?db=<#database> method="post" id=search' +
         '>'
-      '      <label><p>'#35352#20107'No</p><input name="number"></label>'
+      '      <label><p>'#35352#20107'No</p><input name="num"></label>'
       
         '      <label><p>Pass</p><input type="password" name="password"><' +
         '/label>'

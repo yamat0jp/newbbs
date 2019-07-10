@@ -357,7 +357,11 @@ var
 begin
   max := DataModule1.FDTable3.FieldByName('count').AsInteger;
   if (page > -1) and (count < max * (page - 1)) then
+  begin
     page := (count div max) + 1;
+    if count mod max = 0 then
+      dec(page);
+  end;
   case page of
     - 1:
       begin
@@ -614,11 +618,11 @@ var
   num: Integer;
   s: string;
 begin
-  s := Request.ContentFields.Values['number'];
+  s := Request.ContentFields.Values['num'];
   if s = '' then
     Exit;
   num := s.ToInteger;
-  s := Request.ContentFields.Values['password'];
+  s := hash(Request.ContentFields.Values['password']);
   with DataModule1.FDTable2 do
     if Locate('number;pass', VarArrayOf([num, s])) = true then
     begin
@@ -629,8 +633,10 @@ begin
       FieldByName('raw').AsString := '';
       FieldByName('date').AsDateTime := Now;
       Post;
-    end;
-  Response.SendRedirect('/index?db=' + getdbname);
+      TWebModule1jumpAction(nil, Request, Response, Handled);
+    end
+    else
+      TWebModule1indexpageAction(nil, Request, Response, Handled);
 end;
 
 procedure TTWebModule1.TWebModule1helpAction(Sender: TObject;
@@ -817,7 +823,7 @@ begin
     title := Values['title'];
     na := Values['name'];
     raw := Values['comment'];
-    pass := Values['password'];
+    pass := hash(Values['password']);
   end;
   if title = '' then
     title := 'ƒ^ƒCƒgƒ‹‚È‚µ.';
