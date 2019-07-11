@@ -91,7 +91,6 @@ type
     { private êÈåæ }
     ss: TStringList;
     procedure pages(count: Integer; var page: Integer);
-    function getdbname: string;
     function hash(str: string): string;
     function mente: Boolean;
   public
@@ -160,9 +159,7 @@ end;
 procedure TTWebModule1.articlesHTMLTag(Sender: TObject; Tag: TTag;
   const TagString: string; TagParams: TStrings; var ReplaceText: string);
 begin
-  if TagString = 'database' then
-    ReplaceText := Request.QueryFields.Values['db']
-  else if TagString = 'comment' then
+  if TagString = 'comment' then
     ReplaceText := DataModule1.FDTable2.FieldByName('comment').AsString;
 end;
 
@@ -178,27 +175,17 @@ begin
         ReplaceText := ReplaceText + ' ' + i.ToString + ' '
       else
         ReplaceText := ReplaceText +
-          Format(' <a style=text-decoration-line:none href=%s?db=%s&num=%d>%d</a> ',
-          [PString(Self.Tag)^, DataModule1.FDTable1.FieldByName('database')
-          .AsString, i, i]);
+          Format(' <a style=text-decoration-line:none href=%s?db=%d&num=%d>%d</a> ',
+          [PString(Self.Tag)^, DataModule1.FDTable1.FieldByName('dbnum')
+          .AsInteger, i, i]);
   end
   else if TagString = 'recent' then
     if index.Tag = -1 then
       ReplaceText := TagString
     else
       ReplaceText := '<a style=text-decoration-line:none href=' +
-        PString(Self.Tag)^ + '?db=' + DataModule1.FDTable1.FieldByName
-        ('database').AsString + '>recent</a>';
-end;
-
-function TTWebModule1.getdbname: string;
-begin
-  result := Request.ContentFields.Values['db'];
-  if result = '' then
-    result := TNetEncoding.URL.Encode
-      (DataModule1.FDTable1.FieldByName('database').AsString)
-  else if DataModule1.FDTable1.Locate('database', result, []) = false then
-    result := '';
+        PString(Self.Tag)^ + '?db=' + DataModule1.FDTable1.FieldByName('dbnum')
+        .AsString + '>recent</a>';
 end;
 
 function TTWebModule1.hash(str: string): string;
@@ -231,7 +218,9 @@ begin
   else if TagString = 'raw' then
     ReplaceText := Request.ContentFields.Values['raw']
   else if TagString = 'pass' then
-    ReplaceText := Request.ContentFields.Values['password'];
+    ReplaceText := Request.ContentFields.Values['password']
+  else if TagString = 'title' then
+    ReplaceText := Request.ContentFields.Values['title'];
 end;
 
 procedure TTWebModule1.indexHTMLTag(Sender: TObject; Tag: TTag;
@@ -279,6 +268,8 @@ begin
   end
   else if (TagString = 'css') or (TagString = 'js') then
     ReplaceText := detail
+  else if TagString = 'dbnum' then
+    ReplaceText := DataModule1.FDTable1.FieldByName('dbnum').AsString
   else if TagString = 'database' then
     ReplaceText := DataModule1.FDTable1.FieldByName('database').AsString;
 end;
@@ -308,10 +299,10 @@ begin
         j := FieldByName('number').AsInteger;
         str := Request.QueryFields.Values['db'];
         if str = '' then
-          t := Format('<a href=/index?db=%s&num=%d>[ %d-%d ]</a>',
-            [DataModule1.FDTable1.FieldByName('database').AsString, j, i, j])
+          t := Format('<a href=/jump?db=%d&num=%d>[ %d-%d ]</a>',
+            [DataModule1.FDTable1.FieldByName('dbnum').AsInteger, j, i, j])
         else
-          t := Format('<a href=/index?db=%s&num=%d>[ %d ]</a>', [str, j, j]);
+          t := Format('<a href=/jump?db=%s&num=%d>[ %d ]</a>', [str, j, j]);
       end;
       ReplaceText := t + s.Text;
     finally
@@ -466,7 +457,7 @@ procedure TTWebModule1.topHTMLTag(Sender: TObject; Tag: TTag;
   const TagString: string; TagParams: TStrings; var ReplaceText: string);
 var
   s, t: string;
-  i: Integer;
+  i, j: Integer;
 begin
   if TagString = 'list' then
   begin
@@ -475,7 +466,8 @@ begin
     while DataModule1.FDTable1.Eof = false do
     begin
       t := '';
-      if i = DataModule1.FDTable1.FieldByName('dbnum').AsInteger then
+      j := DataModule1.FDTable1.FieldByName('dbnum').AsInteger;
+      if i = j then
       begin
         DataModule1.FDTable1.Next;
         continue;
@@ -491,7 +483,7 @@ begin
         t := ' style=' + t;
       ReplaceText := ReplaceText +
         Format('<p%s><a target=_blank href=%s>%s</a><br></p>',
-        [t, '/index?db=' + s, s]);
+        [t, '/index?db=' + j.ToString, s]);
       DataModule1.FDTable1.Next;
     end;
   end
@@ -529,7 +521,7 @@ begin
       DataModule1.FDTable2.Delete;
     end;
   end;
-  Response.SendRedirect('/admin?db=' + getdbname);
+  TWebModule1adminAction(nil, Request, Response, Handled);
 end;
 
 procedure TTWebModule1.TWebModule1adminAction(Sender: TObject;
@@ -545,8 +537,8 @@ begin
     Exit;
   end;
   admin.MaxRows := DataModule1.FDTable3.FieldByName('count').AsInteger;
-  s := TNetEncoding.URL.Decode(Request.QueryFields.Values['db']);
-  DataModule1.FDTable1.Locate('database', s, []);
+  s := Request.QueryFields.Values['db'];
+  DataModule1.FDTable1.Locate('dbnum', s, []);
   s := Request.QueryFields.Values['num'];
   i := StrToIntDef(s, -1);
   pages(DataModule1.FDTable2.RecordCount, i);
@@ -554,7 +546,7 @@ begin
   s := '/admin';
   Self.Tag := Integer(@s);
   i := footer.HTMLDoc.Add
-    ('<p style=text-align:center><a href=/index?db=<#database>>ñﬂÇÈ</a>');
+    ('<p style=text-align:center><a href=/index?db=<#dbnum>>ñﬂÇÈ</a>');
   admin.header.Text := adhead.Content;
   if admin.Tag = 0 then
     admin.footer.Insert(3, footer.Content)
@@ -596,10 +588,9 @@ end;
 procedure TTWebModule1.TWebModule1alertAction(Sender: TObject;
   Request: TWebRequest; Response: TWebResponse; var Handled: Boolean);
 var
-  num1, num2, i: Integer;
-  s: string;
+  num1, num2, i, dbnum: Integer;
 begin
-  s := getdbname;
+  dbnum := DataModule1.FDTable1.FieldByName('dbnum').AsInteger;
   num1 := DataModule1.FDTable1.FieldByName('dbnum').AsInteger;
   num2 := Request.QueryFields.Values['num'].ToInteger;
   if Request.MethodType = mtGet then
@@ -616,7 +607,7 @@ begin
       AppendRecord([i, num1, num2, Now, Request.ContentFields.Values
         ['request']]);
       pages(DataModule1.FDTable2.RecNo, i);
-      Response.SendRedirect(Format('/index?db=%s&num=%d#%d', [s, i, num2]));
+      Response.SendRedirect(Format('/index?db=%d&num=%d#%d', [dbnum, i, num2]));
     end;
 end;
 
@@ -670,7 +661,9 @@ var
   int: Integer;
   s: string;
 begin
-  DataModule1.FDTable1.Locate('database', Request.QueryFields.Values['db'], []);
+  s := Request.QueryFields.Values['db'];
+  if s <> '' then
+    DataModule1.FDTable1.Locate('dbnum', s, []);
   int := StrToIntDef(Request.QueryFields.Values['num'], -1);
   pages(DataModule1.FDTable2.RecordCount, int);
   index.Tag := int;
@@ -687,18 +680,14 @@ var
   db, s: string;
   page: Integer;
 begin
-  db := DataModule1.FDTable1.FieldByName('database').AsString;
+  db := Request.QueryFields.Values['db'];
   s := Request.ContentFields.Values['num'];
-  if s = '' then
-  begin
-    Response.ContentType := 'text/html;charset=utf-8';
-    Response.Content := '<a href=/index?db=' + db + '>ñﬂÇÈ</a>';
-    Exit;
-  end;
+  if db <> '' then
+    DataModule1.FDTable1.Locate('dbnum', db.ToInteger, []);
   DataModule1.FDTable2.Locate('number', s.ToInteger, []);
   page := 10;
   pages(DataModule1.FDTable2.RecNo, page);
-  Response.SendRedirect(Format('/index?db=%s&num=%d#%s', [getdbname, page, s]));
+  Response.SendRedirect(Format('/index?db=%s&num=%d#%s', [db, page, s]));
 end;
 
 procedure TTWebModule1.TWebModule1linkAction(Sender: TObject;
@@ -721,7 +710,7 @@ end;
 procedure TTWebModule1.TWebModule1loginAction(Sender: TObject;
   Request: TWebRequest; Response: TWebResponse; var Handled: Boolean);
 var
-  s: string;
+  i: Integer;
 begin
   if Request.MethodType = mtGet then
   begin
@@ -735,8 +724,9 @@ begin
     Value := hash(Request.ContentFields.Values['password']);
     Expires := Now + 14;
   end;
-  s := Request.ContentFields.Values['record'];
-  Response.SendRedirect('/admin?db=' + TNetEncoding.URL.Encode(s));
+  i := DataModule1.FDTable1.Lookup('database',
+    Request.ContentFields.Values['record'], 'dbnum');
+  Response.SendRedirect('/admin?db=' + i.ToString);
 end;
 
 procedure TTWebModule1.TWebModule1logoutAction(Sender: TObject;
@@ -879,7 +869,7 @@ begin
       i := DataModule1.FDTable1.FieldByName('dbnum').AsInteger;
       DataModule1.FDTable2.AppendRecord([i, number, title, na, comment.Text,
         raw, Now, pass]);
-      Response.SendRedirect('index?db=' + getdbname + '#article');
+      Response.SendRedirect('index?db=' + i.ToString + '#article');
       Exit;
     end;
   finally

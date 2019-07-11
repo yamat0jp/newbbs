@@ -101,8 +101,8 @@ object TWebModule1: TTWebModule1
       #9'<p>'#9661#9650#9661#9650#9661#9650#9661
       #9'<section id=comment><#comment></section>'
       
-        '<section id=master style=text-align:right><a href=/alert?db=<#da' +
-        'tabase>&num=<#number>>'#22577#21578'</a></section>'
+        '<section id=master style=text-align:right><a href=/alert?db=<#db' +
+        'num>&num=<#number>>'#22577#21578'</a></section>'
       #9'<p>'#9651#9660#9651#9660#9651#9660#9651)
     DataSet = DataModule1.FDTable2
     OnHTMLTag = articlesHTMLTag
@@ -140,20 +140,18 @@ object TWebModule1: TTWebModule1
       '    <#header>'
       ''
       '    <hr size="1" width="100%">'
-      
-        '    <form action=/userdel?db=<#database> method="post" id=search' +
-        '>'
+      '    <form action=/userdel?db=<#dbnum> method="post" id=search>'
       '      <label><p>'#35352#20107'No</p><input name="num"></label>'
       
         '      <label><p>Pass</p><input type="password" name="password"><' +
         '/label>'
       '      <input type="submit" value="'#21066#38500'">'
       '    </form>'
-      '    <form action=/jump?db=<#database> method=post id=search>'
+      '    <form action=/jump?db=<#dbnum> method=post id=search>'
       '      <label><p>'#35352#20107'No</p><input name=num></label>'
       '      <input type=submit value='#31227#21205'>'
       '    </form>'
-      '    <p><a href=/search?db=<#database>>'#26908#32034#12506#12540#12472'</a></p>'
+      '    <p><a href=/search?db=<#dbnum>>'#26908#32034#12506#12540#12472'</a></p>'
       '    <p style=text-align:right><a href=#article>'#19979#12408#31227#21205'</a></p>'
       '    <p style=text-align:center><#database></p>'
       '    <#footer>'
@@ -162,8 +160,8 @@ object TWebModule1: TTWebModule1
       #9'<p style=text-align:right><a href=#top>Top'#12408#31227#21205'</a></p>'
       '  <#footer>'
       
-        '    <p style=text-align:center><a href="/admin?db=<#database>">'#31649 +
-        #29702#32773#29992#12525#12464#12452#12531'</a></p>'
+        '    <p style=text-align:center><a href="/admin?db=<#dbnum>">'#31649#29702#32773#29992 +
+        #12525#12464#12452#12531'</a></p>'
       '  </body>'
       '</html>')
     DataSet = DataModule1.FDTable3
@@ -1316,7 +1314,7 @@ object TWebModule1: TTWebModule1
     HTMLDoc.Strings = (
       '    <header>'
       '    <a name=top></a>'
-      '    <form action=/regist?db=<#database> method="post">'
+      '    <form action=/regist?db=<#dbnum> method="post">'
       '      <table>'
       '        <tr><td>'
       
@@ -1324,7 +1322,7 @@ object TWebModule1: TTWebModule1
         '#cookie param=name>></label>'
       
         '          <label><p>'#12479#12452#12488#12523'</p><input name="title" class=title plac' +
-        'eholder="'#12479#12452#12488#12523#12394#12375'."></label>'
+        'eholder="'#12479#12452#12488#12523#12394#12375'." value=<#title>></label>'
       '          <input type="submit" value="'#36865#20449'">'
       '        </td></tr>'
       '        <tr><td>'
