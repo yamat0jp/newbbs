@@ -309,7 +309,7 @@ begin
         str := Request.QueryFields.Values['db'];
         if str = '' then
           t := Format('<a href=/index?db=%s&num=%d>[ %d-%d ]</a>',
-            [str, j, i, j])
+            [DataModule1.FDTable1.FieldByName('database').AsString, j, i, j])
         else
           t := Format('<a href=/index?db=%s&num=%d>[ %d ]</a>', [str, j, j]);
       end;
@@ -636,7 +636,7 @@ begin
     begin
       Edit;
       FieldByName('title').AsString := '';
-      FieldByName('name').AsString := '---';
+      FieldByName('name').AsString := ' - - - ';
       FieldByName('comment').AsString := '<em>ìäçeé“Ç…ÇÊÇËçÌèúÇ≥ÇÍÇ‹ÇµÇΩ.</em>';
       FieldByName('raw').AsString := '';
       FieldByName('date').AsDateTime := Now;
