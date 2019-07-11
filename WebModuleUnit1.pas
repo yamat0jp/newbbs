@@ -141,6 +141,8 @@ begin
     s := TStringList.Create;
     try
       s.Text := articles.Content;
+      for i := 1 to 2 do
+          s.Delete(1);
       for i := s.count - 1 downto 0 do
         if Copy(s[i], 1, 18) = '<section id=master' then
         begin
@@ -370,7 +372,7 @@ begin
   if TagString = 'content' then
     ReplaceText := articles.Content
   else if TagString = 'query' then
-    ReplaceText := '?' + Request.Query + '#' + Request.QueryFields.Values['num']
+    ReplaceText := '?' + Request.Query
   else if TagString = 'number' then
     ReplaceText := Request.QueryFields.Values['num'];
 end;

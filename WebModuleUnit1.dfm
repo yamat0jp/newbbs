@@ -404,7 +404,8 @@ object TWebModule1: TTWebModule1
   object alert: TDataSetPageProducer
     HTMLDoc.Strings = (
       '<tr><td>'
-      '<p>[ <#dbname>-<#posnum> ]<#date>'
+      '<p><a href=/jump?db=<#dbname>&num=<#posnum>>'
+      '    [ <#dbname>-<#posnum> ]</a><#date>'
       '<p><#article></td><td><#request>'
       '</td><tr>')
     DataSet = DataModule1.FDTable4
@@ -430,7 +431,7 @@ object TWebModule1: TTWebModule1
       '  <#content>'
       '<textarea name=request></textarea>'
       '<input type=submit>'
-      '<p style=text-align:center><a href=/index<#query>>'#25147#12427'</a>'
+      '<p style=text-align:center><a href=/jump<#query>>'#25147#12427'</a>'
       '</form>'
       '</body></html>')
     OnHTMLTag = mailHTMLTag
