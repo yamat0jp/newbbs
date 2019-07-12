@@ -124,6 +124,10 @@ object DataModule1: TDataModule1
       Required = True
       Size = 80
     end
+    object FDTable3TCNT: TIntegerField
+      FieldName = 'TCNT'
+      Origin = 'TCNT'
+    end
   end
   object FDGUIxWaitCursor1: TFDGUIxWaitCursor
     Provider = 'Forms'
@@ -133,11 +137,6 @@ object DataModule1: TDataModule1
   object DataSource1: TDataSource
     DataSet = FDTable1
     Left = 64
-    Top = 152
-  end
-  object FDQuery1: TFDQuery
-    Connection = FDConnection1
-    Left = 160
     Top = 152
   end
   object FDTable4: TFDTable
@@ -169,6 +168,30 @@ object DataModule1: TDataModule1
       FieldName = 'REQUEST'
       Origin = 'REQUEST'
       BlobType = ftWideMemo
+    end
+  end
+  object FDTable5: TFDTable
+    Active = True
+    IndexFieldNames = 'ID'
+    Connection = FDConnection1
+    UpdateOptions.UpdateTableName = 'IMAGES'
+    TableName = 'IMAGES'
+    Left = 224
+    Top = 144
+    object FDTable5ID: TIntegerField
+      FieldName = 'ID'
+      Origin = 'ID'
+      Required = True
+    end
+    object FDTable5NAME: TWideStringField
+      FieldName = 'NAME'
+      Origin = 'NAME'
+      FixedChar = True
+      Size = 400
+    end
+    object FDTable5SOURCE: TBlobField
+      FieldName = 'SOURCE'
+      Origin = 'SOURCE'
     end
   end
 end

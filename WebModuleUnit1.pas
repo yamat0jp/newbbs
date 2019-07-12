@@ -3,7 +3,8 @@ unit WebModuleUnit1;
 interface
 
 uses System.SysUtils, System.Classes, Web.HTTPApp, Web.DSProd, Web.HTTPProd,
-  Web.DBWeb, System.Variants, System.NetEncoding, System.RegularExpressions;
+  Web.DBWeb, System.Variants, System.NetEncoding, System.RegularExpressions,
+  Data.DB;
 
 type
   TTWebModule1 = class(TWebModule)
@@ -87,12 +88,15 @@ type
       TagParams: TStrings; var ReplaceText: string);
     procedure TWebModule1logoutAction(Sender: TObject; Request: TWebRequest;
       Response: TWebResponse; var Handled: Boolean);
+    procedure TWebModule1imgAction(Sender: TObject; Request: TWebRequest;
+      Response: TWebResponse; var Handled: Boolean);
   private
     { private êÈåæ }
     ss: TStringList;
     procedure pages(count: Integer; var page: Integer);
     function hash(str: string): string;
     function mente: Boolean;
+    function detail(ts, pid: string): string;
   public
     { public êÈåæ }
   end;
@@ -142,7 +146,7 @@ begin
     try
       s.Text := articles.Content;
       for i := 1 to 2 do
-          s.Delete(1);
+        s.Delete(1);
       for i := s.count - 1 downto 0 do
         if Copy(s[i], 1, 18) = '<section id=master' then
         begin
@@ -163,6 +167,17 @@ procedure TTWebModule1.articlesHTMLTag(Sender: TObject; Tag: TTag;
 begin
   if TagString = 'comment' then
     ReplaceText := DataModule1.FDTable2.FieldByName('comment').AsString;
+end;
+
+function TTWebModule1.detail(ts, pid: string): string;
+var
+  s: string;
+  j: Integer;
+begin
+  s := pid;
+  for j := 0 to ComponentCount - 1 do
+    if Components[j].Name = ts + s then
+      result := (Components[j] as TPageProducer).Content;
 end;
 
 procedure TTWebModule1.footerHTMLTag(Sender: TObject; Tag: TTag;
@@ -230,17 +245,6 @@ procedure TTWebModule1.indexHTMLTag(Sender: TObject; Tag: TTag;
 var
   i: Integer;
   x: Boolean;
-  function detail: string;
-  var
-    s: string;
-    j: Integer;
-  begin
-    s := TagParams.Values['id'];
-    for j := 0 to ComponentCount - 1 do
-      if Components[j].Name = TagString + s then
-        result := (Components[j] as TPageProducer).Content;
-  end;
-
 begin
   if TagString = 'article' then
   begin
@@ -269,7 +273,7 @@ begin
       ReplaceText := header.Content;
   end
   else if (TagString = 'css') or (TagString = 'js') then
-    ReplaceText := detail
+    ReplaceText := detail(TagString, TagParams.Values['id'])
   else if TagString = 'dbnum' then
     ReplaceText := DataModule1.FDTable1.FieldByName('dbnum').AsString
   else if TagString = 'database' then
@@ -459,14 +463,15 @@ procedure TTWebModule1.topHTMLTag(Sender: TObject; Tag: TTag;
   const TagString: string; TagParams: TStrings; var ReplaceText: string);
 var
   s, t: string;
-  i, j: Integer;
+  i, j, k: Integer;
 begin
   if TagString = 'list' then
   begin
-    DataModule1.FDTable1.First;
     i := DataModule1.FDTable3.FieldByName('info').AsInteger;
-    while DataModule1.FDTable1.Eof = false do
+    for k := 0 to DataModule1.FDTable3.FieldByName('tcnt').AsInteger do
     begin
+      if DataModule1.FDTable1.Eof = true then
+        break;
       t := '';
       j := DataModule1.FDTable1.FieldByName('dbnum').AsInteger;
       if i = j then
@@ -484,21 +489,24 @@ begin
       if t <> '' then
         t := ' style=' + t;
       ReplaceText := ReplaceText +
-        Format('<p%s><a target=_blank href=%s>%s</a><br></p>',
-        [t, '/index?db=' + j.ToString, s]);
+        Format('<p%s><a target=_blank href="/index?db=%d">%s</a><br></p>',
+        [t, j, s]);
       DataModule1.FDTable1.Next;
     end;
   end
   else if TagString = 'info' then
     ReplaceText := DataModule1.FDTable1.Lookup('dbnum',
       DataModule1.FDTable3.FieldByName('info').AsInteger, 'database')
-  else if TagString = 'css' then
-    case TagParams.Values['id'].ToInteger of
-      1:
-        ReplaceText := css1.Content;
-      3:
-        ReplaceText := css3.Content;
-    end;
+  else if (TagString = 'css') or (TagString = 'js') then
+    ReplaceText := detail(TagString, TagParams.Values['id'])
+  else if TagString = 'slide' then
+  begin
+    j := DataModule1.FDTable3.FieldByName('tcnt').AsInteger;
+    for i := 1 to (DataModule1.FDTable1.RecordCount div j)+1 do
+      ReplaceText := ReplaceText +
+        '<div class="slide"><#list><img src=/src?name=slide' + i.ToString +
+        '.jpg style=float:right;height:465px></div>';
+  end;
 end;
 
 procedure TTWebModule1.TWebModule1admdelAction(Sender: TObject;
@@ -657,6 +665,17 @@ begin
   Response.Content := help.Content;
 end;
 
+procedure TTWebModule1.TWebModule1imgAction(Sender: TObject;
+  Request: TWebRequest; Response: TWebResponse; var Handled: Boolean);
+begin
+  with DataModule1.FDTable5 do
+  begin
+    Locate('name', Request.ContentFields.Values['name'], []);
+    Response.ContentType:='image/jpeg';
+    Response.ContentStream := CreateBlobStream(FieldByName('source'), bmRead);
+  end;
+end;
+
 procedure TTWebModule1.TWebModule1indexpageAction(Sender: TObject;
   Request: TWebRequest; Response: TWebResponse; var Handled: Boolean);
 var
@@ -679,17 +698,17 @@ end;
 procedure TTWebModule1.TWebModule1jumpAction(Sender: TObject;
   Request: TWebRequest; Response: TWebResponse; var Handled: Boolean);
 var
-  db, s: string;
+  DB, s: string;
   page: Integer;
 begin
-  db := Request.QueryFields.Values['db'];
+  DB := Request.QueryFields.Values['db'];
   s := Request.ContentFields.Values['num'];
-  if db <> '' then
-    DataModule1.FDTable1.Locate('dbnum', db.ToInteger, []);
+  if DB <> '' then
+    DataModule1.FDTable1.Locate('dbnum', DB.ToInteger, []);
   DataModule1.FDTable2.Locate('number', s.ToInteger, []);
   page := 10;
   pages(DataModule1.FDTable2.RecNo, page);
-  Response.SendRedirect(Format('/index?db=%s&num=%d#%s', [db, page, s]));
+  Response.SendRedirect(Format('/index?db=%s&num=%d#%s', [DB, page, s]));
 end;
 
 procedure TTWebModule1.TWebModule1linkAction(Sender: TObject;
@@ -891,8 +910,9 @@ procedure TTWebModule1.TWebModule1topAction(Sender: TObject;
   Request: TWebRequest; Response: TWebResponse; var Handled: Boolean);
 begin
   Response.ContentType := 'text/html;charset=utf-8';
+  DataModule1.FDTable1.First;
   if mente = false then
-    Response.Content := top.Content;
+    Response.Content := top.ContentFromString(top.Content);
 end;
 
 procedure TTWebModule1.WebModuleCreate(Sender: TObject);
@@ -912,7 +932,7 @@ begin
     DataModule1.FDTable3.AppendRecord
       (['Ç∆ÇÈÇÀÅ`Ç«çÜ',
       '<h1 style=color:maron;text-align:center;font-style:italic>Ç∆ÇÈÇÀÅ`Ç«çÜ</h1>',
-      false, a, 30, hash('admin')]);
+      false, a, 30, hash('admin'), 7]);
   end;
 end;
 

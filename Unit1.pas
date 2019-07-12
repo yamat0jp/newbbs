@@ -22,7 +22,6 @@ type
     DataSource1: TDataSource;
     FDTable1DATABASE: TWideStringField;
     FDTable1DBNUM: TIntegerField;
-    FDQuery1: TFDQuery;
     FDTable4: TFDTable;
     FDTable4DBNAME: TIntegerField;
     FDTable4POSNUM: TIntegerField;
@@ -43,6 +42,11 @@ type
     FDTable4ID: TIntegerField;
     FDTable3PASSWORD: TWideStringField;
     FDTable2PASS: TWideStringField;
+    FDTable3TCNT: TIntegerField;
+    FDTable5: TFDTable;
+    FDTable5ID: TIntegerField;
+    FDTable5NAME: TWideStringField;
+    FDTable5SOURCE: TBlobField;
   private
     { Private êÈåæ }
   public
