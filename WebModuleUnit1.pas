@@ -32,6 +32,7 @@ type
     js5: TPageProducer;
     js6: TPageProducer;
     adhead: TDataSetPageProducer;
+    js7: TPageProducer;
     procedure indexHTMLTag(Sender: TObject; Tag: TTag; const TagString: string;
       TagParams: TStrings; var ReplaceText: string);
     procedure TWebModule1indexpageAction(Sender: TObject; Request: TWebRequest;
@@ -89,6 +90,8 @@ type
     procedure TWebModule1logoutAction(Sender: TObject; Request: TWebRequest;
       Response: TWebResponse; var Handled: Boolean);
     procedure TWebModule1imgAction(Sender: TObject; Request: TWebRequest;
+      Response: TWebResponse; var Handled: Boolean);
+    procedure TWebModule1fileAction(Sender: TObject; Request: TWebRequest;
       Response: TWebResponse; var Handled: Boolean);
   private
     { private êÈåæ }
@@ -171,13 +174,11 @@ end;
 
 function TTWebModule1.detail(ts, pid: string): string;
 var
-  s: string;
-  j: Integer;
+  i: Integer;
 begin
-  s := pid;
-  for j := 0 to ComponentCount - 1 do
-    if Components[j].Name = ts + s then
-      result := (Components[j] as TPageProducer).Content;
+  for i := 0 to ComponentCount - 1 do
+    if Components[i].Name = ts + pid then
+      result := (Components[i] as TPageProducer).Content;
 end;
 
 procedure TTWebModule1.footerHTMLTag(Sender: TObject; Tag: TTag;
@@ -489,7 +490,7 @@ begin
       if t <> '' then
         t := ' style=' + t;
       ReplaceText := ReplaceText +
-        Format('<p%s><a target=_blank href="/index?db=%d">%s</a><br></p>',
+        Format('<p><a%s target=_blank href="/index?db=%d">%s</a><br></p>',
         [t, j, s]);
       DataModule1.FDTable1.Next;
     end;
@@ -502,10 +503,9 @@ begin
   else if TagString = 'slide' then
   begin
     j := DataModule1.FDTable3.FieldByName('tcnt').AsInteger;
-    for i := 1 to (DataModule1.FDTable1.RecordCount div j)+1 do
-      ReplaceText := ReplaceText +
-        '<div class="slide"><#list><img src=/src?name=slide' + i.ToString +
-        '.jpg style=float:right;height:465px></div>';
+    for i := 1 to (DataModule1.FDTable1.RecordCount div j) + 1 do
+      ReplaceText := ReplaceText + '<div class="slide"><img src=/src?name=slide'
+        + i.ToString + '.jpg style=float:right;height:465px><#list></div>';
   end;
 end;
 
@@ -548,7 +548,8 @@ begin
   end;
   admin.MaxRows := DataModule1.FDTable3.FieldByName('count').AsInteger;
   s := Request.QueryFields.Values['db'];
-  DataModule1.FDTable1.Locate('dbnum', s, []);
+  if s <> '' then
+    DataModule1.FDTable1.Locate('dbnum', s, []);
   s := Request.QueryFields.Values['num'];
   i := StrToIntDef(s, -1);
   pages(DataModule1.FDTable2.RecordCount, i);
@@ -648,6 +649,19 @@ begin
       TWebModule1indexpageAction(nil, Request, Response, Handled);
 end;
 
+procedure TTWebModule1.TWebModule1fileAction(Sender: TObject;
+  Request: TWebRequest; Response: TWebResponse; var Handled: Boolean);
+var
+  s: string;
+begin
+  s := Request.ContentFields.Values['type'];
+  if s = 'js' then
+    Response.ContentType := 'text/javascript'
+  else if s = 'css' then
+    Response.ContentType := 'text/css';
+  Response.Content := detail(s, Request.QueryFields.Values['id']);
+end;
+
 procedure TTWebModule1.TWebModule1helpAction(Sender: TObject;
   Request: TWebRequest; Response: TWebResponse; var Handled: Boolean);
 var
@@ -671,7 +685,7 @@ begin
   with DataModule1.FDTable5 do
   begin
     Locate('name', Request.ContentFields.Values['name'], []);
-    Response.ContentType:='image/jpeg';
+    Response.ContentType := 'image/jpeg';
     Response.ContentStream := CreateBlobStream(FieldByName('source'), bmRead);
   end;
 end;
@@ -917,8 +931,8 @@ end;
 
 procedure TTWebModule1.WebModuleCreate(Sender: TObject);
 var
-  a: Variant;
   i: Integer;
+  a: Variant;
 begin
   if DataModule1.FDTable1.Bof and DataModule1.FDTable1.Eof then
   begin
