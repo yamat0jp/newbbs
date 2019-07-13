@@ -98,7 +98,7 @@ object TWebModule1: TTWebModule1
       PathInfo = '/file'
       OnAction = TWebModule1fileAction
     end>
-  Height = 353
+  Height = 385
   Width = 436
   object articles: TDataSetPageProducer
     HTMLDoc.Strings = (
@@ -315,17 +315,14 @@ object TWebModule1: TTWebModule1
       '<html lang="ja">'
       '<head>'
       #9'<title>Top Page</title>'
-      '<style type="text/css">'
-      '<!--'
-      '<#css id=1 ref=top>'
-      '<#css id=3 ref=normal>'
-      '-->'
-      '</style>'
-      '<script src=/file?tyle=js&id=3></script>'
-      '<script src=/file?tyle=js&id=4></script>'
-      '<script src=/file?tyle=js&id=5></script>'
-      '<script src=/file?tyle=js&id=6></script>'
-      '<script src=/file?tyle=js&id=7></script>'
+      
+        '<link rel=stylesheet type=text/css href=/file?type=css&id=1 ref=' +
+        'top>'
+      
+        '<link rel=stylesheet type=text/css href=/file?type=css&id=3 ref=' +
+        'normal>'
+      ''
+      '<script src=/file?type=js&id=3></script>'
       '</head>'
       '<body>'
       '<div id="fb-root"></div>'
@@ -4515,7 +4512,11 @@ object TWebModule1: TTWebModule1
         'a.aspectRatio,p=!1)),p||(a.position.left=a.prevPosition.left,a.p' +
         'osition.top=a.prevPosition.top,a.size.width=a.prevSize.width,a.s' +
         'ize.height=a.prevSize.')
-    Left = 8
-    Top = 272
+    Left = 304
+    Top = 328
+  end
+  object js8: TPageProducer
+    Left = 256
+    Top = 328
   end
 end

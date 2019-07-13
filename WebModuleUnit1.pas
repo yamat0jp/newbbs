@@ -33,6 +33,7 @@ type
     js6: TPageProducer;
     adhead: TDataSetPageProducer;
     js7: TPageProducer;
+    js8: TPageProducer;
     procedure indexHTMLTag(Sender: TObject; Tag: TTag; const TagString: string;
       TagParams: TStrings; var ReplaceText: string);
     procedure TWebModule1indexpageAction(Sender: TObject; Request: TWebRequest;
