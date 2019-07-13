@@ -353,8 +353,9 @@ object TWebModule1: TTWebModule1
       '</a>'
       #9'<a href="#" class="next">next'
       '</a>'
-      #9'<div class="slideshow-indicator"></div>'
       '        </div>'
+      ''
+      #9'<div class="slideshow-indicator"></div>'
       '</div>'
       
         '        <p>[ <a href=/index?db=<#dbnum>><#info></a> ] ='#12362#30693#12425#12379' <p>[' +
