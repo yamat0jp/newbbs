@@ -33,7 +33,6 @@ type
     js6: TPageProducer;
     adhead: TDataSetPageProducer;
     js7: TPageProducer;
-    js8: TPageProducer;
     procedure indexHTMLTag(Sender: TObject; Tag: TTag; const TagString: string;
       TagParams: TStrings; var ReplaceText: string);
     procedure TWebModule1indexpageAction(Sender: TObject; Request: TWebRequest;
@@ -194,7 +193,7 @@ begin
         ReplaceText := ReplaceText + ' ' + i.ToString + ' '
       else
         ReplaceText := ReplaceText +
-          Format(' <a style=text-decoration-line:none href=%s?db=%d&num=%d>%d</a> ',
+          Format(' <a style=text-decoration-line:none href="%s?db=%d&num=%d">%d</a> ',
           [PString(Self.Tag)^, DataModule1.FDTable1.FieldByName('dbnum')
           .AsInteger, i, i]);
   end
@@ -202,9 +201,9 @@ begin
     if index.Tag = -1 then
       ReplaceText := TagString
     else
-      ReplaceText := '<a style=text-decoration-line:none href=' +
+      ReplaceText := '<a style=text-decoration-line:none href="' +
         PString(Self.Tag)^ + '?db=' + DataModule1.FDTable1.FieldByName('dbnum')
-        .AsString + '>recent</a>';
+        .AsString + '">recent</a>';
 end;
 
 function TTWebModule1.hash(str: string): string;
@@ -307,10 +306,10 @@ begin
         j := FieldByName('number').AsInteger;
         str := Request.QueryFields.Values['db'];
         if str = '' then
-          t := Format('<a href=/jump?db=%d&num=%d>[ %d-%d ]</a>',
+          t := Format('<a href="/jump?db=%d&num=%d">[ %d-%d ]</a>',
             [DataModule1.FDTable1.FieldByName('dbnum').AsInteger, j, i, j])
         else
-          t := Format('<a href=/jump?db=%s&num=%d>[ %d ]</a>', [str, j, j]);
+          t := Format('<a href="/jump?db=%s&num=%d">[ %d ]</a>', [str, j, j]);
       end;
       ReplaceText := t + s.Text;
     finally
@@ -499,14 +498,16 @@ begin
   else if TagString = 'info' then
     ReplaceText := DataModule1.FDTable1.Lookup('dbnum',
       DataModule1.FDTable3.FieldByName('info').AsInteger, 'database')
+  else if TagString = 'dbnum' then
+    ReplaceText := Datamodule1.FDTable3.FieldByName('info').AsString
   else if (TagString = 'css') or (TagString = 'js') then
     ReplaceText := detail(TagString, TagParams.Values['id'])
   else if TagString = 'slide' then
   begin
     j := DataModule1.FDTable3.FieldByName('tcnt').AsInteger;
     for i := 1 to (DataModule1.FDTable1.RecordCount div j) + 1 do
-      ReplaceText := ReplaceText + '<div class="slide"><img src=/src?name=slide'
-        + i.ToString + '.jpg style=float:right;height:465px><#list></div>';
+      ReplaceText := ReplaceText + '<div class="slide"><img src="/src?name=slide'
+        + i.ToString + '.jpg" style=float:right;height:465px><#list></div>';
   end;
 end;
 
@@ -558,7 +559,7 @@ begin
   s := '/admin';
   Self.Tag := Integer(@s);
   i := footer.HTMLDoc.Add
-    ('<p style=text-align:center><a href=/index?db=<#dbnum>>–ß‚é</a>');
+    ('<p style=text-align:center><a href="/index?db=<#dbnum>">–ß‚é</a>');
   admin.header.Text := adhead.Content;
   if admin.Tag = 0 then
     admin.footer.Insert(3, footer.Content)
@@ -655,9 +656,9 @@ procedure TTWebModule1.TWebModule1fileAction(Sender: TObject;
 var
   s: string;
 begin
-  s := Request.ContentFields.Values['type'];
+  s := Request.QueryFields.Values['type'];
   if s = 'js' then
-    Response.ContentType := 'text/javascript'
+    Response.ContentType := 'text/javascript;charset=utf-8'
   else if s = 'css' then
     Response.ContentType := 'text/css';
   Response.Content := detail(s, Request.QueryFields.Values['id']);
