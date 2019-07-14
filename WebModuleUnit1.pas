@@ -268,7 +268,7 @@ begin
   begin
     i := DataModule1.FDTable3.FieldByName('count').AsInteger;
     if 10 * i < DataModule1.FDTable2.RecordCount then
-      ReplaceText := '‚±‚êˆÈã“Še‚Å‚«‚Ü‚¹‚ñ.'
+      ReplaceText := '<h1>‚±‚êˆÈã“Še‚Å‚«‚Ü‚¹‚ñ.</h1>'
     else
       ReplaceText := header.Content;
   end

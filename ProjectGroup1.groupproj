@@ -6,7 +6,7 @@
         <Projects Include="Project3.dproj">
             <Dependencies/>
         </Projects>
-        <Projects Include="mod_webbroker.dproj">
+        <Projects Include="Project4.dproj">
             <Dependencies/>
         </Projects>
     </ItemGroup>
@@ -26,23 +26,23 @@
     <Target Name="Project3:Make">
         <MSBuild Projects="Project3.dproj" Targets="Make"/>
     </Target>
-    <Target Name="mod_webbroker">
-        <MSBuild Projects="mod_webbroker.dproj"/>
+    <Target Name="Project4">
+        <MSBuild Projects="Project4.dproj"/>
     </Target>
-    <Target Name="mod_webbroker:Clean">
-        <MSBuild Projects="mod_webbroker.dproj" Targets="Clean"/>
+    <Target Name="Project4:Clean">
+        <MSBuild Projects="Project4.dproj" Targets="Clean"/>
     </Target>
-    <Target Name="mod_webbroker:Make">
-        <MSBuild Projects="mod_webbroker.dproj" Targets="Make"/>
+    <Target Name="Project4:Make">
+        <MSBuild Projects="Project4.dproj" Targets="Make"/>
     </Target>
     <Target Name="Build">
-        <CallTarget Targets="Project3;mod_webbroker"/>
+        <CallTarget Targets="Project3;Project4"/>
     </Target>
     <Target Name="Clean">
-        <CallTarget Targets="Project3:Clean;mod_webbroker:Clean"/>
+        <CallTarget Targets="Project3:Clean;Project4:Clean"/>
     </Target>
     <Target Name="Make">
-        <CallTarget Targets="Project3:Make;mod_webbroker:Make"/>
+        <CallTarget Targets="Project3:Make;Project4:Make"/>
     </Target>
     <Import Project="$(BDS)\Bin\CodeGear.Group.Targets" Condition="Exists('$(BDS)\Bin\CodeGear.Group.Targets')"/>
 </Project>
