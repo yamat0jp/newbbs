@@ -204,7 +204,7 @@ object TWebModule1: TTWebModule1
         FieldName = 'DATE'
       end>
     Footer.Strings = (
-      '<input type=submit value='#21066#38500#12377#12427'><input type=submit value='#12522#12475#12483#12488'>'
+      '<input type=submit value='#21066#38500#12377#12427'><input type=reset value='#12522#12475#12483#12488'>'
       '</form>'
       '')
     MaxRows = 30
@@ -374,8 +374,6 @@ object TWebModule1: TTWebModule1
         'counter.php?id=pybbs" border="0"></a>'
       '<footer>'
       '<p><br>'
-      '<p><a href="/title">'#12479#12452#12488#12523#34920#31034
-      '</a>'
       '<p><a href="/help">'#20351#12356#26041#26696#20869
       '</a>'
       '<p><a href=/search>'#26908#32034'</a>'
@@ -1814,7 +1812,7 @@ object TWebModule1: TTWebModule1
     Left = 152
     Top = 272
   end
-  object adhead: TDataSetPageProducer
+  object adhead: TPageProducer
     HTMLDoc.Strings = (
       '<form method=post action=/adminset style=text-align:center>'
       '    <label><p>'#12497#12473#12527#12540#12489#12398#22793#26356
@@ -1830,8 +1828,7 @@ object TWebModule1: TTWebModule1
       '    <p><input type="submit" value="'#22793#26356'"></p>'
       '    <p><a href="/logout">'#12525#12464#12450#12454#12488'</a></p>'
       '</form>'
-      '<form action=/admindel method=post>')
-    DataSet = DataModule1.FDTable3
+      '<form action=/admindel method=post style=text-align:center>')
     OnHTMLTag = adheadHTMLTag
     Left = 176
     Top = 88

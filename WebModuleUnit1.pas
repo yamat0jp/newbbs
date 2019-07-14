@@ -29,7 +29,7 @@ type
     js2: TPageProducer;
     js3: TPageProducer;
     js4: TPageProducer;
-    adhead: TDataSetPageProducer;
+    adhead: TPageProducer;
     procedure indexHTMLTag(Sender: TObject; Tag: TTag; const TagString: string;
       TagParams: TStrings; var ReplaceText: string);
     procedure TWebModule1indexpageAction(Sender: TObject; Request: TWebRequest;
@@ -117,7 +117,9 @@ procedure TTWebModule1.adheadHTMLTag(Sender: TObject; Tag: TTag;
 begin
   if (TagString = 'mente') and (DataModule1.FDTable3.FieldByName('mente')
     .AsBoolean = true) then
-    ReplaceText := 'checked';
+    ReplaceText := 'checked'
+  else if TagString = 'password' then
+    ReplaceText := Request.CookieFields.Values['user'];
 end;
 
 procedure TTWebModule1.adminFormatCell(Sender: TObject;
@@ -496,15 +498,16 @@ begin
     ReplaceText := DataModule1.FDTable1.Lookup('dbnum',
       DataModule1.FDTable3.FieldByName('info').AsInteger, 'database')
   else if TagString = 'dbnum' then
-    ReplaceText := Datamodule1.FDTable3.FieldByName('info').AsString
+    ReplaceText := DataModule1.FDTable3.FieldByName('info').AsString
   else if (TagString = 'css') or (TagString = 'js') then
     ReplaceText := detail(TagString, TagParams.Values['id'])
   else if TagString = 'slide' then
   begin
     j := DataModule1.FDTable3.FieldByName('tcnt').AsInteger;
     for i := 1 to (DataModule1.FDTable1.RecordCount div j) + 1 do
-      ReplaceText := ReplaceText + '<div class="slide"><img src="/src?name=slide'
-        + i.ToString + '.jpg" style=float:right;height:465px><#list></div>';
+      ReplaceText := ReplaceText +
+        '<div class="slide"><img src="/src?name=slide' + i.ToString +
+        '.jpg" style=float:right;height:465px><#list></div>';
   end;
 end;
 
@@ -539,8 +542,8 @@ var
   s: string;
   i: Integer;
 begin
-  if Request.CookieFields.Values['user'] <> DataModule1.FDTable3.FieldByName
-    ('password').AsString then
+  if hash(Request.CookieFields.Values['user']) <>
+    DataModule1.FDTable3.FieldByName('password').AsString then
   begin
     Response.SendRedirect('/login');
     Exit;
@@ -576,13 +579,13 @@ procedure TTWebModule1.TWebModule1adminsetAction(Sender: TObject;
 var
   s: string;
 begin
-  s := hash(Request.ContentFields.Values['pass']);
+  s := Request.ContentFields.Values['pass'];
   with DataModule1.FDTable3 do
   begin
     Edit;
     FieldByName('mente').AsBoolean := Request.ContentFields.Values
       ['mente'] = 'on';
-    FieldByName('password').AsString := s;
+    FieldByName('password').AsString := hash(s);
     Post;
   end;
   with Response.Cookies.Add do
@@ -755,7 +758,7 @@ begin
   with Response.Cookies.Add do
   begin
     Name := 'user';
-    Value := hash(Request.ContentFields.Values['password']);
+    Value := Request.ContentFields.Values['password'];
     Expires := Now + 14;
   end;
   i := DataModule1.FDTable1.Lookup('database',
