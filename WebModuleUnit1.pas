@@ -99,6 +99,10 @@ type
       Response: TWebResponse; var Handled: Boolean);
     procedure tiHTMLTag(Sender: TObject; Tag: TTag; const TagString: string;
       TagParams: TStrings; var ReplaceText: string);
+    procedure helpHTMLTag(Sender: TObject; Tag: TTag; const TagString: string;
+      TagParams: TStrings; var ReplaceText: string);
+    procedure loginHTMLTag(Sender: TObject; Tag: TTag; const TagString: string;
+      TagParams: TStrings; var ReplaceText: string);
   private
     { private êÈåæ }
     ss: TStringList;
@@ -121,10 +125,15 @@ uses Unit1, IdHashSHA, IdGlobal, IdHash, IdHashMessageDigest;
 
 {$R *.dfm}
 
+const
+  promotion: string = 'çLçê:';
+
 procedure TTWebModule1.adheadHTMLTag(Sender: TObject; Tag: TTag;
   const TagString: string; TagParams: TStrings; var ReplaceText: string);
 begin
-  if (TagString = 'mente') and (DataModule1.FDTable3.FieldByName('mente')
+  if TagString = 'pr' then
+    ReplaceText:=promotion
+  else if (TagString = 'mente') and (DataModule1.FDTable3.FieldByName('mente')
     .AsBoolean = true) then
     ReplaceText := 'checked'
   else if TagString = 'password' then
@@ -249,13 +258,22 @@ begin
     ReplaceText := Request.ContentFields.Values['title'];
 end;
 
+procedure TTWebModule1.helpHTMLTag(Sender: TObject; Tag: TTag;
+  const TagString: string; TagParams: TStrings; var ReplaceText: string);
+begin
+  if TagString = 'pr' then
+    ReplaceText:=promotion;
+end;
+
 procedure TTWebModule1.indexHTMLTag(Sender: TObject; Tag: TTag;
   const TagString: string; TagParams: TStrings; var ReplaceText: string);
 var
   i: Integer;
   x: Boolean;
 begin
-  if TagString = 'article' then
+  if TagString = 'pr' then
+    ReplaceText := promotion
+  else if TagString = 'article' then
   begin
     x := DataModule1.FDTable1.FieldByName('dbnum')
       .AsInteger = DataModule1.FDTable3.FieldByName('info').AsInteger;
@@ -326,10 +344,19 @@ begin
   end;
 end;
 
+procedure TTWebModule1.loginHTMLTag(Sender: TObject; Tag: TTag;
+  const TagString: string; TagParams: TStrings; var ReplaceText: string);
+begin
+  if TagString = 'pr' then
+    ReplaceText:=promotion;
+end;
+
 procedure TTWebModule1.masterHTMLTag(Sender: TObject; Tag: TTag;
   const TagString: string; TagParams: TStrings; var ReplaceText: string);
 begin
-  if TagString = 'request' then
+  if TagString = 'pr' then
+    Replacetext:=promotion
+  else if TagString = 'request' then
     with DataModule1.FDTable4 do
     begin
       First;
@@ -382,7 +409,9 @@ end;
 procedure TTWebModule1.mailHTMLTag(Sender: TObject; Tag: TTag;
   const TagString: string; TagParams: TStrings; var ReplaceText: string);
 begin
-  if TagString = 'content' then
+  if TagString = 'pr' then
+    ReplaceText := promotion
+  else if TagString = 'content' then
     ReplaceText := articles.Content
   else if TagString = 'query' then
     ReplaceText := '?' + Request.Query
@@ -431,7 +460,9 @@ var
   end;
 
 begin
-  if (Request.MethodType = mtPost) and (TagString = 'items') then
+  if TagString = 'pr' then
+    ReplaceText:=promotion
+  else if (Request.MethodType = mtPost) and (TagString = 'items') then
   begin
     if Request.ContentFields.Values['type'] = 'OR' then
       Self.Tag := 0
@@ -482,7 +513,9 @@ end;
 procedure TTWebModule1.titleHTMLTag(Sender: TObject; Tag: TTag;
   const TagString: string; TagParams: TStrings; var ReplaceText: string);
 begin
-  if TagString = 'js' then
+  if TagString = 'pr' then
+    ReplaceText:=promotion
+  else if TagString = 'js' then
     ReplaceText := detail(TagString, TagParams.Values['id'])
   else
     with DataModule1.FDQuery1 do
@@ -503,7 +536,9 @@ var
   s, t: string;
   i, j, k: Integer;
 begin
-  if TagString = 'list' then
+  if TagString = 'pr' then
+    ReplaceText := promotion
+  else if TagString = 'list' then
   begin
     i := DataModule1.FDTable3.FieldByName('info').AsInteger;
     for k := 0 to DataModule1.FDTable3.FieldByName('tcnt').AsInteger do
@@ -631,6 +666,7 @@ begin
     Name := 'user';
     Value := s;
     Expires := Now + 14;
+    Secure := true;
   end;
   Request.CookieFields.Values['user'] := s;
   TWebModule1adminAction(nil, Request, Response, Handled);
@@ -798,6 +834,7 @@ begin
     Name := 'user';
     Value := Request.ContentFields.Values['password'];
     Expires := Now + 14;
+    Secure := true;
   end;
   i := DataModule1.FDTable1.Lookup('database',
     Request.ContentFields.Values['record'], 'dbnum');

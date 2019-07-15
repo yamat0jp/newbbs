@@ -156,7 +156,7 @@ object TWebModule1: TTWebModule1
       '    </title>'
       '  </head>'
       '  <body>'
-      ''
+      '<#pr>'
       '    <a href=/ style=text-decoration:none><#title2></a>'
       ''
       '    <#header>'
@@ -234,6 +234,7 @@ object TWebModule1: TTWebModule1
       '  </head>'
       ''
       '  <body>'
+      '<#pr>'
       '    <form action="/search<#query>" method="post">'
       '    <p align="center"><strong>'#25237#31295#26908#32034
       '</strong>'
@@ -291,6 +292,7 @@ object TWebModule1: TTWebModule1
       ''
       '<html><head><meta charset=utf8><title>'#20351#12356#26041'</title></head>'
       '<body>'
+      '<#pr>'
       '<P>'#35370#21839#32773#12398#30342#12373#12435'</P>'
       '<form action=/help method=post>'
       #9'<p>'#12362#21839#12356#21512#12431#12379'<'#21066#38500#20381#38972#12394#12393#20309#12391#12418'></p>'
@@ -311,6 +313,7 @@ object TWebModule1: TTWebModule1
       '<p style=text-align:center><a href=/>'#25147#12427'</a>'
       '</body>'
       '</html>')
+    OnHTMLTag = helpHTMLTag
     Left = 304
     Top = 32
   end
@@ -339,6 +342,7 @@ object TWebModule1: TTWebModule1
       '<script src="/file?type=js&id=4">moder</script>'
       '</head>'
       '<body>'
+      '<#pr>'
       '<div id="fb-root"></div>'
       ''
       '<script>(function(d, s, id) {'
@@ -417,6 +421,7 @@ object TWebModule1: TTWebModule1
       '<meta charset=utf-8>'
       '</head>'
       '<body>'
+      '<#pr>'
       '<form action=/master method=post>'
       '<p><#request>'
       '<input type=radio name=delete value=some checked>'#21066#38500#28168#12415#12434#28040#21435#12288
@@ -455,6 +460,7 @@ object TWebModule1: TTWebModule1
       '<html>'
       '<head><meta charset=utf-8></head>'
       '<body>'
+      '<#pr>'
       '<form action=/alert<#query>  method=post>'
       '  <#content>'
       '<textarea name=request></textarea>'
@@ -1372,6 +1378,7 @@ object TWebModule1: TTWebModule1
       '    <title>'#12525#12464#12452#12531'</title>'
       '  </head>'
       '  <body>'
+      '<#pr>'
       '    <p style=text-align:center>'#31649#29702#32773#29992#12525#12464#12452#12531#30011#38754
       '</p>'
       '    <br>'
@@ -1386,6 +1393,7 @@ object TWebModule1: TTWebModule1
       '  </body>'
       '</html>')
     DataSet = DataModule1.FDTable1
+    OnHTMLTag = loginHTMLTag
     Left = 304
     Top = 144
   end
@@ -1821,6 +1829,7 @@ object TWebModule1: TTWebModule1
   end
   object adhead: TPageProducer
     HTMLDoc.Strings = (
+      '<#pr>'
       '<form method=post action=/adminset style=text-align:center>'
       '    <label><p>'#12497#12473#12527#12540#12489#12398#22793#26356
       
@@ -1899,6 +1908,7 @@ object TWebModule1: TTWebModule1
       '</script>'
       '</head>'
       '<body>'
+      '<#pr>'
       '<#main>'
       '<p style=text-align:center><a href=/>'#25147#12427'</a>'
       '</body>'
