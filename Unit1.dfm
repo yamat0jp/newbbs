@@ -1,6 +1,6 @@
 object DataModule1: TDataModule1
   OldCreateOrder = False
-  Height = 230
+  Height = 231
   Width = 302
   object FDTable1: TFDTable
     Active = True
@@ -80,7 +80,7 @@ object DataModule1: TDataModule1
     end
     object FDTable2DATE: TDateField
       FieldName = 'DATE'
-      Origin = '"DATE"'
+      Origin = 'DATE'
     end
     object FDTable2PASS: TWideStringField
       FieldName = 'PASS'
@@ -193,5 +193,14 @@ object DataModule1: TDataModule1
       FieldName = 'SOURCE'
       Origin = 'SOURCE'
     end
+  end
+  object FDQuery1: TFDQuery
+    Connection = FDConnection1
+    SQL.Strings = (
+      'select "DATABASE", title, name, "DATE" from'
+      ' dbname inner join article on dbname.dbnum = article.dbnum'
+      ' where number = 1 order by "DATE";')
+    Left = 160
+    Top = 144
   end
 end

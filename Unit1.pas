@@ -10,7 +10,7 @@ uses
   FireDAC.Phys.SQLiteDef, FireDAC.Stan.ExprFuncs, Data.DB, FireDAC.Comp.Client,
   FireDAC.Comp.DataSet, FireDAC.Phys.IB, FireDAC.Phys.IBLiteDef,
   FireDAC.VCLUI.Wait, FireDAC.Comp.UI, FireDAC.Phys.MySQL, FireDAC.Phys.MySQLDef,
-  FireDAC.Phys.IBDef;
+  FireDAC.Phys.IBDef, Data.FMTBcd, Data.DBXInterBase, Data.SqlExpr;
 
 type
   TDataModule1 = class(TDataModule)
@@ -20,7 +20,6 @@ type
     FDTable3: TFDTable;
     FDGUIxWaitCursor1: TFDGUIxWaitCursor;
     DataSource1: TDataSource;
-    FDTable1DATABASE: TWideStringField;
     FDTable1DBNUM: TIntegerField;
     FDTable4: TFDTable;
     FDTable4DBNAME: TIntegerField;
@@ -47,6 +46,8 @@ type
     FDTable5ID: TIntegerField;
     FDTable5NAME: TWideStringField;
     FDTable5SOURCE: TBlobField;
+    FDQuery1: TFDQuery;
+    FDTable1DATABASE: TWideStringField;
   private
     { Private êÈåæ }
   public

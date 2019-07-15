@@ -4,7 +4,7 @@ interface
 
 uses System.SysUtils, System.Classes, Web.HTTPApp, Web.DSProd, Web.HTTPProd,
   Web.DBWeb, System.Variants, System.NetEncoding, System.RegularExpressions,
-  Data.DB;
+  Data.DB, Web.DBXpressWeb;
 
 type
   TTWebModule1 = class(TWebModule)
@@ -30,6 +30,9 @@ type
     js3: TPageProducer;
     js4: TPageProducer;
     adhead: TPageProducer;
+    js5: TPageProducer;
+    title: TPageProducer;
+    ti: TDataSetPageProducer;
     procedure indexHTMLTag(Sender: TObject; Tag: TTag; const TagString: string;
       TagParams: TStrings; var ReplaceText: string);
     procedure TWebModule1indexpageAction(Sender: TObject; Request: TWebRequest;
@@ -90,6 +93,12 @@ type
       Response: TWebResponse; var Handled: Boolean);
     procedure TWebModule1fileAction(Sender: TObject; Request: TWebRequest;
       Response: TWebResponse; var Handled: Boolean);
+    procedure titleHTMLTag(Sender: TObject; Tag: TTag; const TagString: string;
+      TagParams: TStrings; var ReplaceText: string);
+    procedure TWebModule1titleAction(Sender: TObject; Request: TWebRequest;
+      Response: TWebResponse; var Handled: Boolean);
+    procedure tiHTMLTag(Sender: TObject; Tag: TTag; const TagString: string;
+      TagParams: TStrings; var ReplaceText: string);
   private
     { private êÈåæ }
     ss: TStringList;
@@ -267,7 +276,7 @@ begin
   else if TagString = 'header' then
   begin
     i := DataModule1.FDTable3.FieldByName('count').AsInteger;
-    if 10 * i < DataModule1.FDTable2.RecordCount then
+    if 10 * i <= DataModule1.FDTable2.RecordCount then
       ReplaceText := '<h1>Ç±ÇÍà»è„ìäçeÇ≈Ç´Ç‹ÇπÇÒ.</h1>'
     else
       ReplaceText := header.Content;
@@ -457,6 +466,35 @@ begin
   end
   else if TagString = 'css' then
     ReplaceText := css2.Content;
+end;
+
+procedure TTWebModule1.tiHTMLTag(Sender: TObject; Tag: TTag;
+  const TagString: string; TagParams: TStrings; var ReplaceText: string);
+begin
+  if TagString = 'count' then
+  begin
+    DataModule1.FDTable1.Locate('database',
+      DataModule1.FDQuery1.FieldByName('database').AsString);
+    ReplaceText := DataModule1.FDTable2.RecordCount.ToString;
+  end;
+end;
+
+procedure TTWebModule1.titleHTMLTag(Sender: TObject; Tag: TTag;
+  const TagString: string; TagParams: TStrings; var ReplaceText: string);
+begin
+  if TagString = 'js' then
+    ReplaceText := detail(TagString, TagParams.Values['id'])
+  else
+    with DataModule1.FDQuery1 do
+    begin
+      Open;
+      while Eof = false do
+      begin
+        ReplaceText := ReplaceText + ti.Content;
+        Next;
+      end;
+      Close;
+    end;
 end;
 
 procedure TTWebModule1.topHTMLTag(Sender: TObject; Tag: TTag;
@@ -920,6 +958,13 @@ procedure TTWebModule1.TWebModule1searchAction(Sender: TObject;
 begin
   Response.ContentType := 'text/html;charset=utf-8';
   Response.Content := search.Content;
+end;
+
+procedure TTWebModule1.TWebModule1titleAction(Sender: TObject;
+  Request: TWebRequest; Response: TWebResponse; var Handled: Boolean);
+begin
+  Response.ContentType := 'text/html;charset=utf-8';
+  Response.Content := title.Content;
 end;
 
 procedure TTWebModule1.TWebModule1topAction(Sender: TObject;

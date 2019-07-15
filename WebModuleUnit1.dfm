@@ -97,6 +97,11 @@ object TWebModule1: TTWebModule1
       Name = 'file'
       PathInfo = '/file'
       OnAction = TWebModule1fileAction
+    end
+    item
+      Name = 'title'
+      PathInfo = '/title'
+      OnAction = TWebModule1titleAction
     end>
   Height = 385
   Width = 436
@@ -361,6 +366,7 @@ object TWebModule1: TTWebModule1
       ''
       #9'<div class="slideshow-indicator"></div>'
       '</div>'
+      '<p>'#12288'<em style="background-color: aqua;">'#12288#12288#12288#12288'</em>'#12539#12539#12539'new!'
       
         '        <p>[ <a href=/index?db=<#dbnum>><#info></a> ] ='#12362#30693#12425#12379' <p>[' +
         ' <a href="/master">master'
@@ -374,6 +380,7 @@ object TWebModule1: TTWebModule1
         'counter.php?id=pybbs" border="0"></a>'
       '<footer>'
       '<p><br>'
+      '<p><a href=/title>'#12479#12452#12488#12523#34920#31034'</a>'
       '<p><a href="/help">'#20351#12356#26041#26696#20869
       '</a>'
       '<p><a href=/search>'#26908#32034'</a>'
@@ -1832,5 +1839,82 @@ object TWebModule1: TTWebModule1
     OnHTMLTag = adheadHTMLTag
     Left = 176
     Top = 88
+  end
+  object js5: TPageProducer
+    HTMLDoc.Strings = (
+      ''
+      '$(function(){'
+      #9'$('#39'div'#39').on('#39'click'#39',function(){'
+      #9#9'var $title = $(this),'
+      #9#9#9'span1 = 1500,'
+      #9#9#9'span2 = 200;'
+      #9#9'$title.css('#39'font-size'#39','#39'2em'#39');'
+      #9#9'$({deg:5}).animate({deg:365},{'
+      #9#9#9'duration:500,'
+      #9#9#9'progress:function(){'
+      #9#9#9#9'$title.css({'
+      #9#9#9#9#9#39'-webkit-transform'#39':'#39'rotate('#39'+this.deg+'#39'deg)'#39','
+      #9#9#9#9#9#39'-ms-transform'#39':'#39'rotate('#39'+this.deg+'#39'deg)'#39','
+      #9#9#9#9#9#39'ransform'#39':'#39'rotate('#39'+this.deg+'#39'deg)'#39
+      #9#9#9#9'});'
+      #9#9#9'}'
+      #9#9'});'
+      #9#9'$({deg:5}).delay(span1).animate({deg:0},{'
+      #9#9#9'duration:span2,'
+      #9#9#9'progress:function(){'
+      #9#9#9#9'$title.css({'#9
+      #9#9#9#9#9#39'-webkit-transform'#39':'#39'rotate('#39'+this.deg+'#39'deg)'#39','
+      #9#9#9#9#9#39'-ms-transform'#39':'#39'rotate('#39'+this.deg+'#39'deg)'#39','
+      #9#9#9#9#9#39'transform'#39':'#39'rotate('#39'+this.deg+'#39'deg)'#39
+      #9#9#9#9'});'
+      #9#9#9'}'
+      #9#9'});'
+      #9#9'$title.delay(span1+span2).animate({'#39'font-size'#39':'#39'1em'#39'},1);'
+      #9'});'
+      '});'
+      '')
+    Left = 104
+    Top = 272
+  end
+  object title: TPageProducer
+    HTMLDoc.Strings = (
+      '<!doctype html>'
+      '<html>'
+      '<head>'
+      '<meta charset=utf-8>'
+      '<title>'#12479#12452#12488#12523#34920#31034'</title>'
+      
+        '<script type="text/javascript" src="//ajax.googleapis.com/ajax/l' +
+        'ibs/jquery/2.1.4/jquery.min.js"></script>'
+      
+        '<link rel="stylesheet" href="//ajax.googleapis.com/ajax/libs/jqu' +
+        'eryui/1.10.4/themes/smoothness/jquery-ui.css" />'
+      
+        '<script src="//ajax.googleapis.com/ajax/libs/jqueryui/1.10.4/jqu' +
+        'ery-ui.min.js"></script>'
+      '<script>'
+      '<!--'
+      '<#js id=5>'
+      '-->'
+      '</script>'
+      '</head>'
+      '<body>'
+      '<#main>'
+      '<p style=text-align:center><a href=/>'#25147#12427'</a>'
+      '</body>'
+      '</html>')
+    OnHTMLTag = titleHTMLTag
+    Left = 48
+    Top = 256
+  end
+  object ti: TDataSetPageProducer
+    HTMLDoc.Strings = (
+      '<p><em><#database>'#8595'</em>'
+      '<div>'#12479#12452#12488#12523': '#39'<#title> , '#35352#20107#25968': <#count> , '#26356#26032#26178#21051': <#date></div><p>'
+      '')
+    DataSet = DataModule1.FDQuery1
+    OnHTMLTag = tiHTMLTag
+    Left = 48
+    Top = 320
   end
 end
