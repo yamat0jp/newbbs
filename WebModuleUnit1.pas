@@ -834,7 +834,7 @@ begin
     Name := 'user';
     Value := Request.ContentFields.Values['password'];
     Expires := Now + 14;
-    Secure := true;
+  //  Secure := true;
   end;
   i := DataModule1.FDTable1.Lookup('database',
     Request.ContentFields.Values['record'], 'dbnum');

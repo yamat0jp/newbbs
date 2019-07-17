@@ -17,19 +17,19 @@ object DataModule1: TDataModule1
     end
     object FDTable1DATABASE: TWideStringField
       FieldName = 'DATABASE'
-      Origin = '"DATABASE"'
+      Origin = 'DATABASE'
       Required = True
       Size = 80
     end
   end
   object FDConnection1: TFDConnection
     Params.Strings = (
-      'CharacterSet=UTF8'
-      'OpenMode=OpenOrCreate'
-      'Database=C:\Users\yamat\Documents\GitHub\newbbs\MYDATA.IB'
-      'User_Name=sysdba'
-      'Password=masterkey'
-      'DriverID=IB')
+      'Password=admin'
+      'CharacterSet=utf8'
+      'User_Name=kainushi'
+      'Database=kainushi'
+      'Server=localhost'
+      'DriverID=MySQL')
     Connected = True
     Left = 144
     Top = 24
@@ -116,11 +116,11 @@ object DataModule1: TDataModule1
     end
     object FDTable3COUNT: TIntegerField
       FieldName = 'COUNT'
-      Origin = '"COUNT"'
+      Origin = 'COUNT'
     end
     object FDTable3PASSWORD: TWideStringField
       FieldName = 'PASSWORD'
-      Origin = '"PASSWORD"'
+      Origin = 'PASSWORD'
       Required = True
       Size = 80
     end
@@ -161,7 +161,7 @@ object DataModule1: TDataModule1
     end
     object FDTable4DATE: TDateField
       FieldName = 'DATE'
-      Origin = '"DATE"'
+      Origin = 'DATE'
       Required = True
     end
     object FDTable4REQUEST: TWideMemoField
@@ -197,9 +197,9 @@ object DataModule1: TDataModule1
   object FDQuery1: TFDQuery
     Connection = FDConnection1
     SQL.Strings = (
-      'select "DATABASE", title, name, "DATE" from'
+      'select "database", title, name, date from'
       ' dbname inner join article on dbname.dbnum = article.dbnum'
-      ' where number = 1 order by "DATE";')
+      ' where number = 1 order by date;')
     Left = 160
     Top = 144
   end
