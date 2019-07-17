@@ -1922,7 +1922,6 @@ object TWebModule1: TTWebModule1
       '<p style=font-weight:bold><#database>'#8595'</p>'
       '<div>'#12479#12452#12488#12523': '#39'<#title> , '#35352#20107#25968': <#count> , '#26356#26032#26178#21051': <#date></div><p>'
       '')
-    DataSet = DataModule1.FDQuery1
     OnHTMLTag = tiHTMLTag
     Left = 48
     Top = 320

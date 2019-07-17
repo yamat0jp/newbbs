@@ -46,8 +46,8 @@ type
     FDTable5ID: TIntegerField;
     FDTable5NAME: TWideStringField;
     FDTable5SOURCE: TBlobField;
-    FDQuery1: TFDQuery;
     FDTable1DATABASE: TWideStringField;
+    FDQuery1: TFDQuery;
   private
     { Private êÈåæ }
   public

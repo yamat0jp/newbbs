@@ -6,8 +6,8 @@ object DataModule1: TDataModule1
     Active = True
     IndexFieldNames = 'DBNUM'
     Connection = FDConnection1
-    UpdateOptions.UpdateTableName = 'DBNAME'
-    TableName = 'DBNAME'
+    UpdateOptions.UpdateTableName = 'dbname'
+    TableName = 'dbname'
     Left = 32
     Top = 88
     object FDTable1DBNUM: TIntegerField
@@ -42,8 +42,8 @@ object DataModule1: TDataModule1
     Connection = FDConnection1
     FetchOptions.AssignedValues = [evLiveWindowParanoic]
     FetchOptions.LiveWindowParanoic = True
-    UpdateOptions.UpdateTableName = 'ARTICLE'
-    TableName = 'ARTICLE'
+    UpdateOptions.UpdateTableName = 'article'
+    TableName = 'article'
     Left = 96
     Top = 88
     object FDTable2DBNUM: TIntegerField
@@ -92,8 +92,8 @@ object DataModule1: TDataModule1
   object FDTable3: TFDTable
     Active = True
     Connection = FDConnection1
-    UpdateOptions.UpdateTableName = 'SETTING'
-    TableName = 'SETTING'
+    UpdateOptions.UpdateTableName = 'setting'
+    TableName = 'setting'
     Left = 160
     Top = 88
     object FDTable3TITLE: TWideStringField
@@ -142,8 +142,8 @@ object DataModule1: TDataModule1
   object FDTable4: TFDTable
     Active = True
     Connection = FDConnection1
-    UpdateOptions.UpdateTableName = 'REQ'
-    TableName = 'REQ'
+    UpdateOptions.UpdateTableName = 'req'
+    TableName = 'req'
     Left = 224
     Top = 88
     object FDTable4ID: TIntegerField
@@ -174,8 +174,8 @@ object DataModule1: TDataModule1
     Active = True
     IndexFieldNames = 'ID'
     Connection = FDConnection1
-    UpdateOptions.UpdateTableName = 'IMAGES'
-    TableName = 'IMAGES'
+    UpdateOptions.UpdateTableName = 'images'
+    TableName = 'images'
     Left = 224
     Top = 144
     object FDTable5ID: TIntegerField
@@ -197,8 +197,7 @@ object DataModule1: TDataModule1
   object FDQuery1: TFDQuery
     Connection = FDConnection1
     SQL.Strings = (
-      'select "database", title, name, date from'
-      ' dbname inner join article on dbname.dbnum = article.dbnum'
+      'select dbnum,number,title,date from article'
       ' where number = 1 order by date;')
     Left = 160
     Top = 144
