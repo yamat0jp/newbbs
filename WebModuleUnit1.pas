@@ -1021,6 +1021,13 @@ var
   i: Integer;
   a: Variant;
 begin
+  with DataModule1 do
+  begin
+    FDTable1.Refresh;
+    FDTable3.Refresh;
+    FDTable5.Cancel;
+    FDTable5.Refresh;
+  end;
   if DataModule1.FDTable1.Bof and DataModule1.FDTable1.Eof then
   begin
     DataModule1.FDTable1.AppendRecord([0, 'info']);
