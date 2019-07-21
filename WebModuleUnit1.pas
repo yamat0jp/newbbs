@@ -126,7 +126,8 @@ uses Unit1, IdHashSHA, IdGlobal, IdHash, IdHashMessageDigest;
 {$R *.dfm}
 
 const
-  promotion: string = 'çLçê:';
+  promotion = 'çLçê:';
+  tcnt = 7;
 
 procedure TTWebModule1.adheadHTMLTag(Sender: TObject; Tag: TTag;
   const TagString: string; TagParams: TStrings; var ReplaceText: string);
@@ -544,7 +545,7 @@ begin
   else if TagString = 'list' then
   begin
     i := DataModule1.FDTable3.FieldByName('info').AsInteger;
-    for k := 0 to DataModule1.FDTable3.FieldByName('tcnt').AsInteger do
+    for k := 0 to tcnt do
     begin
       if DataModule1.FDTable1.Eof = true then
         break;
@@ -579,8 +580,7 @@ begin
     ReplaceText := detail(TagString, TagParams.Values['id'])
   else if TagString = 'slide' then
   begin
-    j := DataModule1.FDTable3.FieldByName('tcnt').AsInteger;
-    for i := 1 to (DataModule1.FDTable1.RecordCount div j) + 1 do
+    for i := 1 to (DataModule1.FDTable1.RecordCount div tcnt) + 1 do
       ReplaceText := ReplaceText +
         '<div class="slide"><img src="/src?name=slide' + i.ToString +
         '.jpg" style=float:right;height:465px><#list></div>';
@@ -762,11 +762,11 @@ procedure TTWebModule1.TWebModule1imgAction(Sender: TObject;
   Request: TWebRequest; Response: TWebResponse; var Handled: Boolean);
 begin
   with DataModule1.FDTable5 do
-  begin
-    Locate('name', Request.ContentFields.Values['name'], []);
-    Response.ContentType := 'image/jpeg';
-    Response.ContentStream := CreateBlobStream(FieldByName('source'), bmRead);
-  end;
+    if Locate('name', Request.ContentFields.Values['name']) = true then
+    begin
+      Response.ContentType := 'image/jpeg';
+      Response.ContentStream := CreateBlobStream(FieldByName('source'), bmRead);
+    end;
 end;
 
 procedure TTWebModule1.TWebModule1indexpageAction(Sender: TObject;
@@ -1023,9 +1023,23 @@ var
 begin
   with DataModule1 do
   begin
+    if FDTable1.Exists = false then
+      FDTable1.CreateTable;
+    if FDTable2.Exists = false then
+      FDTable2.CreateTable;
+    if FDTable3.Exists = false then
+      FDTable3.CreateTable;
+    if FDTable4.Exists = false then
+      FDTable4.CreateTable;
+    if FDTable5.Exists = false then
+      FDTable5.CreateTable;
+    FDTable1.Open;
+    FDTable2.Open;
+    FDTable3.Open;
+    FDTable4.Open;
+    FDTable5.Open;
     FDTable1.Refresh;
     FDTable3.Refresh;
-    FDTable5.Cancel;
     FDTable5.Refresh;
   end;
   if DataModule1.FDTable1.Bof and DataModule1.FDTable1.Eof then
@@ -1040,7 +1054,7 @@ begin
     DataModule1.FDTable3.AppendRecord
       (['Ç∆ÇÈÇÀÅ`Ç«çÜ',
       '<h1 style=color:maron;text-align:center;font-style:italic>Ç∆ÇÈÇÀÅ`Ç«çÜ</h1>',
-      false, a, 30, hash('admin'), 7]);
+      false, a, 30, hash('admin')]);
   end;
 end;
 

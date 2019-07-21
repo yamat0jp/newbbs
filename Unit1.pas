@@ -41,7 +41,6 @@ type
     FDTable4ID: TIntegerField;
     FDTable3PASSWORD: TWideStringField;
     FDTable2PASS: TWideStringField;
-    FDTable3TCNT: TIntegerField;
     FDTable5: TFDTable;
     FDTable5ID: TIntegerField;
     FDTable5NAME: TWideStringField;

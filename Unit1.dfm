@@ -3,7 +3,6 @@ object DataModule1: TDataModule1
   Height = 231
   Width = 302
   object FDTable1: TFDTable
-    Active = True
     IndexFieldNames = 'DBNUM'
     Connection = FDConnection1
     UpdateOptions.UpdateTableName = 'dbname'
@@ -35,7 +34,6 @@ object DataModule1: TDataModule1
     Top = 24
   end
   object FDTable2: TFDTable
-    Active = True
     IndexFieldNames = 'DBNUM;NUMBER'
     MasterSource = DataSource1
     MasterFields = 'DBNUM'
@@ -90,7 +88,6 @@ object DataModule1: TDataModule1
     end
   end
   object FDTable3: TFDTable
-    Active = True
     Connection = FDConnection1
     UpdateOptions.UpdateTableName = 'setting'
     TableName = 'setting'
@@ -124,10 +121,6 @@ object DataModule1: TDataModule1
       Required = True
       Size = 80
     end
-    object FDTable3TCNT: TIntegerField
-      FieldName = 'TCNT'
-      Origin = 'TCNT'
-    end
   end
   object FDGUIxWaitCursor1: TFDGUIxWaitCursor
     Provider = 'Forms'
@@ -140,7 +133,6 @@ object DataModule1: TDataModule1
     Top = 152
   end
   object FDTable4: TFDTable
-    Active = True
     Connection = FDConnection1
     UpdateOptions.UpdateTableName = 'req'
     TableName = 'req'
@@ -171,7 +163,6 @@ object DataModule1: TDataModule1
     end
   end
   object FDTable5: TFDTable
-    Active = True
     IndexFieldNames = 'ID'
     Connection = FDConnection1
     UpdateOptions.UpdateTableName = 'images'
