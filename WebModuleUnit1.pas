@@ -735,7 +735,7 @@ var
 begin
   s := Request.QueryFields.Values['type'];
   if s = 'js' then
-    Response.ContentType := 'text/javascript;charset=utf-8'
+    Response.ContentType := 'text/javascript'
   else if s = 'css' then
     Response.ContentType := 'text/css';
   Response.Content := detail(s, Request.QueryFields.Values['id']);

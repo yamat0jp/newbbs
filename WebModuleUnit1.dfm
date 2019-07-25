@@ -1668,6 +1668,7 @@ object TWebModule1: TTWebModule1
   end
   object js3: TPageProducer
     HTMLDoc.Strings = (
+      ''
       '$(function(){'
       #9'$('#39'.slideshow'#39').each(function(){'
       #9#9'var $container = $(this),'
