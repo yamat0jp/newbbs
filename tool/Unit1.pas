@@ -3,15 +3,17 @@ unit Unit1;
 interface
 
 uses
-  System.SysUtils, System.Types, System.UITypes, System.Classes, System.Variants,
-  FMX.Types, FMX.Controls, FMX.Forms, FMX.Dialogs, FMX.Ani, FMX.Layouts, FMX.Gestures,
+  System.SysUtils, System.Types, System.UITypes, System.Classes,
+  System.Variants,
+  FMX.Types, FMX.Controls, FMX.Forms, FMX.Dialogs, FMX.Ani, FMX.Layouts,
+  FMX.Gestures,
   FireDAC.Stan.Intf, FireDAC.Stan.Option, FireDAC.Stan.Param,
   FireDAC.Stan.Error, FireDAC.DatS, FireDAC.Phys.Intf, FireDAC.DApt.Intf,
   FireDAC.Stan.Async, FireDAC.DApt, FireDAC.UI.Intf, FireDAC.Stan.Def,
   FireDAC.Stan.Pool, FireDAC.Phys, FireDAC.Phys.MySQL, FireDAC.Phys.MySQLDef,
-  Data.Bind.Controls, Data.Bind.EngExt, Fmx.Bind.DBEngExt, System.Rtti,
-  System.Bindings.Outputs, Fmx.Bind.Editors, Data.Bind.Components, Data.DB,
-  FMX.Controls.Presentation, FMX.Edit, Fmx.Bind.Navigator, Data.Bind.DBScope,
+  Data.Bind.Controls, Data.Bind.EngExt, FMX.Bind.DBEngExt, System.Rtti,
+  System.Bindings.Outputs, FMX.Bind.Editors, Data.Bind.Components, Data.DB,
+  FMX.Controls.Presentation, FMX.Edit, FMX.Bind.Navigator, Data.Bind.DBScope,
   FireDAC.Comp.Client, FireDAC.Comp.DataSet, FMX.Objects, FMX.StdCtrls,
   FireDAC.FMXUI.Wait, FireDAC.Comp.UI;
 
@@ -23,14 +25,21 @@ type
     Edit1: TEdit;
     BindingsList1: TBindingsList;
     FDGUIxWaitCursor1: TFDGUIxWaitCursor;
-    BindSourceDB12: TBindSourceDB;
+    BindSourceDB1: TBindSourceDB;
     NavigatorBindSourceDB12: TBindNavigator;
     LinkPropertyToFieldBitmap: TLinkPropertyToField;
     LinkControlToField1: TLinkControlToField;
+    Button1: TButton;
+    OpenDialog1: TOpenDialog;
+    Label1: TLabel;
+    LinkPropertyToFieldText: TLinkPropertyToField;
+    procedure Button1Click(Sender: TObject);
+    procedure FDTable1BeforeInsert(DataSet: TDataSet);
+    procedure FDTable1AfterInsert(DataSet: TDataSet);
     procedure FormCreate(Sender: TObject);
+    procedure FDTable1AfterPost(DataSet: TDataSet);
   private
-    FGestureOrigin: TPointF;
-    FGestureInProgress: Boolean;
+    pos: integer;
     { private êÈåæ }
   public
     { public êÈåæ }
@@ -42,6 +51,42 @@ var
 implementation
 
 {$R *.fmx}
+
+procedure TForm2.Button1Click(Sender: TObject);
+var
+  s: TStream;
+begin
+  case FDTable1.State of
+    dsInsert, dsEdit:
+      if OpenDialog1.Execute = true then
+      begin
+        Image1.Bitmap.LoadFromFile(OpenDialog1.FileName);
+        s := FDTable1.CreateBlobStream(FDTable1.FieldByName('source'), bmWrite);
+        try
+          Image1.Bitmap.SaveToStream(s);
+        finally
+          s.Free;
+        end;
+      end;
+  end;
+end;
+
+procedure TForm2.FDTable1AfterInsert(DataSet: TDataSet);
+begin
+  FDTable1.FieldByName('id').AsInteger := pos;
+  FDTable1.FieldByName('name').AsString := 'slide' + pos.ToString + '.jpg';
+end;
+
+procedure TForm2.FDTable1AfterPost(DataSet: TDataSet);
+begin
+  FDTable1.Refresh;
+end;
+
+procedure TForm2.FDTable1BeforeInsert(DataSet: TDataSet);
+begin
+  FDTable1.Last;
+  pos := FDTable1.FieldByName('id').AsInteger + 1;
+end;
 
 procedure TForm2.FormCreate(Sender: TObject);
 begin
