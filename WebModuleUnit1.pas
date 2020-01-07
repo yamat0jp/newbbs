@@ -775,11 +775,7 @@ begin
       begin
         Response.ContentType:='image/png';
         res:=TResourceStream.Create(HInstance,'PngImage_1',RT_RCDATA);
-        try
-          Response.ContentStream:=res;
-        finally
-          res.Free;
-        end;
+        Response.ContentStream:=res;
       end
       else
         Response.ContentStream:=nil;
