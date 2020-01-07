@@ -6,7 +6,7 @@ uses
   System.SysUtils, System.Types, System.UITypes, System.Classes,
   System.Variants,
   FMX.Types, FMX.Controls, FMX.Forms, FMX.Dialogs, FMX.Ani, FMX.Layouts,
-  FMX.Gestures,
+  FMX.Gestures, FMX.Graphics, FMX.Surfaces,
   FireDAC.Stan.Intf, FireDAC.Stan.Option, FireDAC.Stan.Param,
   FireDAC.Stan.Error, FireDAC.DatS, FireDAC.Phys.Intf, FireDAC.DApt.Intf,
   FireDAC.Stan.Async, FireDAC.DApt, FireDAC.UI.Intf, FireDAC.Stan.Def,
@@ -27,7 +27,6 @@ type
     FDGUIxWaitCursor1: TFDGUIxWaitCursor;
     BindSourceDB1: TBindSourceDB;
     NavigatorBindSourceDB12: TBindNavigator;
-    LinkPropertyToFieldBitmap: TLinkPropertyToField;
     LinkControlToField1: TLinkControlToField;
     Button1: TButton;
     OpenDialog1: TOpenDialog;
@@ -36,13 +35,12 @@ type
     FDTable1id: TFDAutoIncField;
     FDTable1name: TWideStringField;
     FDTable1source: TBlobField;
+    LinkPropertyToFieldBitmap: TLinkPropertyToField;
     procedure Button1Click(Sender: TObject);
-    procedure FDTable1BeforeInsert(DataSet: TDataSet);
     procedure FDTable1AfterInsert(DataSet: TDataSet);
     procedure FormCreate(Sender: TObject);
     procedure FDTable1AfterPost(DataSet: TDataSet);
   private
-    pos: integer;
     { private êÈåæ }
   public
     { public êÈåæ }
@@ -58,23 +56,31 @@ implementation
 procedure TForm2.Button1Click(Sender: TObject);
 var
   s: TStream;
+  bmp: TBitmapSurface;
+  pm: TBitmapCodecSaveParams;
 begin
   if OpenDialog1.Execute = true then
   begin
-    Image1.Bitmap.LoadFromFile(OpenDialog1.FileName);
-    s := FDTable1.CreateBlobStream(FDTable1.FieldByName('source'), bmWrite);
+    FDTable1.Edit;
+    bmp:=TBitmapSurface.Create;
     try
-      Image1.Bitmap.SaveToStream(s);
+      s := FDTable1.CreateBlobStream(FDTable1.FieldByName('source'), bmWrite);
+      Image1.Bitmap.LoadFromFile(OpenDialog1.FileName);
+      bmp.Assign(Image1.Bitmap);
+      pm.Quality:=100;
+      TBitmapCodecManager.SaveToStream(s,bmp,'.jpg',@pm);
     finally
       s.Free;
+      bmp.Free;
     end;
+    FDTable1.Post;
   end;
 end;
 
 procedure TForm2.FDTable1AfterInsert(DataSet: TDataSet);
 begin
-  FDTable1.FieldByName('id').AsInteger := pos;
-  FDTable1.FieldByName('name').AsString := 'slide' + pos.ToString + '.jpg';
+  FDTable1.FieldByName('name').AsString := 'slide' + FDTable1.FieldByName('id')
+    .AsString + '.jpg';
 end;
 
 procedure TForm2.FDTable1AfterPost(DataSet: TDataSet);
@@ -82,19 +88,11 @@ begin
   FDTable1.Refresh;
 end;
 
-procedure TForm2.FDTable1BeforeInsert(DataSet: TDataSet);
-begin
-  FDTable1.Last;
-  pos := FDTable1.FieldByName('id').AsInteger + 1;
-end;
-
 procedure TForm2.FormCreate(Sender: TObject);
 begin
   if FDTable1.Exists = false then
-  begin
     FDTable1.CreateTable;
-    FDTable1.Open;
-  end;
+  FDTable1.Open;
   FDTable1.Refresh;
 end;
 
