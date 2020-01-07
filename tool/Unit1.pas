@@ -62,13 +62,13 @@ begin
   if OpenDialog1.Execute = true then
   begin
     FDTable1.Edit;
-    bmp:=TBitmapSurface.Create;
+    bmp := TBitmapSurface.Create;
     try
       s := FDTable1.CreateBlobStream(FDTable1.FieldByName('source'), bmWrite);
       Image1.Bitmap.LoadFromFile(OpenDialog1.FileName);
       bmp.Assign(Image1.Bitmap);
-      pm.Quality:=100;
-      TBitmapCodecManager.SaveToStream(s,bmp,'.jpg',@pm);
+      pm.Quality := 100;
+      TBitmapCodecManager.SaveToStream(s, bmp, '.jpg', @pm);
     finally
       s.Free;
       bmp.Free;

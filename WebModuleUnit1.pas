@@ -4,7 +4,7 @@ interface
 
 uses System.SysUtils, System.Classes, Web.HTTPApp, Web.DSProd, Web.HTTPProd,
   Web.DBWeb, System.Variants, System.NetEncoding, System.RegularExpressions,
-  Data.DB, Web.DBXpressWeb;
+  Data.DB, Web.DBXpressWeb, System.Types;
 
 type
   TTWebModule1 = class(TWebModule)
@@ -760,15 +760,29 @@ end;
 
 procedure TTWebModule1.TWebModule1imgAction(Sender: TObject;
   Request: TWebRequest; Response: TWebResponse; var Handled: Boolean);
+var
+  s: string;
+  res: TResourceStream;
 begin
   with DataModule1.FDTable5 do
-    if Locate('name', Request.ContentFields.Values['name']) = true then
-    begin
-      Response.ContentType := 'image/jpeg';
-      Response.ContentStream := CreateBlobStream(FieldByName('source'), bmRead);
-    end
+  begin
+    s:= Request.ContentFields.Values['name'];
+    Response.ContentType := 'image/jpeg';
+    if Locate('name', s) = true then
+      Response.ContentStream := CreateBlobStream(FieldByName('source'), bmRead)
     else
-      Response.ContentStream:=nil;
+      if s = 'sprites.png' then
+      begin
+        res:=TResourceStream.Create(HInstance,'PngImage_1',RT_RCDATA);
+        try
+          Response.ContentStream:=res;
+        finally
+          res.Free;
+        end;
+      end
+      else
+        Response.ContentStream:=nil;
+  end;
 end;
 
 procedure TTWebModule1.TWebModule1indexpageAction(Sender: TObject;
