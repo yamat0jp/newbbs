@@ -6,7 +6,7 @@
         <MainSource>Project4.dpr</MainSource>
         <Base>True</Base>
         <Config Condition="'$(Config)'==''">Release</Config>
-        <Platform Condition="'$(Platform)'==''">Win64</Platform>
+        <Platform Condition="'$(Platform)'==''">Win32</Platform>
         <TargetedPlatforms>3</TargetedPlatforms>
         <AppType>Application</AppType>
     </PropertyGroup>
@@ -99,6 +99,10 @@
             <FormType>dfm</FormType>
             <DesignClass>TWebModule</DesignClass>
         </DCCReference>
+        <RcItem Include="sprites.png">
+            <ResourceType>RCDATA</ResourceType>
+            <ResourceId>PngImage_1</ResourceId>
+        </RcItem>
         <BuildConfiguration Include="Release">
             <Key>Cfg_2</Key>
             <CfgParent>Base</CfgParent>
@@ -123,6 +127,18 @@
             <Deployment>
                 <DeployFile LocalName="Win32\Debug\Project4.exe" Configuration="Debug" Class="ProjectOutput">
                     <Platform Name="Win32">
+                        <RemoteName>Project4.exe</RemoteName>
+                        <Overwrite>true</Overwrite>
+                    </Platform>
+                </DeployFile>
+                <DeployFile LocalName="sprites.png" Configuration="Release" Class="ProjectFile">
+                    <Platform Name="Win64">
+                        <RemoteDir>.\</RemoteDir>
+                        <Overwrite>true</Overwrite>
+                    </Platform>
+                </DeployFile>
+                <DeployFile LocalName="Win64\Release\Project4.exe" Configuration="Release" Class="ProjectOutput">
+                    <Platform Name="Win64">
                         <RemoteName>Project4.exe</RemoteName>
                         <Overwrite>true</Overwrite>
                     </Platform>

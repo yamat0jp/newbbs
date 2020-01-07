@@ -2,6 +2,8 @@ program Project4;
 
 {$APPTYPE CONSOLE}
 
+{$R *.dres}
+
 uses
   Web.WebBroker,
   CGIApp,
