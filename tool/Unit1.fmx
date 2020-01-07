@@ -59,20 +59,39 @@ object Form2: TForm2
     BeforeInsert = FDTable1BeforeInsert
     AfterInsert = FDTable1AfterInsert
     AfterPost = FDTable1AfterPost
+    IndexFieldNames = 'id'
     Connection = FDConnection1
     UpdateOptions.AssignedValues = [uvRefreshMode]
     UpdateOptions.UpdateTableName = 'kainushi.images'
     TableName = 'kainushi.images'
     Left = 296
     Top = 192
+    object FDTable1id: TFDAutoIncField
+      FieldName = 'id'
+      Origin = 'id'
+      ReadOnly = True
+      Required = True
+      AutoIncrementSeed = 0
+      AutoIncrementStep = 1
+    end
+    object FDTable1name: TWideStringField
+      FieldName = 'name'
+      Origin = '`name`'
+      Required = True
+    end
+    object FDTable1source: TBlobField
+      AutoGenerateValue = arDefault
+      FieldName = 'source'
+      Origin = '`source`'
+    end
   end
   object FDConnection1: TFDConnection
     Params.Strings = (
-      'Database=kainushi'
-      'User_Name=kainushi'
-      'Password=admin'
+      'User_Name=masasi'
+      'Password=kainushi'
       'Server=localhost'
       'CharacterSet=utf8'
+      'Database=kainushi'
       'DriverID=MySQL')
     Connected = True
     Left = 360

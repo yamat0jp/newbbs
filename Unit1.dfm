@@ -23,9 +23,9 @@ object DataModule1: TDataModule1
   end
   object FDConnection1: TFDConnection
     Params.Strings = (
-      'Password=admin'
+      'Password=kainushi'
       'CharacterSet=utf8'
-      'User_Name=kainushi'
+      'User_Name=masasi'
       'Database=kainushi'
       'Server=localhost'
       'DriverID=MySQL')
@@ -178,7 +178,6 @@ object DataModule1: TDataModule1
       FieldName = 'NAME'
       Origin = 'NAME'
       FixedChar = True
-      Size = 400
     end
     object FDTable5SOURCE: TBlobField
       FieldName = 'SOURCE'

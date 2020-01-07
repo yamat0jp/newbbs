@@ -33,6 +33,9 @@ type
     OpenDialog1: TOpenDialog;
     Label1: TLabel;
     LinkPropertyToFieldText: TLinkPropertyToField;
+    FDTable1id: TFDAutoIncField;
+    FDTable1name: TWideStringField;
+    FDTable1source: TBlobField;
     procedure Button1Click(Sender: TObject);
     procedure FDTable1BeforeInsert(DataSet: TDataSet);
     procedure FDTable1AfterInsert(DataSet: TDataSet);
@@ -56,18 +59,15 @@ procedure TForm2.Button1Click(Sender: TObject);
 var
   s: TStream;
 begin
-  case FDTable1.State of
-    dsInsert, dsEdit:
-      if OpenDialog1.Execute = true then
-      begin
-        Image1.Bitmap.LoadFromFile(OpenDialog1.FileName);
-        s := FDTable1.CreateBlobStream(FDTable1.FieldByName('source'), bmWrite);
-        try
-          Image1.Bitmap.SaveToStream(s);
-        finally
-          s.Free;
-        end;
-      end;
+  if OpenDialog1.Execute = true then
+  begin
+    Image1.Bitmap.LoadFromFile(OpenDialog1.FileName);
+    s := FDTable1.CreateBlobStream(FDTable1.FieldByName('source'), bmWrite);
+    try
+      Image1.Bitmap.SaveToStream(s);
+    finally
+      s.Free;
+    end;
   end;
 end;
 
@@ -90,6 +90,11 @@ end;
 
 procedure TForm2.FormCreate(Sender: TObject);
 begin
+  if FDTable1.Exists = false then
+  begin
+    FDTable1.CreateTable;
+    FDTable1.Open;
+  end;
   FDTable1.Refresh;
 end;
 

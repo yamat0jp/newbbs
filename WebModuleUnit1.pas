@@ -766,7 +766,9 @@ begin
     begin
       Response.ContentType := 'image/jpeg';
       Response.ContentStream := CreateBlobStream(FieldByName('source'), bmRead);
-    end;
+    end
+    else
+      Response.ContentStream:=nil;
 end;
 
 procedure TTWebModule1.TWebModule1indexpageAction(Sender: TObject;
