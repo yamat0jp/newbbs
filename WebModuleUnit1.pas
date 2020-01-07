@@ -7,7 +7,7 @@ uses System.SysUtils, System.Classes, Web.HTTPApp, Web.DSProd, Web.HTTPProd,
   Data.DB, Web.DBXpressWeb, System.Types;
 
 type
-  TTWebModule1 = class(TWebModule)
+  TWebModule1 = class(TWebModule)
     articles: TDataSetPageProducer;
     index: TDataSetPageProducer;
     admin: TDataSetTableProducer;
@@ -115,7 +115,7 @@ type
   end;
 
 var
-  WebModuleClass: TComponentClass = TTWebModule1;
+  WebModuleClass: TComponentClass = TWebModule1;
 
 implementation
 
@@ -129,7 +129,7 @@ const
   promotion = 'çLçê:';
   tcnt = 7;
 
-procedure TTWebModule1.adheadHTMLTag(Sender: TObject; Tag: TTag;
+procedure TWebModule1.adheadHTMLTag(Sender: TObject; Tag: TTag;
   const TagString: string; TagParams: TStrings; var ReplaceText: string);
 begin
   if TagString = 'pr' then
@@ -141,7 +141,7 @@ begin
     ReplaceText := Request.CookieFields.Values['user'];
 end;
 
-procedure TTWebModule1.adminFormatCell(Sender: TObject;
+procedure TWebModule1.adminFormatCell(Sender: TObject;
   CellRow, CellColumn: Integer; var BgColor: THTMLBgColor;
   var Align: THTMLAlign; var VAlign: THTMLVAlign;
   var CustomAttrs, CellData: string);
@@ -150,7 +150,7 @@ begin
     CellData := Format('<input name=check%d type=checkbox>', [CellRow]);
 end;
 
-procedure TTWebModule1.alertHTMLTag(Sender: TObject; Tag: TTag;
+procedure TWebModule1.alertHTMLTag(Sender: TObject; Tag: TTag;
   const TagString: string; TagParams: TStrings; var ReplaceText: string);
 var
   s: TStringList;
@@ -183,14 +183,14 @@ begin
     ReplaceText := DataModule1.FDTable4.FieldByName('request').AsString;
 end;
 
-procedure TTWebModule1.articlesHTMLTag(Sender: TObject; Tag: TTag;
+procedure TWebModule1.articlesHTMLTag(Sender: TObject; Tag: TTag;
   const TagString: string; TagParams: TStrings; var ReplaceText: string);
 begin
   if TagString = 'comment' then
     ReplaceText := DataModule1.FDTable2.FieldByName('comment').AsString;
 end;
 
-function TTWebModule1.detail(ts, pid: string): string;
+function TWebModule1.detail(ts, pid: string): string;
 var
   i: Integer;
 begin
@@ -199,7 +199,7 @@ begin
       result := (Components[i] as TPageProducer).Content;
 end;
 
-procedure TTWebModule1.footerHTMLTag(Sender: TObject; Tag: TTag;
+procedure TWebModule1.footerHTMLTag(Sender: TObject; Tag: TTag;
   const TagString: string; TagParams: TStrings; var ReplaceText: string);
 var
   i: Integer;
@@ -224,7 +224,7 @@ begin
         .AsString + '">recent</a>';
 end;
 
-function TTWebModule1.hash(str: string): string;
+function TWebModule1.hash(str: string): string;
 begin
   with TIdHashSHA1.Create do
   begin
@@ -236,7 +236,7 @@ begin
   end;
 end;
 
-procedure TTWebModule1.headerHTMLTag(Sender: TObject; Tag: TTag;
+procedure TWebModule1.headerHTMLTag(Sender: TObject; Tag: TTag;
   const TagString: string; TagParams: TStrings; var ReplaceText: string);
 var
   s: string;
@@ -259,14 +259,14 @@ begin
     ReplaceText := Request.ContentFields.Values['title'];
 end;
 
-procedure TTWebModule1.helpHTMLTag(Sender: TObject; Tag: TTag;
+procedure TWebModule1.helpHTMLTag(Sender: TObject; Tag: TTag;
   const TagString: string; TagParams: TStrings; var ReplaceText: string);
 begin
   if TagString = 'pr' then
     ReplaceText := promotion;
 end;
 
-procedure TTWebModule1.indexHTMLTag(Sender: TObject; Tag: TTag;
+procedure TWebModule1.indexHTMLTag(Sender: TObject; Tag: TTag;
   const TagString: string; TagParams: TStrings; var ReplaceText: string);
 var
   i: Integer;
@@ -308,7 +308,7 @@ begin
     ReplaceText := DataModule1.FDTable1.FieldByName('database').AsString;
 end;
 
-procedure TTWebModule1.itemsHTMLTag(Sender: TObject; Tag: TTag;
+procedure TWebModule1.itemsHTMLTag(Sender: TObject; Tag: TTag;
   const TagString: string; TagParams: TStrings; var ReplaceText: string);
 var
   s: TStringList;
@@ -345,14 +345,14 @@ begin
   end;
 end;
 
-procedure TTWebModule1.loginHTMLTag(Sender: TObject; Tag: TTag;
+procedure TWebModule1.loginHTMLTag(Sender: TObject; Tag: TTag;
   const TagString: string; TagParams: TStrings; var ReplaceText: string);
 begin
   if TagString = 'pr' then
     ReplaceText := promotion;
 end;
 
-procedure TTWebModule1.masterHTMLTag(Sender: TObject; Tag: TTag;
+procedure TWebModule1.masterHTMLTag(Sender: TObject; Tag: TTag;
   const TagString: string; TagParams: TStrings; var ReplaceText: string);
 begin
   if TagString = 'pr' then
@@ -371,7 +371,7 @@ begin
     end;
 end;
 
-function TTWebModule1.mente: Boolean;
+function TWebModule1.mente: Boolean;
 begin
   if DataModule1.FDTable3.FieldByName('mente').AsBoolean = true then
   begin
@@ -384,7 +384,7 @@ begin
     result := false;
 end;
 
-procedure TTWebModule1.pages(count: Integer; var page: Integer);
+procedure TWebModule1.pages(count: Integer; var page: Integer);
 var
   max: Integer;
 begin
@@ -407,7 +407,7 @@ begin
   end;
 end;
 
-procedure TTWebModule1.mailHTMLTag(Sender: TObject; Tag: TTag;
+procedure TWebModule1.mailHTMLTag(Sender: TObject; Tag: TTag;
   const TagString: string; TagParams: TStrings; var ReplaceText: string);
 begin
   if TagString = 'pr' then
@@ -420,7 +420,7 @@ begin
     ReplaceText := Request.QueryFields.Values['num'];
 end;
 
-procedure TTWebModule1.searchHTMLTag(Sender: TObject; Tag: TTag;
+procedure TWebModule1.searchHTMLTag(Sender: TObject; Tag: TTag;
   const TagString: string; TagParams: TStrings; var ReplaceText: string);
 var
   s: TStringList;
@@ -500,7 +500,7 @@ begin
     ReplaceText := css2.Content;
 end;
 
-procedure TTWebModule1.tiHTMLTag(Sender: TObject; Tag: TTag;
+procedure TWebModule1.tiHTMLTag(Sender: TObject; Tag: TTag;
   const TagString: string; TagParams: TStrings; var ReplaceText: string);
 begin
   if TagString = 'count' then
@@ -514,7 +514,7 @@ begin
       DataModule1.FDQuery1.FieldByName('dbnum').AsInteger, 'database');
 end;
 
-procedure TTWebModule1.titleHTMLTag(Sender: TObject; Tag: TTag;
+procedure TWebModule1.titleHTMLTag(Sender: TObject; Tag: TTag;
   const TagString: string; TagParams: TStrings; var ReplaceText: string);
 begin
   if TagString = 'pr' then
@@ -534,7 +534,7 @@ begin
     end;
 end;
 
-procedure TTWebModule1.topHTMLTag(Sender: TObject; Tag: TTag;
+procedure TWebModule1.topHTMLTag(Sender: TObject; Tag: TTag;
   const TagString: string; TagParams: TStrings; var ReplaceText: string);
 var
   s, t: string;
@@ -587,7 +587,7 @@ begin
   end;
 end;
 
-procedure TTWebModule1.TWebModule1admdelAction(Sender: TObject;
+procedure TWebModule1.TWebModule1admdelAction(Sender: TObject;
   Request: TWebRequest; Response: TWebResponse; var Handled: Boolean);
 var
   i, j, k, m: Integer;
@@ -612,7 +612,7 @@ begin
   TWebModule1adminAction(nil, Request, Response, Handled);
 end;
 
-procedure TTWebModule1.TWebModule1adminAction(Sender: TObject;
+procedure TWebModule1.TWebModule1adminAction(Sender: TObject;
   Request: TWebRequest; Response: TWebResponse; var Handled: Boolean);
 var
   s: string;
@@ -650,7 +650,7 @@ begin
   Response.Content := admin.Content;
 end;
 
-procedure TTWebModule1.TWebModule1adminsetAction(Sender: TObject;
+procedure TWebModule1.TWebModule1adminsetAction(Sender: TObject;
   Request: TWebRequest; Response: TWebResponse; var Handled: Boolean);
 var
   s: string;
@@ -675,7 +675,7 @@ begin
   TWebModule1adminAction(nil, Request, Response, Handled);
 end;
 
-procedure TTWebModule1.TWebModule1alertAction(Sender: TObject;
+procedure TWebModule1.TWebModule1alertAction(Sender: TObject;
   Request: TWebRequest; Response: TWebResponse; var Handled: Boolean);
 var
   num1, num2, i, dbnum: Integer;
@@ -701,7 +701,7 @@ begin
     end;
 end;
 
-procedure TTWebModule1.TWebModule1deleteAction(Sender: TObject;
+procedure TWebModule1.TWebModule1deleteAction(Sender: TObject;
   Request: TWebRequest; Response: TWebResponse; var Handled: Boolean);
 var
   num: Integer;
@@ -728,7 +728,7 @@ begin
       TWebModule1indexpageAction(nil, Request, Response, Handled);
 end;
 
-procedure TTWebModule1.TWebModule1fileAction(Sender: TObject;
+procedure TWebModule1.TWebModule1fileAction(Sender: TObject;
   Request: TWebRequest; Response: TWebResponse; var Handled: Boolean);
 var
   s: string;
@@ -741,7 +741,7 @@ begin
   Response.Content := detail(s, Request.QueryFields.Values['id']);
 end;
 
-procedure TTWebModule1.TWebModule1helpAction(Sender: TObject;
+procedure TWebModule1.TWebModule1helpAction(Sender: TObject;
   Request: TWebRequest; Response: TWebResponse; var Handled: Boolean);
 var
   i, j: Integer;
@@ -758,7 +758,7 @@ begin
   Response.Content := help.Content;
 end;
 
-procedure TTWebModule1.TWebModule1imgAction(Sender: TObject;
+procedure TWebModule1.TWebModule1imgAction(Sender: TObject;
   Request: TWebRequest; Response: TWebResponse; var Handled: Boolean);
 var
   s: string;
@@ -773,6 +773,7 @@ begin
     else
       if s = 'sprites.png' then
       begin
+        Response.ContentType:='image/png';
         res:=TResourceStream.Create(HInstance,'PngImage_1',RT_RCDATA);
         try
           Response.ContentStream:=res;
@@ -785,7 +786,7 @@ begin
   end;
 end;
 
-procedure TTWebModule1.TWebModule1indexpageAction(Sender: TObject;
+procedure TWebModule1.TWebModule1indexpageAction(Sender: TObject;
   Request: TWebRequest; Response: TWebResponse; var Handled: Boolean);
 var
   int: Integer;
@@ -804,7 +805,7 @@ begin
     Response.Content := index.Content;
 end;
 
-procedure TTWebModule1.TWebModule1jumpAction(Sender: TObject;
+procedure TWebModule1.TWebModule1jumpAction(Sender: TObject;
   Request: TWebRequest; Response: TWebResponse; var Handled: Boolean);
 var
   DB, s: string;
@@ -820,7 +821,7 @@ begin
   Response.SendRedirect(Format('/index?db=%s&num=%d#%s', [DB, page, s]));
 end;
 
-procedure TTWebModule1.TWebModule1linkAction(Sender: TObject;
+procedure TWebModule1.TWebModule1linkAction(Sender: TObject;
   Request: TWebRequest; Response: TWebResponse; var Handled: Boolean);
 var
   num: Integer;
@@ -837,7 +838,7 @@ begin
   end;
 end;
 
-procedure TTWebModule1.TWebModule1loginAction(Sender: TObject;
+procedure TWebModule1.TWebModule1loginAction(Sender: TObject;
   Request: TWebRequest; Response: TWebResponse; var Handled: Boolean);
 var
   i: Integer;
@@ -860,7 +861,7 @@ begin
   Response.SendRedirect('/admin?db=' + i.ToString);
 end;
 
-procedure TTWebModule1.TWebModule1logoutAction(Sender: TObject;
+procedure TWebModule1.TWebModule1logoutAction(Sender: TObject;
   Request: TWebRequest; Response: TWebResponse; var Handled: Boolean);
 begin
   with Response.Cookies.Add do
@@ -871,7 +872,7 @@ begin
   TWebModule1indexpageAction(nil, Request, Response, Handled);
 end;
 
-procedure TTWebModule1.TWebModule1masterAction(Sender: TObject;
+procedure TWebModule1.TWebModule1masterAction(Sender: TObject;
   Request: TWebRequest; Response: TWebResponse; var Handled: Boolean);
 var
   s: string;
@@ -907,7 +908,7 @@ begin
   Response.Content := master.Content;
 end;
 
-procedure TTWebModule1.TWebModule1registAction(Sender: TObject;
+procedure TWebModule1.TWebModule1registAction(Sender: TObject;
   Request: TWebRequest; Response: TWebResponse; var Handled: Boolean);
 var
   number, i: Integer;
@@ -1009,21 +1010,21 @@ begin
   TWebModule1indexpageAction(nil, Request, Response, Handled);
 end;
 
-procedure TTWebModule1.TWebModule1searchAction(Sender: TObject;
+procedure TWebModule1.TWebModule1searchAction(Sender: TObject;
   Request: TWebRequest; Response: TWebResponse; var Handled: Boolean);
 begin
   Response.ContentType := 'text/html;charset=utf-8';
   Response.Content := search.Content;
 end;
 
-procedure TTWebModule1.TWebModule1titleAction(Sender: TObject;
+procedure TWebModule1.TWebModule1titleAction(Sender: TObject;
   Request: TWebRequest; Response: TWebResponse; var Handled: Boolean);
 begin
   Response.ContentType := 'text/html;charset=utf-8';
   Response.Content := title.Content;
 end;
 
-procedure TTWebModule1.TWebModule1topAction(Sender: TObject;
+procedure TWebModule1.TWebModule1topAction(Sender: TObject;
   Request: TWebRequest; Response: TWebResponse; var Handled: Boolean);
 begin
   Response.ContentType := 'text/html;charset=utf-8';
@@ -1032,7 +1033,7 @@ begin
     Response.Content := top.ContentFromString(top.Content);
 end;
 
-procedure TTWebModule1.WebModuleCreate(Sender: TObject);
+procedure TWebModule1.WebModuleCreate(Sender: TObject);
 var
   i: Integer;
   a: Variant;
