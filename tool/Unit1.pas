@@ -36,6 +36,7 @@ type
     FDTable1name: TWideStringField;
     FDTable1source: TBlobField;
     LinkPropertyToFieldBitmap: TLinkPropertyToField;
+    FDQuery1: TFDQuery;
     procedure Button1Click(Sender: TObject);
     procedure FDTable1AfterInsert(DataSet: TDataSet);
     procedure FormCreate(Sender: TObject);
@@ -58,22 +59,27 @@ var
   s: TStream;
   bmp: TBitmapSurface;
   pm: TBitmapCodecSaveParams;
+  img: TBitmap;
 begin
   if OpenDialog1.Execute = true then
   begin
+    if FDTable1.RecordCount = 0 then
+      FDTable1.Append;
     FDTable1.Edit;
     bmp := TBitmapSurface.Create;
+    img := TBitmap.Create;
     try
       s := FDTable1.CreateBlobStream(FDTable1.FieldByName('source'), bmWrite);
-      Image1.Bitmap.LoadFromFile(OpenDialog1.FileName);
-      bmp.Assign(Image1.Bitmap);
+      img.LoadFromFile(OpenDialog1.FileName);
+      bmp.Assign(img);
       pm.Quality := 100;
       TBitmapCodecManager.SaveToStream(s, bmp, '.jpg', @pm);
+      FDTable1.Post;
     finally
       s.Free;
       bmp.Free;
+      img.Free;
     end;
-    FDTable1.Post;
   end;
 end;
 
@@ -90,8 +96,7 @@ end;
 
 procedure TForm2.FormCreate(Sender: TObject);
 begin
-  if FDTable1.Exists = false then
-    FDTable1.CreateTable;
+  FDQuery1.ExecSQL;
   FDTable1.Open;
   FDTable1.Refresh;
 end;
