@@ -2,6 +2,8 @@ program dbtool;
 
 
 
+{$R *.dres}
+
 uses
   FMX.Forms,
   Unit1 in 'Unit1.pas' {Form2};

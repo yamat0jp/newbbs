@@ -32,17 +32,15 @@ type
     OpenDialog1: TOpenDialog;
     Label1: TLabel;
     LinkPropertyToFieldText: TLinkPropertyToField;
-    FDTable1id: TFDAutoIncField;
-    FDTable1name: TWideStringField;
-    FDTable1source: TBlobField;
     LinkPropertyToFieldBitmap: TLinkPropertyToField;
     FDQuery1: TFDQuery;
+    Button2: TButton;
     procedure Button1Click(Sender: TObject);
-    procedure FDTable1AfterInsert(DataSet: TDataSet);
     procedure FormCreate(Sender: TObject);
-    procedure FDTable1AfterPost(DataSet: TDataSet);
+    procedure Button2Click(Sender: TObject);
   private
     { private êÈåæ }
+    procedure streamToField(stream, field: TStream);
   public
     { public êÈåæ }
   end;
@@ -57,48 +55,82 @@ implementation
 procedure TForm2.Button1Click(Sender: TObject);
 var
   s: TStream;
-  bmp: TBitmapSurface;
-  pm: TBitmapCodecSaveParams;
-  img: TBitmap;
+  t: TMemoryStream;
 begin
   if OpenDialog1.Execute = true then
   begin
-    if FDTable1.RecordCount = 0 then
-      FDTable1.Append;
     FDTable1.Edit;
-    bmp := TBitmapSurface.Create;
-    img := TBitmap.Create;
+    s := FDTable1.CreateBlobStream(FDTable1.FieldByName('source'), bmWrite);
+    t := TMemoryStream.Create;
     try
-      s := FDTable1.CreateBlobStream(FDTable1.FieldByName('source'), bmWrite);
-      img.LoadFromFile(OpenDialog1.FileName);
-      bmp.Assign(img);
-      pm.Quality := 100;
-      TBitmapCodecManager.SaveToStream(s, bmp, '.jpg', @pm);
+      t.LoadFromFile(OpenDialog1.FileName);
+      streamToField(t, s);
       FDTable1.Post;
     finally
       s.Free;
-      bmp.Free;
-      img.Free;
+      t.Free;
     end;
   end;
 end;
 
-procedure TForm2.FDTable1AfterInsert(DataSet: TDataSet);
+procedure TForm2.Button2Click(Sender: TObject);
 begin
-  FDTable1.FieldByName('name').AsString := 'slide' + FDTable1.FieldByName('id')
-    .AsString + '.jpg';
-end;
-
-procedure TForm2.FDTable1AfterPost(DataSet: TDataSet);
-begin
-  FDTable1.Refresh;
+  with FDQuery1.SQL do
+  begin
+    Clear;
+    Add('drop table images;');
+    Add('create table images(id int primary key, name varchar(10), source mediumblob);');
+  end;
+  FormCreate(Sender);
 end;
 
 procedure TForm2.FormCreate(Sender: TObject);
+var
+  i: Integer;
+  s, t: TStream;
 begin
   FDQuery1.ExecSQL;
   FDTable1.Open;
-  FDTable1.Refresh;
+  if FDTable1.RecordCount = 0 then
+  begin
+    for i := 1 to 50 do
+      FDTable1.AppendRecord([i, Format('slide%d.jpg', [i]), nil]);
+    FDTable1.First;
+    for i := 1 to 10 do
+    begin
+      FDTable1.Edit;
+      s := FDTable1.CreateBlobStream(FDTable1.FieldByName('source'), bmWrite);
+      t := TResourceStream.Create(HInstance, Format('Resource_%d', [i]),
+        RT_RCDATA);
+      try
+        streamToField(t,s);
+        FDTable1.Post;
+      finally
+        s.Free;
+      end;
+      FDTable1.Next;
+    end;
+  end;
+  FDTable1.First;
+end;
+
+procedure TForm2.streamToField(stream, field: TStream);
+var
+  bmp: TBitmapSurface;
+  pm: TBitmapCodecSaveParams;
+  img: TBitmap;
+begin
+  pm.Quality := 100;
+  bmp := TBitmapSurface.Create;
+  img:=TBitmap.Create;
+  try
+    img.LoadFromStream(stream);
+    bmp.Assign(img);
+    TBitmapCodecManager.SaveToStream(field, bmp, '.jpg', @pm);
+  finally
+    bmp.Free;
+    img.Free;
+  end;
 end;
 
 end.

@@ -280,6 +280,7 @@ object Form2: TForm2
   object Edit1: TEdit
     Touch.InteractiveGestures = [LongTap, DoubleTap]
     TabOrder = 5
+    ReadOnly = True
     Position.X = 160.000000000000000000
     Position.Y = 304.000000000000000000
     Size.Width = 164.000000000000000000
@@ -289,11 +290,12 @@ object Form2: TForm2
   object NavigatorBindSourceDB12: TBindNavigator
     Position.X = 160.000000000000000000
     Position.Y = 392.000000000000000000
-    Size.Width = 240.000000000000000000
+    Size.Width = 216.000000000000000000
     Size.Height = 25.000000000000000000
     Size.PlatformDefault = False
     TabOrder = 12
     DataSource = BindSourceDB1
+    VisibleButtons = [nbFirst, nbPrior, nbNext, nbLast, nbEdit, nbPost, nbCancel, nbRefresh]
     xRadius = 4.000000000000000000
     yRadius = 4.000000000000000000
   end
@@ -314,9 +316,14 @@ object Form2: TForm2
     Left = 496
     Top = 312
   end
+  object Button2: TButton
+    Position.X = 432.000000000000000000
+    Position.Y = 176.000000000000000000
+    TabOrder = 38
+    Text = 'Button2'
+    OnClick = Button2Click
+  end
   object FDTable1: TFDTable
-    AfterInsert = FDTable1AfterInsert
-    AfterPost = FDTable1AfterPost
     IndexFieldNames = 'id'
     Connection = FDConnection1
     UpdateOptions.AssignedValues = [uvRefreshMode]
@@ -324,25 +331,6 @@ object Form2: TForm2
     TableName = 'images'
     Left = 296
     Top = 192
-    object FDTable1id: TFDAutoIncField
-      FieldName = 'id'
-      Origin = 'id'
-      ProviderFlags = [pfInUpdate, pfInWhere, pfInKey]
-      ReadOnly = True
-      Required = True
-      AutoIncrementSeed = 1
-      AutoIncrementStep = 1
-    end
-    object FDTable1name: TWideStringField
-      FieldName = 'name'
-      Origin = '`name`'
-      Required = True
-    end
-    object FDTable1source: TBlobField
-      AutoGenerateValue = arDefault
-      FieldName = 'source'
-      Origin = '`source`'
-    end
   end
   object FDConnection1: TFDConnection
     Params.Strings = (
@@ -351,7 +339,6 @@ object Form2: TForm2
       'Server=localhost'
       'CharacterSet=utf8'
       'DriverID=MySQL')
-    Connected = True
     Left = 360
     Top = 192
   end
