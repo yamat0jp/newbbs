@@ -303,7 +303,7 @@ object Form2: TForm2
     Position.X = 432.000000000000000000
     Position.Y = 136.000000000000000000
     TabOrder = 23
-    Text = 'Button1'
+    Text = #38283#12367
     OnClick = Button1Click
   end
   object Label1: TLabel
@@ -320,7 +320,7 @@ object Form2: TForm2
     Position.X = 432.000000000000000000
     Position.Y = 176.000000000000000000
     TabOrder = 38
-    Text = 'Button2'
+    Text = #21021#26399#21270
     OnClick = Button2Click
   end
   object FDTable1: TFDTable
@@ -389,5 +389,11 @@ object Form2: TForm2
       ' name varchar(10), source mediumblob);')
     Left = 456
     Top = 192
+  end
+  object FDBatchMove1: TFDBatchMove
+    Mappings = <>
+    LogFileName = 'Data.log'
+    Left = 512
+    Top = 272
   end
 end

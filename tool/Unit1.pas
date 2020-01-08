@@ -15,7 +15,7 @@ uses
   System.Bindings.Outputs, FMX.Bind.Editors, Data.Bind.Components, Data.DB,
   FMX.Controls.Presentation, FMX.Edit, FMX.Bind.Navigator, Data.Bind.DBScope,
   FireDAC.Comp.Client, FireDAC.Comp.DataSet, FMX.Objects, FMX.StdCtrls,
-  FireDAC.FMXUI.Wait, FireDAC.Comp.UI;
+  FireDAC.FMXUI.Wait, FireDAC.Comp.UI, FireDAC.Comp.BatchMove;
 
 type
   TForm2 = class(TForm)
@@ -35,6 +35,7 @@ type
     LinkPropertyToFieldBitmap: TLinkPropertyToField;
     FDQuery1: TFDQuery;
     Button2: TButton;
+    FDBatchMove1: TFDBatchMove;
     procedure Button1Click(Sender: TObject);
     procedure FormCreate(Sender: TObject);
     procedure Button2Click(Sender: TObject);
