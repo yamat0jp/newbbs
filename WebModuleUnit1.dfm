@@ -208,8 +208,6 @@ object WebModule1: TWebModule1
         FieldName = 'DATE'
       end>
     Footer.Strings = (
-      '<input type=submit value='#21066#38500#12377#12427'><input type=reset value='#12522#12475#12483#12488'>'
-      '</form>'
       '')
     MaxRows = 30
     DataSet = DataModule1.FDTable2
@@ -1835,7 +1833,7 @@ object WebModule1: TWebModule1
       '    <label><p>'#12497#12473#12527#12540#12489#12398#22793#26356
       
         '      <input type="password" style="HEIGHT: 23px; WIDTH: 85px" n' +
-        'ame="pass" value="<#password>">'
+        'ame="pass">'
       '      </p>'
       '    </label>'
       '    <p>'

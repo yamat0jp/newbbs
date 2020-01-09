@@ -106,6 +106,7 @@ type
   private
     { private êÈåæ }
     ss: TStringList;
+    tagstr: string;
     procedure pages(count: Integer; var page: Integer);
     function hash(str: string): string;
     function mente: Boolean;
@@ -636,18 +637,14 @@ begin
   i := StrToIntDef(s, -1);
   pages(DataModule1.FDTable2.RecordCount, i);
   index.Tag := i;
-  s := '/admin';
-  Self.Tag := Integer(@s);
+  tagstr := '/admin';
+  Self.Tag := Integer(@tagstr);
   i := footer.HTMLDoc.Add
     ('<p style=text-align:center><a href="/index?db=<#dbnum>">ñﬂÇÈ</a>');
   admin.header.Text := adhead.Content;
-  if admin.Tag = 0 then
-    admin.footer.Insert(3, footer.Content)
-  else
-  begin
-    admin.footer.Delete(3);
-    admin.footer.Insert(3, footer.Content);
-  end;
+  admin.Footer.Clear;
+  admin.Footer.Add('<input type=submit value=çÌèúÇ∑ÇÈ><input type=reset value=ÉäÉZÉbÉg></form>');
+  admin.Footer.Add(footer.Content);
   admin.Tag := DataModule1.FDTable2.RecNo;
   footer.HTMLDoc.Delete(i);
   Response.ContentType := 'text/html;charset=utf-8';
@@ -797,8 +794,8 @@ begin
   int := StrToIntDef(Request.QueryFields.Values['num'], -1);
   pages(DataModule1.FDTable2.RecordCount, int);
   index.Tag := int;
-  s := '/index';
-  Self.Tag := Integer(@s);
+  tagstr := '/index';
+  Self.Tag := Integer(@tagstr);
   Response.ContentType := 'text/html; charset="utf-8"';
   if mente = false then
     Response.Content := index.Content;
@@ -870,7 +867,6 @@ procedure TWebModule1.WebModule1logoutAction(Sender: TObject;
   Request: TWebRequest; Response: TWebResponse; var Handled: Boolean);
 var
   s: string;
-  v: Variant;
 begin
   with Response.Cookies.Add do
   begin
