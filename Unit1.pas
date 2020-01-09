@@ -39,7 +39,6 @@ type
     FDTable3INFO: TIntegerField;
     FDTable3COUNT: TIntegerField;
     FDTable4ID: TIntegerField;
-    FDTable3PASSWORD: TWideStringField;
     FDTable2PASS: TWideStringField;
     FDTable5: TFDTable;
     FDTable5ID: TIntegerField;
@@ -47,6 +46,7 @@ type
     FDTable5SOURCE: TBlobField;
     FDTable1DATABASE: TWideStringField;
     FDQuery1: TFDQuery;
+    FDTable3password: TWideStringField;
   private
     { Private êÈåæ }
   public

@@ -6,102 +6,101 @@ object WebModule1: TWebModule1
       MethodType = mtGet
       Name = 'top'
       PathInfo = '/'
-      OnAction = TWebModule1topAction
+      OnAction = WebModule1topAction
     end
     item
       MethodType = mtGet
       Name = 'indexpage'
       PathInfo = '/index'
-      OnAction = TWebModule1indexpageAction
+      OnAction = WebModule1indexpageAction
     end
     item
       MethodType = mtPost
       Name = 'regist'
       PathInfo = '/regist'
-      OnAction = TWebModule1registAction
+      OnAction = WebModule1registAction
     end
     item
       MethodType = mtGet
       Name = 'admin'
       PathInfo = '/admin'
-      OnAction = TWebModule1adminAction
+      OnAction = WebModule1adminAction
     end
     item
       Name = 'search'
       PathInfo = '/search'
-      OnAction = TWebModule1searchAction
+      OnAction = WebModule1searchAction
     end
     item
       Name = 'help'
       PathInfo = '/help'
-      OnAction = TWebModule1helpAction
+      OnAction = WebModule1helpAction
     end
     item
       Name = 'master'
       PathInfo = '/master'
-      OnAction = TWebModule1masterAction
+      OnAction = WebModule1masterAction
     end
     item
       Name = 'alert'
       PathInfo = '/alert'
-      OnAction = TWebModule1alertAction
+      OnAction = WebModule1alertAction
     end
     item
       MethodType = mtPost
       Name = 'usrdel'
       PathInfo = '/userdel'
-      OnAction = TWebModule1deleteAction
     end
     item
       Name = 'jump'
       PathInfo = '/jump'
-      OnAction = TWebModule1jumpAction
+      OnAction = WebModule1jumpAction
     end
     item
       MethodType = mtGet
       Name = 'link'
       PathInfo = '/link'
-      OnAction = TWebModule1linkAction
+      OnAction = WebModule1linkAction
     end
     item
       MethodType = mtPost
       Name = 'admdel'
       PathInfo = '/admindel'
-      OnAction = TWebModule1admdelAction
+      OnAction = WebModule1admdelAction
     end
     item
       Name = 'login'
       PathInfo = '/login'
-      OnAction = TWebModule1loginAction
+      OnAction = WebModule1loginAction
     end
     item
       MethodType = mtPost
       Name = 'adminset'
       PathInfo = '/adminset'
-      OnAction = TWebModule1adminsetAction
+      OnAction = WebModule1adminsetAction
     end
     item
       MethodType = mtGet
       Name = 'logout'
       PathInfo = '/logout'
-      OnAction = TWebModule1logoutAction
+      OnAction = WebModule1logoutAction
     end
     item
       MethodType = mtGet
       Name = 'img'
       PathInfo = '/src'
-      OnAction = TWebModule1imgAction
+      OnAction = WebModule1imgAction
     end
     item
       MethodType = mtGet
       Name = 'file'
       PathInfo = '/file'
-      OnAction = TWebModule1fileAction
+      OnAction = WebModule1fileAction
     end
     item
       Name = 'title'
       PathInfo = '/title'
-      OnAction = TWebModule1titleAction
+      OnAction = WebModule1titleAction
     end>
   Height = 385
   Width = 436

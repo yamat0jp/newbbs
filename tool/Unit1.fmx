@@ -271,8 +271,8 @@ object Form2: TForm2
           000000000000000000000000000000000000000000000000000000005C0D9B9A
           0001796AD0B50000000049454E44AE426082}
       end>
-    Position.X = 120.000000000000000000
-    Position.Y = 32.000000000000000000
+    Position.X = 40.000000000000000000
+    Position.Y = 72.000000000000000000
     Size.Width = 265.000000000000000000
     Size.Height = 233.000000000000000000
     Size.PlatformDefault = False
@@ -281,26 +281,26 @@ object Form2: TForm2
     Touch.InteractiveGestures = [LongTap, DoubleTap]
     TabOrder = 5
     ReadOnly = True
-    Position.X = 160.000000000000000000
-    Position.Y = 304.000000000000000000
+    Position.X = 56.000000000000000000
+    Position.Y = 328.000000000000000000
     Size.Width = 164.000000000000000000
     Size.Height = 32.000000000000000000
     Size.PlatformDefault = False
   end
   object NavigatorBindSourceDB12: TBindNavigator
-    Position.X = 160.000000000000000000
-    Position.Y = 392.000000000000000000
-    Size.Width = 216.000000000000000000
+    Position.X = 40.000000000000000000
+    Position.Y = 384.000000000000000000
+    Size.Width = 208.000000000000000000
     Size.Height = 25.000000000000000000
     Size.PlatformDefault = False
     TabOrder = 12
     DataSource = BindSourceDB1
-    VisibleButtons = [nbFirst, nbPrior, nbNext, nbLast, nbEdit, nbPost, nbCancel, nbRefresh]
+    VisibleButtons = [nbFirst, nbPrior, nbNext, nbLast]
     xRadius = 4.000000000000000000
     yRadius = 4.000000000000000000
   end
   object Button1: TButton
-    Position.X = 432.000000000000000000
+    Position.X = 368.000000000000000000
     Position.Y = 136.000000000000000000
     TabOrder = 23
     Text = #38283#12367
@@ -309,19 +309,27 @@ object Form2: TForm2
   object Label1: TLabel
     Position.X = 64.000000000000000000
     Position.Y = 48.000000000000000000
+    Text = 'Label1'
   end
   object OpenDialog1: TOpenDialog
     DefaultExt = 'jpg'
     Filter = #30011#20687'(jpeg)|*.jpg;*.jpeg'
-    Left = 496
-    Top = 312
+    Left = 472
+    Top = 320
   end
   object Button2: TButton
-    Position.X = 432.000000000000000000
-    Position.Y = 176.000000000000000000
+    Position.X = 472.000000000000000000
+    Position.Y = 136.000000000000000000
     TabOrder = 38
     Text = #21021#26399#21270
     OnClick = Button2Click
+  end
+  object Button3: TButton
+    Position.X = 368.000000000000000000
+    Position.Y = 176.000000000000000000
+    TabOrder = 55
+    Text = #21462#12426#28040#12375
+    OnClick = Button3Click
   end
   object FDTable1: TFDTable
     IndexFieldNames = 'id'

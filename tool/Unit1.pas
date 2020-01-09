@@ -36,9 +36,11 @@ type
     FDQuery1: TFDQuery;
     Button2: TButton;
     FDBatchMove1: TFDBatchMove;
+    Button3: TButton;
     procedure Button1Click(Sender: TObject);
     procedure FormCreate(Sender: TObject);
     procedure Button2Click(Sender: TObject);
+    procedure Button3Click(Sender: TObject);
   private
     { private êÈåæ }
     procedure streamToField(stream, field: TStream);
@@ -132,6 +134,13 @@ begin
     bmp.Free;
     img.Free;
   end;
+end;
+
+procedure TForm2.Button3Click(Sender: TObject);
+begin
+  FDTable1.Edit;
+  FDTable1.FieldByName('source').Assign(nil);
+  FDTable1.Post;
 end;
 
 end.

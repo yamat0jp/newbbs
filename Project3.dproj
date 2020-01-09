@@ -94,7 +94,7 @@
             <FormType>dfm</FormType>
         </DCCReference>
         <DCCReference Include="WebModuleUnit1.pas">
-            <Form>TWebModule1</Form>
+            <Form>WebModule1</Form>
             <FormType>dfm</FormType>
             <DesignClass>TWebModule</DesignClass>
         </DCCReference>
@@ -129,7 +129,7 @@
                 </Source>
             </Delphi.Personality>
             <Deployment>
-                <DeployFile LocalName="Win32\Release\Project3.exe" Configuration="Release" Class="ProjectOutput">
+                <DeployFile LocalName="Win32\Debug\Project3.exe" Configuration="Debug" Class="ProjectOutput">
                     <Platform Name="Win32">
                         <RemoteName>Project3.exe</RemoteName>
                         <Overwrite>true</Overwrite>
@@ -141,7 +141,7 @@
                         <Overwrite>true</Overwrite>
                     </Platform>
                 </DeployFile>
-                <DeployFile LocalName="Win32\Debug\Project3.exe" Configuration="Debug" Class="ProjectOutput">
+                <DeployFile LocalName="Win32\Release\Project3.exe" Configuration="Release" Class="ProjectOutput">
                     <Platform Name="Win32">
                         <RemoteName>Project3.exe</RemoteName>
                         <Overwrite>true</Overwrite>

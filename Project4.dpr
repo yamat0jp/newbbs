@@ -8,7 +8,7 @@ uses
   Web.WebBroker,
   CGIApp,
   Unit1 in 'Unit1.pas' {DataModule1: TDataModule},
-  WebModuleUnit1 in 'WebModuleUnit1.pas' {TWebModule1: TWebModule};
+  WebModuleUnit1 in 'WebModuleUnit1.pas' {WebModule1: TWebModule};
 
 {$R *.res}
 

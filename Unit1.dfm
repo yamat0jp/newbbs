@@ -115,11 +115,9 @@ object DataModule1: TDataModule1
       FieldName = 'COUNT'
       Origin = 'COUNT'
     end
-    object FDTable3PASSWORD: TWideStringField
-      FieldName = 'PASSWORD'
-      Origin = 'PASSWORD'
-      Required = True
-      Size = 80
+    object FDTable3password: TWideStringField
+      FieldName = 'password'
+      Size = 100
     end
   end
   object FDGUIxWaitCursor1: TFDGUIxWaitCursor
