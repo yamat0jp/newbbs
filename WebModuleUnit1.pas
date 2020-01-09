@@ -849,11 +849,11 @@ begin
     Name := 'user';
     Value := hash(Request.ContentFields.Values['password']);
     Expires := Now + 14;
-    Secure := true;
+//    Secure := true;
   end;
   i := DataModule1.FDTable1.Lookup('database',
     Request.ContentFields.Values['record'], 'dbnum');
-  Response.SendResponse;
+  Response.SendRedirect('/admin?db='+i.ToString);
 end;
 
 procedure TWebModule1.WebModule1logoutAction(Sender: TObject;
