@@ -639,14 +639,12 @@ begin
   index.Tag := i;
   tagstr := '/admin';
   Self.Tag := Integer(@tagstr);
-  i := footer.HTMLDoc.Add
-    ('<p style=text-align:center><a href="/index?db=<#dbnum>">–ß‚é</a>');
   admin.header.Text := adhead.Content;
   admin.Footer.Clear;
   admin.Footer.Add('<input type=submit value=íœ‚·‚é><input type=reset value=ƒŠƒZƒbƒg></form>');
   admin.Footer.Add(footer.Content);
+  admin.Footer.Add('<p style=text-align:center><a href="/index?db=<#dbnum>">–ß‚é</a>');
   admin.Tag := DataModule1.FDTable2.RecNo;
-  footer.HTMLDoc.Delete(i);
   Response.ContentType := 'text/html;charset=utf-8';
   Response.Content := admin.Content;
 end;
