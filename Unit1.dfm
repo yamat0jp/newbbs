@@ -29,7 +29,6 @@ object DataModule1: TDataModule1
       'Database=kainushi'
       'Server=localhost'
       'DriverID=MySQL')
-    Connected = True
     Left = 144
     Top = 24
   end

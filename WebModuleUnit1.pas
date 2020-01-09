@@ -138,7 +138,9 @@ begin
     (DataModule1.FDTable3.FieldByName('mente').AsBoolean = true) then
     ReplaceText := 'checked'
   else if TagString = 'password' then
-    ReplaceText := Request.CookieFields.Values['user'];
+    ReplaceText := Request.CookieFields.Values['user']
+  else if TagString = 'database' then
+    ReplaceText := Request.QueryFields.Values['db'];
 end;
 
 procedure TWebModule1.adminFormatCell(Sender: TObject;
@@ -368,7 +370,9 @@ begin
         Next;
       end;
       ReplaceText := ReplaceText + '</table>';
-    end;
+    end
+  else if TagString = 'db' then
+    ReplaceText := DataModule1.FDTable1.FieldByName('database').AsString;
 end;
 
 function TWebModule1.mente: Boolean;
@@ -551,12 +555,12 @@ begin
         break;
       t := '';
       j := DataModule1.FDTable1.FieldByName('dbnum').AsInteger;
-      if i = j then
+      s := DataModule1.FDTable1.FieldByName('database').AsString;
+      if (i = j)or(s = 'master') then
       begin
         DataModule1.FDTable1.Next;
         continue;
       end;
-      s := DataModule1.FDTable1.FieldByName('database').AsString;
       DataModule1.FDTable2.Last;
       if Now - DataModule1.FDTable2.FieldByName('date').AsDateTime < 1 then
         t := 'background-color:aqua;';
@@ -837,6 +841,7 @@ procedure TWebModule1.WebModule1loginAction(Sender: TObject;
   Request: TWebRequest; Response: TWebResponse; var Handled: Boolean);
 var
   i: Integer;
+  s: string;
 begin
   if Request.MethodType = mtGet then
   begin
@@ -849,22 +854,34 @@ begin
     Name := 'user';
     Value := hash(Request.ContentFields.Values['password']);
     Expires := Now + 14;
-//    Secure := true;
+    // Secure := true;
   end;
-  i := DataModule1.FDTable1.Lookup('database',
-    Request.ContentFields.Values['record'], 'dbnum');
-  Response.SendRedirect('/admin?db='+i.ToString);
+  s := Request.ContentFields.Values['record'];
+  if s = 'master' then
+    Response.SendRedirect('master')
+  else
+  begin
+    i := DataModule1.FDTable1.Lookup('database', s, 'dbnum');
+    Response.SendRedirect('/admin?db=' + i.ToString);
+  end;
 end;
 
 procedure TWebModule1.WebModule1logoutAction(Sender: TObject;
   Request: TWebRequest; Response: TWebResponse; var Handled: Boolean);
+var
+  s: string;
+  v: Variant;
 begin
   with Response.Cookies.Add do
   begin
     Name := 'user';
     Expires := Now - 1;
   end;
-  WebModule1indexpageAction(nil, Request, Response, Handled);
+  s := Request.QueryFields.Values['db'];
+  if s = 'master' then
+    Response.SendRedirect('/')
+  else
+    Response.SendRedirect('/index?db=' + s);
 end;
 
 procedure TWebModule1.WebModule1masterAction(Sender: TObject;
@@ -873,6 +890,15 @@ var
   s: string;
   i: Integer;
 begin
+  if hash(Request.CookieFields.Values['user']) <>
+    DataModule1.FDTable3.FieldByName('password').AsString then
+  begin
+    with DataModule1.FDTable1 do
+      if Locate('database', 'master') = false then
+        AppendRecord([RecordCount, 'master']);
+    WebModule1loginAction(nil, Request, Response, Handled);
+    Exit;
+  end;
   if Request.MethodType = mtPost then
   begin
     s := Request.ContentFields.Values['delete'];
