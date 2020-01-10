@@ -33,7 +33,7 @@ object DataModule1: TDataModule1
     Top = 24
   end
   object FDTable2: TFDTable
-    IndexFieldNames = 'DBNUM;NUMBER'
+    IndexFieldNames = 'DBNUM;NUMBER:DN'
     MasterSource = DataSource1
     MasterFields = 'DBNUM'
     Connection = FDConnection1

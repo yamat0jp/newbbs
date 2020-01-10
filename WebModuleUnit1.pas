@@ -108,6 +108,8 @@ type
     ss: TStringList;
     tagstr: string;
     procedure pages(count: Integer; var page: Integer);
+    function isInfo: Boolean;
+    function loginCheck: Boolean;
     function hash(str: string): string;
     function mente: Boolean;
     function detail(ts, pid: string): string;
@@ -138,8 +140,6 @@ begin
   else if (TagString = 'mente') and
     (DataModule1.FDTable3.FieldByName('mente').AsBoolean = true) then
     ReplaceText := 'checked'
-  else if TagString = 'password' then
-    ReplaceText := Request.CookieFields.Values['user']
   else if TagString = 'database' then
     ReplaceText := Request.QueryFields.Values['db'];
 end;
@@ -289,7 +289,8 @@ begin
       end;
     end
     else
-      ReplaceText := '<p style=color:yellow;background-color:aqua>Ç≤ïÒçêÇ†ÇËÇ™Ç∆Ç§Ç≤Ç¥Ç¢Ç‹Ç∑.';
+      ReplaceText :=
+        '<p style=color:yellow;background-color:aqua>Ç≤ïÒçêÇ†ÇËÇ™Ç∆Ç§Ç≤Ç¥Ç¢Ç‹Ç∑.';
 end;
 
 procedure TWebModule1.indexHTMLTag(Sender: TObject; Tag: TTag;
@@ -319,19 +320,30 @@ begin
   else if TagString = 'footer' then
     ReplaceText := footer.Content
   else if TagString = 'header' then
-  begin
-    i := DataModule1.FDTable3.FieldByName('count').AsInteger;
-    if 10 * i <= DataModule1.FDTable2.RecordCount then
-      ReplaceText := '<h1>Ç±ÇÍà»è„ìäçeÇ≈Ç´Ç‹ÇπÇÒ.</h1>'
+    if (DataModule1.FDTable1.FieldByName('dbnum')
+      .AsInteger = DataModule1.FDTable3.FieldByName('info').AsInteger) and
+      (loginCheck = false) then
+      ReplaceText := '<h1 style=text-align:center>ä«óùêlÇ©ÇÁÇ®ímÇÁÇπÇ™Ç†ÇËÇ‹Ç∑.</h1>'
     else
-      ReplaceText := header.Content;
-  end
+    begin
+      i := DataModule1.FDTable3.FieldByName('count').AsInteger;
+      if 10 * i <= DataModule1.FDTable2.RecordCount then
+        ReplaceText := '<h1>Ç±ÇÍà»è„ìäçeÇ≈Ç´Ç‹ÇπÇÒ.</h1>'
+      else
+        ReplaceText := header.Content;
+    end
   else if (TagString = 'css') or (TagString = 'js') then
     ReplaceText := detail(TagString, TagParams.Values['id'])
   else if TagString = 'dbnum' then
     ReplaceText := DataModule1.FDTable1.FieldByName('dbnum').AsString
   else if TagString = 'database' then
     ReplaceText := DataModule1.FDTable1.FieldByName('database').AsString;
+end;
+
+function TWebModule1.isInfo: Boolean;
+begin
+  result := DataModule1.FDTable1.FieldByName('dbnum')
+    .AsInteger = DataModule1.FDTable3.FieldByName('info').AsInteger;
 end;
 
 procedure TWebModule1.itemsHTMLTag(Sender: TObject; Tag: TTag;
@@ -369,6 +381,12 @@ begin
       s.Free;
     end;
   end;
+end;
+
+function TWebModule1.loginCheck: Boolean;
+begin
+  result := hash(Request.CookieFields.Values['user'])
+    = DataModule1.FDTable3.FieldByName('password').AsString;
 end;
 
 procedure TWebModule1.loginHTMLTag(Sender: TObject; Tag: TTag;
@@ -649,8 +667,7 @@ var
   i: Integer;
 begin
   s := Request.CookieFields.Values['user'];
-  if (s = '') or (hash(s) <> DataModule1.FDTable3.FieldByName('password')
-    .AsString) then
+  if (s = '') or (loginCheck = false) then
   begin
     WebModule1loginAction(nil, Request, Response, Handled);
     Exit;
@@ -785,7 +802,7 @@ end;
 procedure TWebModule1.WebModule1helpAction(Sender: TObject;
   Request: TWebRequest; Response: TWebResponse; var Handled: Boolean);
 var
-  i, j, k: Integer;
+  k: Integer;
   s: string;
 begin
   Response.ContentType := 'text/html;charset=utf-8';
@@ -828,18 +845,23 @@ end;
 procedure TWebModule1.WebModule1indexpageAction(Sender: TObject;
   Request: TWebRequest; Response: TWebResponse; var Handled: Boolean);
 var
-  int: Integer;
+  i: Integer;
   s: string;
 begin
   s := Request.QueryFields.Values['db'];
   if s <> '' then
     DataModule1.FDTable1.Locate('dbnum', s, []);
-  int := StrToIntDef(Request.QueryFields.Values['num'], -1);
-  pages(DataModule1.FDTable2.RecordCount, int);
-  index.Tag := int;
+  i := StrToIntDef(Request.QueryFields.Values['num'], -1);
+  pages(DataModule1.FDTable2.RecordCount, i);
+  index.Tag := i;
   tagstr := '/index';
   Self.Tag := Integer(@tagstr);
   Response.ContentType := 'text/html; charset="utf-8"';
+  s := DataModule1.FDTable2.IndexFieldNames;
+  if isInfo = true then
+    DataModule1.FDTable2.IndexFieldNames := Copy(s, 1, Length(s) - 2) + 'DN'
+  else
+    DataModule1.FDTable2.IndexFieldNames := Copy(s, 1, Length(s) - 2) + 'AN';
   if mente = false then
     Response.Content := index.Content;
 end;
@@ -944,8 +966,7 @@ var
   s: string;
   i: Integer;
 begin
-  if hash(Request.CookieFields.Values['user']) <>
-    DataModule1.FDTable3.FieldByName('password').AsString then
+  if loginCheck = false then
   begin
     with DataModule1.FDTable1 do
       if Locate('database', 'master') = false then
@@ -992,6 +1013,7 @@ procedure TWebModule1.WebModule1registAction(Sender: TObject;
 var
   number, i: Integer;
   title, na, raw, pass, kotoba, error: string;
+  s: string;
   comment: TStringList;
   x: Boolean;
   function scan(Text: string): string;
@@ -1024,7 +1046,10 @@ begin
     error := '<section style=color:red><p>çáåæótÇ™ÇøÇ™Ç¢Ç‹Ç∑.';
   with DataModule1.FDTable2 do
   begin
-    Last;
+    if isInfo = true then
+      First
+    else
+      Last;
     number := FieldByName('number').AsInteger + 1;
   end;
   with Request.ContentFields do
@@ -1077,9 +1102,20 @@ begin
     end
     else
     begin
+      s := DataModule1.FDTable2.IndexFieldNames;
+      if s[Length(s)] = 'N' then
+      begin
+        s := Copy(s, 1, Length(s) - 3);
+        DataModule1.FDTable2.IndexFieldNames := s;
+      end;
       i := DataModule1.FDTable1.FieldByName('dbnum').AsInteger;
       DataModule1.FDTable2.AppendRecord([i, number, title, na, comment.Text,
         raw, Now, pass]);
+      if isInfo = true then
+        s := s + ':DN'
+      else
+        s := s + ':AN';
+      DataModule1.FDTable2.IndexFieldNames := s;
       Response.SendRedirect('index?db=' + i.ToString + '#article');
       Exit;
     end;
