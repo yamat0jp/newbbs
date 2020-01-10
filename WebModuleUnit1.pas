@@ -620,19 +620,19 @@ end;
 procedure TWebModule1.WebModule1adminAction(Sender: TObject;
   Request: TWebRequest; Response: TWebResponse; var Handled: Boolean);
 var
-  s: string;
+  s, t: string;
   i: Integer;
 begin
   if hash(Request.CookieFields.Values['user']) <>
     DataModule1.FDTable3.FieldByName('password').AsString then
   begin
-    Response.SendRedirect('/login');
+    WebModule1loginAction(nil,Request,Response,Handled);
     Exit;
   end;
   admin.MaxRows := DataModule1.FDTable3.FieldByName('count').AsInteger;
-  s := Request.QueryFields.Values['db'];
-  if s <> '' then
-    DataModule1.FDTable1.Locate('dbnum', s, []);
+  t := Request.QueryFields.Values['db'];
+  if t <> '' then
+    DataModule1.FDTable1.Locate('dbnum', t, []);
   s := Request.QueryFields.Values['num'];
   i := StrToIntDef(s, -1);
   pages(DataModule1.FDTable2.RecordCount, i);
@@ -643,7 +643,9 @@ begin
   admin.Footer.Clear;
   admin.Footer.Add('<input type=submit value=íœ‚·‚é><input type=reset value=ƒŠƒZƒbƒg></form>');
   admin.Footer.Add(footer.Content);
-  admin.Footer.Add('<p style=text-align:center><a href="/index?db=<#dbnum>">–ß‚é</a>');
+  if t <> '' then
+    t:='?db='+t;
+  admin.Footer.Add('<p style=text-align:center><a href="/index'+t+'">–ß‚é</a>');
   admin.Tag := DataModule1.FDTable2.RecNo;
   Response.ContentType := 'text/html;charset=utf-8';
   Response.Content := admin.Content;
