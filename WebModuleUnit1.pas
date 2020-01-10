@@ -840,7 +840,7 @@ procedure TWebModule1.WebModule1loginAction(Sender: TObject;
   Request: TWebRequest; Response: TWebResponse; var Handled: Boolean);
 var
   v: Variant;
-  i: integer;
+  i: Integer;
   s: string;
 begin
   if Request.MethodType = mtGet then
@@ -850,28 +850,26 @@ begin
     Exit;
   end;
   s := Request.ContentFields.Values['record'];
-  if s = 'master' then
-    Response.SendRedirect('master')
+  v := DataModule1.FDTable1.Lookup('database', s, 'dbnum');
+  if VarIsNull(v) = false then
+  begin
+    with Response.Cookies.Add do
+    begin
+      Name := 'user';
+      Value := hash(Request.ContentFields.Values['password']);
+      Expires := Now + 14;
+      // Secure := true;
+    end;
+    i := v;
+    if s = 'master' then
+      Response.SendRedirect('/master')
+    else
+      Response.SendRedirect('/admin?db=' + i.ToString);
+  end
   else
   begin
-    v := DataModule1.FDTable1.Lookup('database', s, 'dbnum');
-    if VarIsNull(v) = false then
-    begin
-      with Response.Cookies.Add do
-      begin
-        Name := 'user';
-        Value := hash(Request.ContentFields.Values['password']);
-        Expires := Now + 14;
-        // Secure := true;
-      end;
-      i:=v;
-      Response.SendRedirect('/admin?db=' + i.ToString);
-    end
-    else
-    begin
-      Response.ContentType := 'text/html;charset=utf-8';
-      Response.Content := login.Content;
-    end;
+    Response.ContentType := 'text/html;charset=utf-8';
+    Response.Content := login.Content;
   end;
 end;
 
