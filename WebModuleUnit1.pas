@@ -159,9 +159,9 @@ var
   s: TStringList;
   i: Integer;
 begin
-  if (TagString = 'plus')and(alert.Tag = 0) then
+  if (TagString = 'plus') and (alert.Tag = 0) then
     ReplaceText :=
-        '<a href=/jump?db=<#dbname>&num=<#posnum>>[ <#dbname>-<#posnum> ]</a>'
+      '<a href=/jump?db=<#dbname>&num=<#posnum>>[ <#dbname>-<#posnum> ]</a>'
   else if TagString = 'article' then
   begin
     with DataModule1 do
@@ -272,7 +272,24 @@ procedure TWebModule1.helpHTMLTag(Sender: TObject; Tag: TTag;
   const TagString: string; TagParams: TStrings; var ReplaceText: string);
 begin
   if TagString = 'pr' then
-    ReplaceText := promotion;
+    ReplaceText := promotion
+  else if TagString = 'area' then
+    if help.Tag = 0 then
+    begin
+      ss := TStringList.Create;
+      try
+        ss.Add('<form action=/help method=post><p>お問い合わせ<削除依頼など何でも></p>');
+        ss.Add('<textarea name=help style=height:100px;width:250px>投稿者名など：');
+        ss.Add('相談内容：');
+        ss.Add('その他：</textarea><br>');
+        ss.Add('<input type=submit value="送信"></form>');
+        ReplaceText := ss.Text;
+      finally
+        ss.Free;
+      end;
+    end
+    else
+      ReplaceText := '<p style=color:yellow;background-color:aqua>ご報告ありがとうございます.';
 end;
 
 procedure TWebModule1.indexHTMLTag(Sender: TObject; Tag: TTag;
@@ -374,9 +391,9 @@ begin
       while Eof = false do
       begin
         if FieldByName('posnum').AsInteger = -1 then
-          alert.Tag:=1
+          alert.Tag := 1
         else
-          alert.Tag:=0;
+          alert.Tag := 0;
         ReplaceText := ReplaceText + alert.ContentFromString(alert.Content);
         Next;
       end;
@@ -697,7 +714,7 @@ var
   s: string;
 begin
   num1 := DataModule1.FDTable1.FieldByName('dbnum').AsInteger;
-  num2 := StrToIntDef(Request.QueryFields.Values['num'],-1);
+  num2 := StrToIntDef(Request.QueryFields.Values['num'], -1);
   if num2 = -1 then
     num1 := -1;
   if Request.MethodType = mtGet then
@@ -712,13 +729,14 @@ begin
     begin
       Last;
       i := FieldByName('id').AsInteger + 1;
-      s:=Request.ContentFields.Values['request'];
+      s := Request.ContentFields.Values['request'];
       if s = '' then
-        s:='(No Comment)';
+        s := '(No Comment)';
       AppendRecord([i, num1, num2, Now, s]);
     end;
     if num1 > -1 then
-      Response.SendRedirect(Format('/index?db=%d&num=%d#%d', [num1, num2, num2]))
+      Response.SendRedirect(Format('/index?db=%d&num=%d#%d',
+        [num1, num2, num2]))
     else
       Response.SendRedirect('/top');
   end;
@@ -773,15 +791,14 @@ begin
   Response.ContentType := 'text/html;charset=utf-8';
   if Request.MethodType = mtPost then
   begin
-  {
-    i := DataModule1.FDTable1.FieldByName('dbnum').AsInteger;;
-    j := DataModule1.FDTable2.FieldByName('number').AsInteger;
-    }
     s := Request.ContentFields.Values['help'];
     DataModule1.FDTable4.Last;
     k := DataModule1.FDTable4.FieldByName('id').AsInteger + 1;
-    DataModule1.FDTable4.AppendRecord([k, -1,-1, Now, s]);
-  end;
+    DataModule1.FDTable4.AppendRecord([k, -1, -1, Now, s]);
+    help.Tag := 1;
+  end
+  else
+    help.Tag := 0;
   Response.Content := help.Content;
 end;
 
@@ -934,7 +951,7 @@ begin
       if Locate('database', 'master') = false then
       begin
         Last;
-        i:=FieldByName('dbnum').AsInteger+1;
+        i := FieldByName('dbnum').AsInteger + 1;
         AppendRecord([i, 'master']);
       end;
     WebModule1loginAction(nil, Request, Response, Handled);

@@ -130,6 +130,7 @@ object DataModule1: TDataModule1
     Top = 152
   end
   object FDTable4: TFDTable
+    IndexFieldNames = 'ID'
     Connection = FDConnection1
     UpdateOptions.UpdateTableName = 'req'
     TableName = 'req'
