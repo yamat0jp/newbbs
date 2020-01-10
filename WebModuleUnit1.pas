@@ -658,21 +658,25 @@ procedure TWebModule1.WebModule1adminsetAction(Sender: TObject;
 var
   s: string;
 begin
-  s := hash(Request.ContentFields.Values['pass']);
+  s := Request.ContentFields.Values['pass'];
   with DataModule1.FDTable3 do
   begin
     Edit;
     FieldByName('mente').AsBoolean := Request.ContentFields.Values
       ['mente'] = 'on';
-    FieldByName('password').AsString := hash(s);
+    if s <> '' then
+    begin
+      s := hash(s);
+      FieldByName('password').AsString := hash(s);
+      with Response.Cookies.Add do
+      begin
+        Name := 'user';
+        Value := s;
+        Expires := Now + 14;
+        Secure := true;
+      end;
+    end;
     Post;
-  end;
-  with Response.Cookies.Add do
-  begin
-    Name := 'user';
-    Value := s;
-    Expires := Now + 14;
-    Secure := true;
   end;
   Request.CookieFields.Values['user'] := s;
   WebModule1adminAction(nil, Request, Response, Handled);
