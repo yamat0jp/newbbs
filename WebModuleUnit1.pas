@@ -557,7 +557,7 @@ begin
       t := '';
       j := DataModule1.FDTable1.FieldByName('dbnum').AsInteger;
       s := DataModule1.FDTable1.FieldByName('database').AsString;
-      if (i = j)or(s = 'master') then
+      if (i = j) or (s = 'master') then
       begin
         DataModule1.FDTable1.Next;
         continue;
@@ -626,7 +626,7 @@ begin
   if hash(Request.CookieFields.Values['user']) <>
     DataModule1.FDTable3.FieldByName('password').AsString then
   begin
-    WebModule1loginAction(nil,Request,Response,Handled);
+    WebModule1loginAction(nil, Request, Response, Handled);
     Exit;
   end;
   admin.MaxRows := DataModule1.FDTable3.FieldByName('count').AsInteger;
@@ -640,12 +640,14 @@ begin
   tagstr := '/admin';
   Self.Tag := Integer(@tagstr);
   admin.header.Text := adhead.Content;
-  admin.Footer.Clear;
-  admin.Footer.Add('<input type=submit value=削除する><input type=reset value=リセット></form>');
-  admin.Footer.Add(footer.Content);
+  admin.footer.Clear;
+  admin.footer.Add
+    ('<input type=submit value=削除する><input type=reset value=リセット></form>');
+  admin.footer.Add(footer.Content);
   if t <> '' then
-    t:='?db='+t;
-  admin.Footer.Add('<p style=text-align:center><a href="/index'+t+'">戻る</a>');
+    t := '?db=' + t;
+  admin.footer.Add('<p style=text-align:center><a href="/index' + t +
+    '">戻る</a>');
   admin.Tag := DataModule1.FDTable2.RecNo;
   Response.ContentType := 'text/html;charset=utf-8';
   Response.Content := admin.Content;
@@ -837,7 +839,8 @@ end;
 procedure TWebModule1.WebModule1loginAction(Sender: TObject;
   Request: TWebRequest; Response: TWebResponse; var Handled: Boolean);
 var
-  i: Integer;
+  v: Variant;
+  i: integer;
   s: string;
 begin
   if Request.MethodType = mtGet then
@@ -846,20 +849,29 @@ begin
     Response.Content := login.Content;
     Exit;
   end;
-  with Response.Cookies.Add do
-  begin
-    Name := 'user';
-    Value := hash(Request.ContentFields.Values['password']);
-    Expires := Now + 14;
-    // Secure := true;
-  end;
   s := Request.ContentFields.Values['record'];
   if s = 'master' then
     Response.SendRedirect('master')
   else
   begin
-    i := DataModule1.FDTable1.Lookup('database', s, 'dbnum');
-    Response.SendRedirect('/admin?db=' + i.ToString);
+    v := DataModule1.FDTable1.Lookup('database', s, 'dbnum');
+    if VarIsNull(v) = false then
+    begin
+      with Response.Cookies.Add do
+      begin
+        Name := 'user';
+        Value := hash(Request.ContentFields.Values['password']);
+        Expires := Now + 14;
+        // Secure := true;
+      end;
+      i:=v;
+      Response.SendRedirect('/admin?db=' + i.ToString);
+    end
+    else
+    begin
+      Response.ContentType := 'text/html;charset=utf-8';
+      Response.Content := login.Content;
+    end;
   end;
 end;
 
