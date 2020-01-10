@@ -118,6 +118,10 @@ object DataModule1: TDataModule1
       FieldName = 'password'
       Size = 100
     end
+    object FDTable3ng: TWideStringField
+      FieldName = 'ng'
+      Size = 300
+    end
   end
   object FDGUIxWaitCursor1: TFDGUIxWaitCursor
     Provider = 'Forms'

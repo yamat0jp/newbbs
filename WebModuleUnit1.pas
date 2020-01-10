@@ -108,6 +108,7 @@ type
     ss: TStringList;
     tagstr: string;
     procedure pages(count: Integer; var page: Integer);
+    procedure strsCheck(var error: string; var list: TStringList);
     function isInfo: Boolean;
     function loginCheck: Boolean;
     function hash(str: string): string;
@@ -546,6 +547,29 @@ begin
   end
   else if TagString = 'css' then
     ReplaceText := css2.Content;
+end;
+
+procedure TWebModule1.strsCheck(var error: string; var list: TStringList);
+var
+  s: TStringList;
+  i, j: Integer;
+  x: Boolean;
+begin
+  s := TStringList.Create;
+  try
+    s.DelimitedText := DataModule1.FDTable3.FieldByName('ng').AsString;
+    for i := 0 to s.count - 1 do
+      for j := 0 to list.count - 1 do
+      begin
+        if Pos(s[i], list[j]) > 0 then
+          x := true;
+        list[j] := '<p>' + list[j];
+      end;
+  finally
+    s.Free;
+  end;
+  if x = true then
+    error := error + '<p>‹Ö~Œê‹å‚ªŠÜ‚Ü‚ê‚Ä‚¢‚Ü‚·.';
 end;
 
 procedure TWebModule1.tiHTMLTag(Sender: TObject; Tag: TTag;
@@ -1015,7 +1039,6 @@ var
   title, na, raw, pass, kotoba, error: string;
   s: string;
   comment: TStringList;
-  x: Boolean;
   function scan(Text: string): string;
   var
     reg: TRegEx;
@@ -1080,25 +1103,16 @@ begin
   comment := TStringList.Create;
   try
     comment.Text := raw;
-    for i := 0 to comment.count - 1 do
-    begin
-      if Pos('ng', comment[i]) > 0 then
-      begin
-        error := error + '<p>‹Ö~Œê‹å‚ªŠÜ‚Ü‚ê‚Ä‚¢‚Ü‚·.';
-        break;
-      end;
-      comment[i] := '<p>' + scan(comment[i]);
-    end;
-    x := Request.ContentFields.Values['show'] = 'true';
+    strsCheck(error, comment);
+    Request.ContentFields.Values['show'] := 'false';
+    Request.ContentFields.Values['raw'] := raw;
     if error <> '' then
-      error := error + '</section>'
-    else if x = true then
+      Request.ContentFields.Values['preview'] := error + '</section>'
+    else if Request.ContentFields.Values['show'] = 'true' then
     begin
       error := '<p style=font-size:2.3em;color:blue>««ƒvƒŒƒrƒ…[««<p>' +
         comment.Text;
-      Request.ContentFields.Values['show'] := 'false';
       Request.ContentFields.Values['preview'] := error;
-      Request.ContentFields.Values['raw'] := raw;
     end
     else
     begin
@@ -1152,6 +1166,7 @@ procedure TWebModule1.WebModuleCreate(Sender: TObject);
 var
   i: Integer;
   a: Variant;
+  s: string;
 begin
   with DataModule1 do
   begin
@@ -1183,10 +1198,11 @@ begin
   if DataModule1.FDTable3.Bof and DataModule1.FDTable3.Eof then
   begin
     a := DataModule1.FDTable1.Lookup('database', 'info', 'dbnum');
+    s := 'ˆ¢•Û,”n­,€‚Ë';
     DataModule1.FDTable3.AppendRecord
       (['‚Æ‚é‚Ë`‚Ç†',
       '<h1 style=color:maron;text-align:center;font-style:italic>‚Æ‚é‚Ë`‚Ç†</h1>',
-      false, a, 30, hash(hash('admin'))]);
+      false, a, 30, hash(hash('admin')), s]);
   end;
 end;
 
