@@ -623,8 +623,8 @@ var
   s, t: string;
   i: Integer;
 begin
-  if hash(Request.CookieFields.Values['user']) <>
-    DataModule1.FDTable3.FieldByName('password').AsString then
+  s:=Request.CookieFields.Values['user'];
+  if (s = '')or(hash(s) <> DataModule1.FDTable3.FieldByName('password').AsString) then
   begin
     WebModule1loginAction(nil, Request, Response, Handled);
     Exit;
@@ -678,7 +678,6 @@ begin
     end;
     Post;
   end;
-  Request.CookieFields.Values['user'] := s;
   WebModule1adminAction(nil, Request, Response, Handled);
 end;
 
