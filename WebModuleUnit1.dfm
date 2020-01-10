@@ -425,7 +425,7 @@ object WebModule1: TWebModule1
       '<input type=radio name=delete value=all>'#12377#12409#12390#28040#21435
       '<input type=submit value="'#36865#20449'">'
       '</form>'
-      '<p style=text-align:center><a href=/logout?db=master>'#12525#12464#12450#12454#12488'</a>'
+      '<p style=text-align:center><a href=/logout>'#12525#12464#12450#12454#12488'</a>'
       '<p style=text-align:center><a href=/>'#25147#12427'</a>'
       '</body></html>')
     OnHTMLTag = masterHTMLTag

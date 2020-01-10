@@ -623,8 +623,9 @@ var
   s, t: string;
   i: Integer;
 begin
-  s:=Request.CookieFields.Values['user'];
-  if (s = '')or(hash(s) <> DataModule1.FDTable3.FieldByName('password').AsString) then
+  s := Request.CookieFields.Values['user'];
+  if (s = '') or (hash(s) <> DataModule1.FDTable3.FieldByName('password')
+    .AsString) then
   begin
     WebModule1loginAction(nil, Request, Response, Handled);
     Exit;
@@ -750,7 +751,7 @@ end;
 procedure TWebModule1.WebModule1helpAction(Sender: TObject;
   Request: TWebRequest; Response: TWebResponse; var Handled: Boolean);
 var
-  i, j: Integer;
+  i, j, k: Integer;
   s: string;
 begin
   Response.ContentType := 'text/html;charset=utf-8';
@@ -759,7 +760,9 @@ begin
     i := DataModule1.FDTable1.FieldByName('dbnum').AsInteger;;
     j := DataModule1.FDTable2.FieldByName('number').AsInteger;
     s := Request.ContentFields.Values['help'];
-    DataModule1.FDTable4.AppendRecord([i, j, s]);
+    DataModule1.FDTable4.Last;
+    k := DataModule1.FDTable4.FieldByName('ID').AsInteger + 1;
+    DataModule1.FDTable4.AppendRecord([k, i, j, Now, s]);
   end;
   Response.Content := help.Content;
 end;
@@ -879,7 +882,9 @@ end;
 procedure TWebModule1.WebModule1logoutAction(Sender: TObject;
   Request: TWebRequest; Response: TWebResponse; var Handled: Boolean);
 var
+  i: Integer;
   s: string;
+  x: Boolean;
 begin
   with Response.Cookies.Add do
   begin
@@ -887,7 +892,12 @@ begin
     Expires := Now - 1;
   end;
   s := Request.QueryFields.Values['db'];
-  if s = 'master' then
+  i := StrToIntDef(s, -1);
+  x := DataModule1.FDTable1.Locate('dbnum', i);
+  if (x = true) and (DataModule1.FDTable1.FieldByName('database')
+    .AsString = 'master') then
+    x := false;
+  if x = false then
     Response.SendRedirect('/')
   else
     Response.SendRedirect('/index?db=' + s);
