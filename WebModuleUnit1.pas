@@ -159,19 +159,17 @@ var
   s: TStringList;
   i: Integer;
 begin
-  if TagString = 'plus' then
-    if alert.Tag = 0 then
-      ReplaceText:='<a href=/jump?db=<#dbname>&num=<#posnum>>[ <#dbname>-<#posnum> ]</a>'
-    else
-      alert.Tag :=0
+  if (TagString = 'plus')and(alert.Tag = 0) then
+    ReplaceText :=
+        '<a href=/jump?db=<#dbname>&num=<#posnum>>[ <#dbname>-<#posnum> ]</a>'
   else if TagString = 'article' then
   begin
     with DataModule1 do
-      if (FDTable1.Locate('dbnum', FDTable4.FieldByName('dbname').AsInteger) = false)or
-        (FDTable2.Locate('number', FDTable4.FieldByName('posnum').AsInteger) = false) then
+      if (FDTable1.Locate('dbnum', FDTable4.FieldByName('dbname').AsInteger)
+        = false) or (FDTable2.Locate('number', FDTable4.FieldByName('posnum')
+        .AsInteger) = false) then
       begin
-        ReplaceText:='<p>リクエスト';
-        alert.Tag:=1;
+        ReplaceText := '<p>リクエスト';
         Exit;
       end;
     s := TStringList.Create;
@@ -345,7 +343,7 @@ begin
         str := Request.QueryFields.Values['db'];
         if str = '' then
           t := Format('<a href="/jump?db=%d&num=%d">[ %d-%d ]</a>',
-            [DataModule1.FDTable1.FieldByName('dbnum').AsInteger, j, i, j])
+            [i, j, i, j])
         else
           t := Format('<a href="/jump?db=%s&num=%d">[ %d ]</a>', [str, j, j]);
       end;
@@ -375,13 +373,15 @@ begin
       ReplaceText := '<table border=1 align=center>';
       while Eof = false do
       begin
+        if FieldByName('posnum').AsInteger = -1 then
+          alert.Tag:=1
+        else
+          alert.Tag:=0;
         ReplaceText := ReplaceText + alert.ContentFromString(alert.Content);
         Next;
       end;
       ReplaceText := ReplaceText + '</table>';
-    end
-  else if TagString = 'db' then
-    ReplaceText := DataModule1.FDTable1.FieldByName('database').AsString;
+    end;
 end;
 
 function TWebModule1.mente: Boolean;
@@ -693,11 +693,13 @@ end;
 procedure TWebModule1.WebModule1alertAction(Sender: TObject;
   Request: TWebRequest; Response: TWebResponse; var Handled: Boolean);
 var
-  num1, num2, i, dbnum: Integer;
+  num1, num2, i: Integer;
+  s: string;
 begin
-  dbnum := DataModule1.FDTable1.FieldByName('dbnum').AsInteger;
   num1 := DataModule1.FDTable1.FieldByName('dbnum').AsInteger;
-  num2 := Request.QueryFields.Values['num'].ToInteger;
+  num2 := StrToIntDef(Request.QueryFields.Values['num'],-1);
+  if num2 = -1 then
+    num1 := -1;
   if Request.MethodType = mtGet then
   begin
     DataModule1.FDTable2.Locate('number', num2, []);
@@ -705,14 +707,21 @@ begin
     Response.Content := mail.Content;
   end
   else
+  begin
     with DataModule1.FDTable4 do
     begin
       Last;
       i := FieldByName('id').AsInteger + 1;
-      AppendRecord([i, num1, num2, Now, Request.ContentFields.Values
-        ['request']]);
-      Response.SendRedirect(Format('/index?db=%d&num=%d#%d', [dbnum, i, num2]));
+      s:=Request.ContentFields.Values['request'];
+      if s = '' then
+        s:='(No Comment)';
+      AppendRecord([i, num1, num2, Now, s]);
     end;
+    if num1 > -1 then
+      Response.SendRedirect(Format('/index?db=%d&num=%d#%d', [num1, num2, num2]))
+    else
+      Response.SendRedirect('/top');
+  end;
 end;
 
 procedure TWebModule1.WebModule1deleteAction(Sender: TObject;
@@ -764,12 +773,14 @@ begin
   Response.ContentType := 'text/html;charset=utf-8';
   if Request.MethodType = mtPost then
   begin
+  {
     i := DataModule1.FDTable1.FieldByName('dbnum').AsInteger;;
     j := DataModule1.FDTable2.FieldByName('number').AsInteger;
+    }
     s := Request.ContentFields.Values['help'];
     DataModule1.FDTable4.Last;
-    k := DataModule1.FDTable4.FieldByName('ID').AsInteger + 1;
-    DataModule1.FDTable4.AppendRecord([k, i, j, Now, s]);
+    k := DataModule1.FDTable4.FieldByName('id').AsInteger + 1;
+    DataModule1.FDTable4.AppendRecord([k, -1,-1, Now, s]);
   end;
   Response.Content := help.Content;
 end;
@@ -921,7 +932,11 @@ begin
   begin
     with DataModule1.FDTable1 do
       if Locate('database', 'master') = false then
-        AppendRecord([RecordCount, 'master']);
+      begin
+        Last;
+        i:=FieldByName('dbnum').AsInteger+1;
+        AppendRecord([i, 'master']);
+      end;
     WebModule1loginAction(nil, Request, Response, Handled);
     Exit;
   end;
@@ -942,12 +957,12 @@ begin
         begin
           i := DataModule1.FDTable4.FieldByName('posnum').AsInteger;
           if DataModule1.FDTable2.Locate('number', i) = false then
-          begin
-            DataModule1.FDTable4.Delete;
-            continue;
-          end;
-        end;
-        DataModule1.FDTable4.Next;
+            DataModule1.FDTable4.Delete
+          else
+            DataModule1.FDTable4.Next;
+        end
+        else
+          DataModule1.FDTable4.Delete;
       end;
     end;
   end;
