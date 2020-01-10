@@ -435,8 +435,7 @@ object WebModule1: TWebModule1
   object alert: TDataSetPageProducer
     HTMLDoc.Strings = (
       '<tr><td>'
-      '<p><a href=/jump?db=<#dbname>&num=<#posnum>>'
-      '    [ <#dbname>-<#posnum> ]</a><#date>'
+      '<p><#plus><#date>'
       '<p><#article></td><td><#request>'
       '</td><tr>')
     DataSet = DataModule1.FDTable4

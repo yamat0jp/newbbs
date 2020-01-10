@@ -159,13 +159,21 @@ var
   s: TStringList;
   i: Integer;
 begin
-  if TagString = 'article' then
+  if TagString = 'plus' then
+    if alert.Tag = 0 then
+      ReplaceText:='<a href=/jump?db=<#dbname>&num=<#posnum>>[ <#dbname>-<#posnum> ]</a>'
+    else
+      alert.Tag :=0
+  else if TagString = 'article' then
   begin
     with DataModule1 do
-    begin
-      FDTable1.Locate('dbnum', FDTable4.FieldByName('dbname').AsInteger);
-      FDTable2.Locate('number', FDTable4.FieldByName('posnum').AsInteger);
-    end;
+      if (FDTable1.Locate('dbnum', FDTable4.FieldByName('dbname').AsInteger) = false)or
+        (FDTable2.Locate('number', FDTable4.FieldByName('posnum').AsInteger) = false) then
+      begin
+        ReplaceText:='<p>リクエスト';
+        alert.Tag:=1;
+        Exit;
+      end;
     s := TStringList.Create;
     try
       s.Text := articles.Content;
@@ -367,7 +375,7 @@ begin
       ReplaceText := '<table border=1 align=center>';
       while Eof = false do
       begin
-        ReplaceText := ReplaceText + alert.Content;
+        ReplaceText := ReplaceText + alert.ContentFromString(alert.Content);
         Next;
       end;
       ReplaceText := ReplaceText + '</table>';
@@ -703,7 +711,6 @@ begin
       i := FieldByName('id').AsInteger + 1;
       AppendRecord([i, num1, num2, Now, Request.ContentFields.Values
         ['request']]);
-      pages(DataModule1.FDTable2.RecNo, i);
       Response.SendRedirect(Format('/index?db=%d&num=%d#%d', [dbnum, i, num2]));
     end;
 end;
