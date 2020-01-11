@@ -1911,12 +1911,18 @@ object WebModule1: TWebModule1
   end
   object ti: TDataSetPageProducer
     HTMLDoc.Strings = (
-      '<p style=font-weight:bold><#database>'#8595'</p>'
-      '<div>'#12479#12452#12488#12523': '#39'<#title> , '#35352#20107#25968': <#count> , '#26356#26032#26178#21051': <#date></div><p>'
+      
+        '<p style=font-weight:bold><a href=/index?db=<#dbnum>><#database>' +
+        '</a>'#8595'</p>'
+      '<div>'#12479#12452#12488#12523': <#title> ; '#35352#20107#25968': <#count> ; '#26356#26032#26178#21051': <#date></div><p>'
       '')
-    DataSet = DataModule1.FDTable2
+    DataSet = DataModule1.FDQuery1
     OnHTMLTag = tiHTMLTag
     Left = 48
     Top = 320
+  end
+  object FDQuery1: TFDQuery
+    Left = 200
+    Top = 176
   end
 end

@@ -47,6 +47,7 @@ type
     FDTable1DATABASE: TWideStringField;
     FDTable3password: TWideStringField;
     FDTable3ng: TWideStringField;
+    FDQuery1: TFDQuery;
   private
     { Private êÈåæ }
   public

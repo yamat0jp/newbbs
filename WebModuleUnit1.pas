@@ -4,7 +4,10 @@ interface
 
 uses System.SysUtils, System.Classes, Web.HTTPApp, Web.DSProd, Web.HTTPProd,
   Web.DBWeb, System.Variants, System.NetEncoding, System.RegularExpressions,
-  Data.DB, Web.DBXpressWeb, System.Types;
+  Data.DB, Web.DBXpressWeb, System.Types, FireDAC.Stan.Intf,
+  FireDAC.Stan.Option, FireDAC.Stan.Param, FireDAC.Stan.Error, FireDAC.DatS,
+  FireDAC.Phys.Intf, FireDAC.DApt.Intf, FireDAC.Stan.Async, FireDAC.DApt,
+  FireDAC.Comp.DataSet, FireDAC.Comp.Client;
 
 type
   TWebModule1 = class(TWebModule)
@@ -33,6 +36,7 @@ type
     js5: TPageProducer;
     title: TPageProducer;
     ti: TDataSetPageProducer;
+    FDQuery1: TFDQuery;
     procedure indexHTMLTag(Sender: TObject; Tag: TTag; const TagString: string;
       TagParams: TStrings; var ReplaceText: string);
     procedure WebModule1indexpageAction(Sender: TObject; Request: TWebRequest;
@@ -108,7 +112,7 @@ type
     ss: TStringList;
     tagstr: string;
     procedure pages(count: Integer; var page: Integer);
-    procedure strsCheck(var error: string; var list: TStringList);
+    procedure strsCheck(var Error: string; var list: TStringList);
     procedure setLastArticle;
     function isInfo: Boolean;
     function loginCheck: Boolean;
@@ -558,7 +562,7 @@ begin
   DataModule1.FDTable2.Last;
 end;
 
-procedure TWebModule1.strsCheck(var error: string; var list: TStringList);
+procedure TWebModule1.strsCheck(var Error: string; var list: TStringList);
 var
   s: TStringList;
   i, j: Integer;
@@ -579,16 +583,22 @@ begin
     s.Free;
   end;
   if x = true then
-    error := error + '<p>禁止語句が含まれています.';
+    Error := Error + '<p>禁止語句が含まれています.';
 end;
 
 procedure TWebModule1.tiHTMLTag(Sender: TObject; Tag: TTag;
   const TagString: string; TagParams: TStrings; var ReplaceText: string);
 begin
   if TagString = 'count' then
-    ReplaceText := DataModule1.FDTable2.FieldCount.ToString
+    ReplaceText := DataModule1.FDTable2.RecordCount.ToString
   else if TagString = 'database' then
-    ReplaceText := DataModule1.FDTable1.FieldByName('database').AsString;
+    ReplaceText := DataModule1.FDTable1.FieldByName('database').AsString
+  else if TagString = 'date' then
+    with DataModule1.FDTable2 do
+    begin
+      Last;
+      ReplaceText := FieldByName('date').AsString;
+    end;
 end;
 
 procedure TWebModule1.titleHTMLTag(Sender: TObject; Tag: TTag;
@@ -599,15 +609,30 @@ begin
   else if TagString = 'js' then
     ReplaceText := detail(TagString, TagParams.Values['id'])
   else if TagString = 'main' then
-    with DataModule1.FDTable1 do
+    with DataModule1 do
     begin
-      First;
-      while Eof = false do
+      FDQuery1.Open;
+      FDTable1.First;
+      while FDQuery1.Eof = false do
       begin
-        setLastArticle;
-        ReplaceText := ReplaceText + ti.Content;
-        Next;
+        if FDTable1.FieldByName('dbnum').AsInteger = FDQuery1.FieldByName
+          ('dbnum').AsInteger then
+        begin
+          ReplaceText := ReplaceText + ti.Content;
+          FDQuery1.Next;
+        end
+        else if FDTable2.Eof = false then
+        begin
+          ti.DataSet := nil;
+          try
+            ReplaceText := ReplaceText + ti.Content;
+          finally
+            ti.DataSet := FDQuery1;
+          end;
+        end;
+        FDTable1.Next;
       end;
+      FDQuery1.Close;
     end;
 end;
 
@@ -1038,7 +1063,7 @@ procedure TWebModule1.WebModule1registAction(Sender: TObject;
   Request: TWebRequest; Response: TWebResponse; var Handled: Boolean);
 var
   number, i: Integer;
-  title, na, raw, pass, kotoba, error: string;
+  title, na, raw, pass, kotoba, Error: string;
   comment: TStringList;
   function scan(Text: string): string;
   var
@@ -1065,9 +1090,9 @@ var
 
 begin
   kotoba := Request.ContentFields.Values['aikotoba'];
-  error := '';
+  Error := '';
   if kotoba <> 'げんき' then
-    error := error + '<p>合言葉がちがいます.';
+    Error := Error + '<p>合言葉がちがいます.';
   setLastArticle;
   number := DataModule1.FDTable2.FieldByName('number').AsInteger + 1;
   with Request.ContentFields do
@@ -1088,7 +1113,7 @@ begin
       Value := na;
     Expires := Now + 14;
   end;
-  if error = '' then
+  if Error = '' then
     with Response.Cookies.Add do
     begin
       Name := 'aikotoba';
@@ -1098,16 +1123,16 @@ begin
   comment := TStringList.Create;
   try
     comment.Text := raw;
-    strsCheck(error, comment);
+    strsCheck(Error, comment);
     Request.ContentFields.Values['raw'] := raw;
-    if error <> '' then
+    if Error <> '' then
       Request.ContentFields.Values['preview'] := '<section style=color:red>' +
-        error + '</section>'
+        Error + '</section>'
     else if Request.ContentFields.Values['show'] = 'true' then
     begin
-      error := '<p style=font-size:2.3em;color:blue>↓↓プレビュー↓↓<p>' +
+      Error := '<p style=font-size:2.3em;color:blue>↓↓プレビュー↓↓<p>' +
         comment.Text;
-      Request.ContentFields.Values['preview'] := error;
+      Request.ContentFields.Values['preview'] := Error;
       Request.ContentFields.Values['show'] := 'false';
     end
     else

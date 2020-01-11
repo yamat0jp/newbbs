@@ -1,6 +1,6 @@
 object DataModule1: TDataModule1
   OldCreateOrder = False
-  Height = 231
+  Height = 279
   Width = 302
   object FDTable1: TFDTable
     IndexFieldNames = 'DBNUM'
@@ -131,7 +131,7 @@ object DataModule1: TDataModule1
   end
   object DataSource1: TDataSource
     DataSet = FDTable1
-    Left = 64
+    Left = 32
     Top = 152
   end
   object FDTable4: TFDTable
@@ -186,5 +186,13 @@ object DataModule1: TDataModule1
       FieldName = 'SOURCE'
       Origin = 'SOURCE'
     end
+  end
+  object FDQuery1: TFDQuery
+    Connection = FDConnection1
+    SQL.Strings = (
+      'select dbnum,number,title from article'
+      ' where number = 1;')
+    Left = 136
+    Top = 152
   end
 end
