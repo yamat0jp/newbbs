@@ -3,10 +3,10 @@
         <ProjectGuid>{5029D026-E4F4-4D5D-AB43-5D8A45F21C95}</ProjectGuid>
     </PropertyGroup>
     <ItemGroup>
-        <Projects Include="Project3.dproj">
+        <Projects Include="newbbs.dproj">
             <Dependencies/>
         </Projects>
-        <Projects Include="Project4.dproj">
+        <Projects Include="yourBBS.dproj">
             <Dependencies/>
         </Projects>
     </ItemGroup>
@@ -17,32 +17,32 @@
             <Default.Personality/>
         </BorlandProject>
     </ProjectExtensions>
-    <Target Name="Project3">
-        <MSBuild Projects="Project3.dproj"/>
+    <Target Name="newbbs">
+        <MSBuild Projects="newbbs.dproj"/>
     </Target>
-    <Target Name="Project3:Clean">
-        <MSBuild Projects="Project3.dproj" Targets="Clean"/>
+    <Target Name="newbbs:Clean">
+        <MSBuild Projects="newbbs.dproj" Targets="Clean"/>
     </Target>
-    <Target Name="Project3:Make">
-        <MSBuild Projects="Project3.dproj" Targets="Make"/>
+    <Target Name="newbbs:Make">
+        <MSBuild Projects="newbbs.dproj" Targets="Make"/>
     </Target>
-    <Target Name="Project4">
-        <MSBuild Projects="Project4.dproj"/>
+    <Target Name="yourBBS">
+        <MSBuild Projects="yourBBS.dproj"/>
     </Target>
-    <Target Name="Project4:Clean">
-        <MSBuild Projects="Project4.dproj" Targets="Clean"/>
+    <Target Name="yourBBS:Clean">
+        <MSBuild Projects="yourBBS.dproj" Targets="Clean"/>
     </Target>
-    <Target Name="Project4:Make">
-        <MSBuild Projects="Project4.dproj" Targets="Make"/>
+    <Target Name="yourBBS:Make">
+        <MSBuild Projects="yourBBS.dproj" Targets="Make"/>
     </Target>
     <Target Name="Build">
-        <CallTarget Targets="Project3;Project4"/>
+        <CallTarget Targets="newbbs;yourBBS"/>
     </Target>
     <Target Name="Clean">
-        <CallTarget Targets="Project3:Clean;Project4:Clean"/>
+        <CallTarget Targets="newbbs:Clean;yourBBS:Clean"/>
     </Target>
     <Target Name="Make">
-        <CallTarget Targets="Project3:Make;Project4:Make"/>
+        <CallTarget Targets="newbbs:Make;yourBBS:Make"/>
     </Target>
     <Import Project="$(BDS)\Bin\CodeGear.Group.Targets" Condition="Exists('$(BDS)\Bin\CodeGear.Group.Targets')"/>
 </Project>

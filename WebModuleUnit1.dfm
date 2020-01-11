@@ -1921,8 +1921,4 @@ object WebModule1: TWebModule1
     Left = 48
     Top = 320
   end
-  object FDQuery1: TFDQuery
-    Left = 200
-    Top = 176
-  end
 end

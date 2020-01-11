@@ -1,4 +1,4 @@
-program Project3;
+program newbbs;
 {$APPTYPE GUI}
 
 

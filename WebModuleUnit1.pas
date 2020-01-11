@@ -36,7 +36,6 @@ type
     js5: TPageProducer;
     title: TPageProducer;
     ti: TDataSetPageProducer;
-    FDQuery1: TFDQuery;
     procedure indexHTMLTag(Sender: TObject; Tag: TTag; const TagString: string;
       TagParams: TStrings; var ReplaceText: string);
     procedure WebModule1indexpageAction(Sender: TObject; Request: TWebRequest;
@@ -343,8 +342,6 @@ begin
 end;
 
 function TWebModule1.isInfo: Boolean;
-var
-  s: string;
 begin
   result := DataModule1.FDTable1.FieldByName('dbnum')
     .AsInteger = DataModule1.FDTable3.FieldByName('info').AsInteger;
@@ -554,11 +551,6 @@ end;
 
 procedure TWebModule1.setLastArticle;
 begin
-  {
-    if isInfo(false) = true then
-    DataModule1.FDTable2.First
-    else
-  }
   DataModule1.FDTable2.Last;
 end;
 
@@ -613,7 +605,7 @@ begin
     begin
       FDQuery1.Open;
       FDTable1.First;
-      while FDQuery1.Eof = false do
+      while (FDQuery1.Eof = false)and(FDTable1.Eof = false) do
       begin
         if FDTable1.FieldByName('dbnum').AsInteger = FDQuery1.FieldByName
           ('dbnum').AsInteger then

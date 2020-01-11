@@ -1,6 +1,6 @@
 object DataModule1: TDataModule1
   OldCreateOrder = False
-  Height = 279
+  Height = 226
   Width = 302
   object FDTable1: TFDTable
     IndexFieldNames = 'DBNUM'
