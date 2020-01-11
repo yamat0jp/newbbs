@@ -29,11 +29,12 @@ object DataModule1: TDataModule1
       'Database=kainushi'
       'Server=localhost'
       'DriverID=MySQL')
+    Connected = True
     Left = 144
     Top = 24
   end
   object FDTable2: TFDTable
-    IndexFieldNames = 'DBNUM;NUMBER:DN'
+    IndexFieldNames = 'DBNUM;NUMBER:A'
     MasterSource = DataSource1
     MasterFields = 'DBNUM'
     Connection = FDConnection1
@@ -185,13 +186,5 @@ object DataModule1: TDataModule1
       FieldName = 'SOURCE'
       Origin = 'SOURCE'
     end
-  end
-  object FDQuery1: TFDQuery
-    Connection = FDConnection1
-    SQL.Strings = (
-      'select dbnum,number,title,date from article'
-      ' where number = 1 order by date;')
-    Left = 160
-    Top = 144
   end
 end

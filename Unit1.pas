@@ -45,7 +45,6 @@ type
     FDTable5NAME: TWideStringField;
     FDTable5SOURCE: TBlobField;
     FDTable1DATABASE: TWideStringField;
-    FDQuery1: TFDQuery;
     FDTable3password: TWideStringField;
     FDTable3ng: TWideStringField;
   private

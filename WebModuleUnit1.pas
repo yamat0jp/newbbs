@@ -109,7 +109,8 @@ type
     tagstr: string;
     procedure pages(count: Integer; var page: Integer);
     procedure strsCheck(var error: string; var list: TStringList);
-    function isInfo: Boolean;
+    procedure setLastArticle;
+    function isInfo(sort: Boolean = true): Boolean;
     function loginCheck: Boolean;
     function hash(str: string): string;
     function mente: Boolean;
@@ -132,6 +133,8 @@ uses Unit1, IdHashSHA, IdGlobal, IdHash, IdHashMessageDigest;
 const
   promotion = '広告:';
   tcnt = 7;
+  sortNormal = 'DBNUM;NUMBER';
+  sortReverse = 'DBNUM;NUMBER:A';
 
 procedure TWebModule1.adheadHTMLTag(Sender: TObject; Tag: TTag;
   const TagString: string; TagParams: TStrings; var ReplaceText: string);
@@ -341,10 +344,29 @@ begin
     ReplaceText := DataModule1.FDTable1.FieldByName('database').AsString;
 end;
 
-function TWebModule1.isInfo: Boolean;
+function TWebModule1.isInfo(sort: Boolean = true): Boolean;
+var
+  s: string;
 begin
   result := DataModule1.FDTable1.FieldByName('dbnum')
     .AsInteger = DataModule1.FDTable3.FieldByName('info').AsInteger;
+  if sort = false then
+    Exit;
+  with DataModule1.FDTable2 do
+  begin
+    s := IndexFieldNames;
+    if (result = false) and (s = sortNormal) then
+      Exit;
+    Close;
+    try
+      if result = true then
+        IndexFieldNames := sortReverse
+      else
+        IndexFieldNames := sortNormal;
+    finally
+      Open;
+    end;
+  end;
 end;
 
 procedure TWebModule1.itemsHTMLTag(Sender: TObject; Tag: TTag;
@@ -549,12 +571,23 @@ begin
     ReplaceText := css2.Content;
 end;
 
+procedure TWebModule1.setLastArticle;
+begin
+  {
+    if isInfo(false) = true then
+    DataModule1.FDTable2.First
+    else
+  }
+  DataModule1.FDTable2.Last;
+end;
+
 procedure TWebModule1.strsCheck(var error: string; var list: TStringList);
 var
   s: TStringList;
   i, j: Integer;
   x: Boolean;
 begin
+  x := false;
   s := TStringList.Create;
   try
     s.DelimitedText := DataModule1.FDTable3.FieldByName('ng').AsString;
@@ -576,14 +609,9 @@ procedure TWebModule1.tiHTMLTag(Sender: TObject; Tag: TTag;
   const TagString: string; TagParams: TStrings; var ReplaceText: string);
 begin
   if TagString = 'count' then
-  begin
-    DataModule1.FDTable1.Locate('dbnum',
-      DataModule1.FDQuery1.FieldByName('dbnum').AsInteger);
-    ReplaceText := DataModule1.FDTable2.RecordCount.ToString;
-  end
+    ReplaceText := DataModule1.FDTable2.FieldCount.ToString
   else if TagString = 'database' then
-    ReplaceText := DataModule1.FDTable1.Lookup('dbnum',
-      DataModule1.FDQuery1.FieldByName('dbnum').AsInteger, 'database');
+    ReplaceText := DataModule1.FDTable1.FieldByName('database').AsString;
 end;
 
 procedure TWebModule1.titleHTMLTag(Sender: TObject; Tag: TTag;
@@ -594,15 +622,15 @@ begin
   else if TagString = 'js' then
     ReplaceText := detail(TagString, TagParams.Values['id'])
   else if TagString = 'main' then
-    with DataModule1.FDQuery1 do
+    with DataModule1.FDTable1 do
     begin
-      Open;
+      First;
       while Eof = false do
       begin
+        setLastArticle;
         ReplaceText := ReplaceText + ti.Content;
         Next;
       end;
-      Close;
     end;
 end;
 
@@ -630,7 +658,8 @@ begin
         continue;
       end;
       DataModule1.FDTable2.Last;
-      if Now - DataModule1.FDTable2.FieldByName('date').AsDateTime < 1 then
+      if (Now - DataModule1.FDTable2.FieldByName('date').AsDateTime < 1) and
+        (DataModule1.FDTable2.RecordCount > 0) then
         t := 'background-color:aqua;';
       if DataModule1.FDTable2.RecordCount >= 10 *
         DataModule1.FDTable3.FieldByName('count').AsInteger then
@@ -876,16 +905,12 @@ begin
   if s <> '' then
     DataModule1.FDTable1.Locate('dbnum', s, []);
   i := StrToIntDef(Request.QueryFields.Values['num'], -1);
+  isInfo;
   pages(DataModule1.FDTable2.RecordCount, i);
   index.Tag := i;
   tagstr := '/index';
   Self.Tag := Integer(@tagstr);
   Response.ContentType := 'text/html; charset="utf-8"';
-  s := DataModule1.FDTable2.IndexFieldNames;
-  if isInfo = true then
-    DataModule1.FDTable2.IndexFieldNames := Copy(s, 1, Length(s) - 2) + 'DN'
-  else
-    DataModule1.FDTable2.IndexFieldNames := Copy(s, 1, Length(s) - 2) + 'AN';
   if mente = false then
     Response.Content := index.Content;
 end;
@@ -1037,7 +1062,6 @@ procedure TWebModule1.WebModule1registAction(Sender: TObject;
 var
   number, i: Integer;
   title, na, raw, pass, kotoba, error: string;
-  s: string;
   comment: TStringList;
   function scan(Text: string): string;
   var
@@ -1063,18 +1087,12 @@ var
   end;
 
 begin
-  error := '';
   kotoba := Request.ContentFields.Values['aikotoba'];
+  error := '';
   if kotoba <> 'げんき' then
-    error := '<section style=color:red><p>合言葉がちがいます.';
-  with DataModule1.FDTable2 do
-  begin
-    if isInfo = true then
-      First
-    else
-      Last;
-    number := FieldByName('number').AsInteger + 1;
-  end;
+    error := error + '<p>合言葉がちがいます.';
+  setLastArticle;
+  number := DataModule1.FDTable2.FieldByName('number').AsInteger + 1;
   with Request.ContentFields do
   begin
     title := Values['title'];
@@ -1104,32 +1122,25 @@ begin
   try
     comment.Text := raw;
     strsCheck(error, comment);
-    Request.ContentFields.Values['show'] := 'false';
     Request.ContentFields.Values['raw'] := raw;
     if error <> '' then
-      Request.ContentFields.Values['preview'] := error + '</section>'
+      Request.ContentFields.Values['preview'] := '<section style=color:red>' +
+        error + '</section>'
     else if Request.ContentFields.Values['show'] = 'true' then
     begin
       error := '<p style=font-size:2.3em;color:blue>↓↓プレビュー↓↓<p>' +
         comment.Text;
       Request.ContentFields.Values['preview'] := error;
+      Request.ContentFields.Values['show'] := 'false';
     end
     else
     begin
-      s := DataModule1.FDTable2.IndexFieldNames;
-      if s[Length(s)] = 'N' then
-      begin
-        s := Copy(s, 1, Length(s) - 3);
-        DataModule1.FDTable2.IndexFieldNames := s;
-      end;
+      if isInfo(false) = true then
+        DataModule1.FDTable2.IndexFieldNames := '';
       i := DataModule1.FDTable1.FieldByName('dbnum').AsInteger;
       DataModule1.FDTable2.AppendRecord([i, number, title, na, comment.Text,
         raw, Now, pass]);
-      if isInfo = true then
-        s := s + ':DN'
-      else
-        s := s + ':AN';
-      DataModule1.FDTable2.IndexFieldNames := s;
+      isInfo;
       Response.SendRedirect('index?db=' + i.ToString + '#article');
       Exit;
     end;
