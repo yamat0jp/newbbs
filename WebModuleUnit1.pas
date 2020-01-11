@@ -110,7 +110,7 @@ type
     procedure pages(count: Integer; var page: Integer);
     procedure strsCheck(var error: string; var list: TStringList);
     procedure setLastArticle;
-    function isInfo(sort: Boolean = true): Boolean;
+    function isInfo: Boolean;
     function loginCheck: Boolean;
     function hash(str: string): string;
     function mente: Boolean;
@@ -133,8 +133,6 @@ uses Unit1, IdHashSHA, IdGlobal, IdHash, IdHashMessageDigest;
 const
   promotion = 'çLçê:';
   tcnt = 7;
-  sortNormal = 'DBNUM;NUMBER';
-  sortReverse = 'DBNUM;NUMBER:A';
 
 procedure TWebModule1.adheadHTMLTag(Sender: TObject; Tag: TTag;
   const TagString: string; TagParams: TStrings; var ReplaceText: string);
@@ -301,24 +299,20 @@ procedure TWebModule1.indexHTMLTag(Sender: TObject; Tag: TTag;
   const TagString: string; TagParams: TStrings; var ReplaceText: string);
 var
   i: Integer;
-  x: Boolean;
 begin
   if TagString = 'pr' then
     ReplaceText := promotion
   else if TagString = 'article' then
   begin
-    x := DataModule1.FDTable1.FieldByName('dbnum')
-      .AsInteger = DataModule1.FDTable3.FieldByName('info').AsInteger;
     for i := 1 to DataModule1.FDTable3.FieldByName('count').AsInteger do
     begin
       if DataModule1.FDTable2.Eof = true then
         break;
-      if x = false then
+      if isInfo = false then
         ReplaceText := ReplaceText + articles.Content
       else
         ReplaceText := articles.Content + ReplaceText;
-      if DataModule1.FDTable2.Eof = false then
-        DataModule1.FDTable2.Next;
+      DataModule1.FDTable2.Next;
     end;
   end
   else if TagString = 'footer' then
@@ -344,29 +338,12 @@ begin
     ReplaceText := DataModule1.FDTable1.FieldByName('database').AsString;
 end;
 
-function TWebModule1.isInfo(sort: Boolean = true): Boolean;
+function TWebModule1.isInfo: Boolean;
 var
   s: string;
 begin
   result := DataModule1.FDTable1.FieldByName('dbnum')
     .AsInteger = DataModule1.FDTable3.FieldByName('info').AsInteger;
-  if sort = false then
-    Exit;
-  with DataModule1.FDTable2 do
-  begin
-    s := IndexFieldNames;
-    if (result = false) and (s = sortNormal) then
-      Exit;
-    Close;
-    try
-      if result = true then
-        IndexFieldNames := sortReverse
-      else
-        IndexFieldNames := sortNormal;
-    finally
-      Open;
-    end;
-  end;
 end;
 
 procedure TWebModule1.itemsHTMLTag(Sender: TObject; Tag: TTag;
@@ -1135,12 +1112,9 @@ begin
     end
     else
     begin
-      if isInfo(false) = true then
-        DataModule1.FDTable2.IndexFieldNames := '';
       i := DataModule1.FDTable1.FieldByName('dbnum').AsInteger;
       DataModule1.FDTable2.AppendRecord([i, number, title, na, comment.Text,
         raw, Now, pass]);
-      isInfo;
       Response.SendRedirect('index?db=' + i.ToString + '#article');
       Exit;
     end;
