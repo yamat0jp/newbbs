@@ -346,6 +346,7 @@ object Form2: TForm2
       'Password=kainushi'
       'Server=localhost'
       'CharacterSet=utf8'
+      'Database=kainushi'
       'DriverID=MySQL')
     Left = 360
     Top = 192
@@ -394,14 +395,8 @@ object Form2: TForm2
       'create database if not exists kainushi;'
       'use kainushi;'
       'create table if not exists images(id int primary key,'
-      ' name varchar(10), source mediumblob);')
+      ' name varchar(30), source mediumblob);')
     Left = 456
     Top = 192
-  end
-  object FDBatchMove1: TFDBatchMove
-    Mappings = <>
-    LogFileName = 'Data.log'
-    Left = 512
-    Top = 272
   end
 end

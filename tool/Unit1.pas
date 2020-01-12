@@ -35,7 +35,6 @@ type
     LinkPropertyToFieldBitmap: TLinkPropertyToField;
     FDQuery1: TFDQuery;
     Button2: TButton;
-    FDBatchMove1: TFDBatchMove;
     Button3: TButton;
     procedure Button1Click(Sender: TObject);
     procedure FormCreate(Sender: TObject);
@@ -82,7 +81,7 @@ begin
   begin
     Clear;
     Add('drop table images;');
-    Add('create table images(id int primary key, name varchar(10), source mediumblob);');
+    Add('create table images(id int primary key, name varchar(30), source mediumblob);');
   end;
   FormCreate(Sender);
 end;
@@ -99,6 +98,7 @@ begin
     for i := 1 to 50 do
       FDTable1.AppendRecord([i, Format('slide%d.jpg', [i]), nil]);
     FDTable1.First;
+    FDTable1.CachedUpdates := true;
     for i := 1 to 10 do
     begin
       FDTable1.Edit;
@@ -106,13 +106,16 @@ begin
       t := TResourceStream.Create(HInstance, Format('Resource_%d', [i]),
         RT_RCDATA);
       try
-        streamToField(t,s);
+        streamToField(t, s);
         FDTable1.Post;
       finally
         s.Free;
       end;
       FDTable1.Next;
     end;
+    FDTable1.ApplyUpdates;
+    FDTable1.CommitUpdates;
+    FDTable1.CachedUpdates := false;
   end;
   FDTable1.First;
 end;
@@ -125,7 +128,7 @@ var
 begin
   pm.Quality := 100;
   bmp := TBitmapSurface.Create;
-  img:=TBitmap.Create;
+  img := TBitmap.Create;
   try
     img.LoadFromStream(stream);
     bmp.Assign(img);
