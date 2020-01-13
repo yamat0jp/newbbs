@@ -59,22 +59,16 @@ implementation
 procedure TForm1.Button1Click(Sender: TObject);
 var
   i: Integer;
-  s, t: TStream;
+  t: TStream;
 begin
   FDTable1.CachedUpdates := true;
   for i := 1 to 10 do
   begin
     t := TResourceStream.Create(HInstance, 'Resource_' + i.ToString, RT_RCDATA);
-    s := FDTable1.CreateBlobStream(FDTable1.FieldByName('source'),bmWrite);
-    FDTable1.Append;
-    FDTable1.Edit;
-    FDTable1.FieldByName('id').AsInteger:=i;
-    FDTable1.FieldByName('name').AsString:= Format('slide%d.jpg', [i]);
-    img.LoadFromStream(t);
-    img.SaveToStream(s);
+    FDTable1.AppendRecord([i,Format('slide%d.jpg',[i]),nil]);
+    img.SaveToStream(t);
     FDTable1.Post;
     t.Free;
-    s.Free;
   end;
   FDTable1.ApplyUpdates;
   FDTable1.CommitUpdates;
