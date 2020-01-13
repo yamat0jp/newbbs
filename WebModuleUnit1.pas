@@ -546,7 +546,9 @@ begin
       ReplaceText := '?' + ReplaceText;
   end
   else if TagString = 'css' then
-    ReplaceText := css2.Content;
+    ReplaceText := css2.Content
+  else if TagString = 'dbnum' then
+    Replacetext := Request.QueryFields.Values['dbnum'];
 end;
 
 procedure TWebModule1.setLastArticle;

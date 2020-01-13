@@ -259,7 +259,7 @@ object WebModule1: TWebModule1
       '      <p>'
       '    <input type="submit" value="'#26908#32034'"></p>'
       '    </form>'
-      '      <p><a href="/">'#25522#31034#26495#12408#25147#12427
+      '      <p><a href="/index?db=<#dbnum>">'#25522#31034#26495#12408#25147#12427
       '</a></p>'
       '    <#items>'
       '  </body>'
