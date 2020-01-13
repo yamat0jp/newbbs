@@ -66,8 +66,7 @@ begin
   begin
     t := TResourceStream.Create(HInstance, 'Resource_' + i.ToString, RT_RCDATA);
     FDTable1.AppendRecord([i,Format('slide%d.jpg',[i]),nil]);
-    img.SaveToStream(t);
-    FDTable1.Post;
+    streamToField(t);
     t.Free;
   end;
   FDTable1.ApplyUpdates;
