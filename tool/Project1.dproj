@@ -119,17 +119,13 @@
             <ResourceType>RCDATA</ResourceType>
             <ResourceId>Resource_8</ResourceId>
         </RcItem>
-        <RcItem Include="2019-03\IMG_0760 (1).JPG">
+        <RcItem Include="2019-03\IMG_0760.JPG">
             <ResourceType>RCDATA</ResourceType>
             <ResourceId>Resource_9</ResourceId>
         </RcItem>
-        <RcItem Include="2019-03\IMG_0760.JPG">
-            <ResourceType>RCDATA</ResourceType>
-            <ResourceId>Resource_10</ResourceId>
-        </RcItem>
         <RcItem Include="2019-03\IMG_0761.JPG">
             <ResourceType>RCDATA</ResourceType>
-            <ResourceId>Resource_11</ResourceId>
+            <ResourceId>Resource_10</ResourceId>
         </RcItem>
         <BuildConfiguration Include="Release">
             <Key>Cfg_2</Key>
@@ -171,12 +167,6 @@
                         <Overwrite>true</Overwrite>
                     </Platform>
                 </DeployFile>
-                <DeployFile LocalName="2019-03\IMG_0755.JPG" Configuration="Debug" Class="ProjectFile">
-                    <Platform Name="Win32">
-                        <RemoteDir>.\</RemoteDir>
-                        <Overwrite>true</Overwrite>
-                    </Platform>
-                </DeployFile>
                 <DeployFile LocalName="2019-03\IMG_0752.JPG" Configuration="Debug" Class="ProjectFile">
                     <Platform Name="Win32">
                         <RemoteDir>.\</RemoteDir>
@@ -189,25 +179,25 @@
                         <Overwrite>true</Overwrite>
                     </Platform>
                 </DeployFile>
+                <DeployFile LocalName="2019-03\IMG_0755.JPG" Configuration="Debug" Class="ProjectFile">
+                    <Platform Name="Win32">
+                        <RemoteDir>.\</RemoteDir>
+                        <Overwrite>true</Overwrite>
+                    </Platform>
+                </DeployFile>
                 <DeployFile LocalName="2019-03\IMG_0756.JPG" Configuration="Debug" Class="ProjectFile">
                     <Platform Name="Win32">
                         <RemoteDir>.\</RemoteDir>
                         <Overwrite>true</Overwrite>
                     </Platform>
                 </DeployFile>
-                <DeployFile LocalName="2019-03\IMG_0760 (1).JPG" Configuration="Debug" Class="ProjectFile">
+                <DeployFile LocalName="2019-03\IMG_0761.JPG" Configuration="Debug" Class="ProjectFile">
                     <Platform Name="Win32">
                         <RemoteDir>.\</RemoteDir>
                         <Overwrite>true</Overwrite>
                     </Platform>
                 </DeployFile>
                 <DeployFile LocalName="2019-03\IMG_0760.JPG" Configuration="Debug" Class="ProjectFile">
-                    <Platform Name="Win32">
-                        <RemoteDir>.\</RemoteDir>
-                        <Overwrite>true</Overwrite>
-                    </Platform>
-                </DeployFile>
-                <DeployFile LocalName="2019-03\IMG_0761.JPG" Configuration="Debug" Class="ProjectFile">
                     <Platform Name="Win32">
                         <RemoteDir>.\</RemoteDir>
                         <Overwrite>true</Overwrite>
