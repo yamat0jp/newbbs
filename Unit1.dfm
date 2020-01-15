@@ -23,13 +23,11 @@ object DataModule1: TDataModule1
   end
   object FDConnection1: TFDConnection
     Params.Strings = (
+      'Database=kainushi'
+      'User_Name=masasi'
       'Password=kainushi'
       'CharacterSet=utf8'
-      'User_Name=masasi'
-      'Database=kainushi'
-      'Server=localhost'
       'DriverID=MySQL')
-    Connected = True
     Left = 144
     Top = 24
   end
@@ -103,9 +101,10 @@ object DataModule1: TDataModule1
       Origin = 'TITLE2'
       Size = 320
     end
-    object FDTable3MENTE: TBooleanField
-      FieldName = 'MENTE'
-      Origin = 'MENTE'
+    object FDTable3mente: TBooleanField
+      FieldKind = fkCalculated
+      FieldName = 'mente'
+      Calculated = True
     end
     object FDTable3INFO: TIntegerField
       FieldName = 'INFO'
@@ -123,11 +122,6 @@ object DataModule1: TDataModule1
       FieldName = 'ng'
       Size = 300
     end
-  end
-  object FDGUIxWaitCursor1: TFDGUIxWaitCursor
-    Provider = 'Forms'
-    Left = 48
-    Top = 24
   end
   object DataSource1: TDataSource
     DataSet = FDTable1
@@ -165,34 +159,19 @@ object DataModule1: TDataModule1
       BlobType = ftWideMemo
     end
   end
-  object FDTable5: TFDTable
-    IndexFieldNames = 'ID'
-    Connection = FDConnection1
-    UpdateOptions.UpdateTableName = 'images'
-    TableName = 'images'
-    Left = 224
-    Top = 144
-    object FDTable5ID: TIntegerField
-      FieldName = 'ID'
-      Origin = 'ID'
-      Required = True
-    end
-    object FDTable5NAME: TWideStringField
-      FieldName = 'NAME'
-      Origin = 'NAME'
-      FixedChar = True
-    end
-    object FDTable5SOURCE: TBlobField
-      FieldName = 'SOURCE'
-      Origin = 'SOURCE'
-    end
-  end
   object FDQuery1: TFDQuery
     Connection = FDConnection1
     SQL.Strings = (
       'select dbnum,number,title from article'
       ' where number = 1;')
     Left = 136
+    Top = 152
+  end
+  object FDTable5: TFDTable
+    Connection = FDConnection1
+    UpdateOptions.UpdateTableName = 'IMAGES'
+    TableName = 'IMAGES'
+    Left = 224
     Top = 152
   end
 end

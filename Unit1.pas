@@ -10,7 +10,8 @@ uses
   FireDAC.Phys.SQLiteDef, FireDAC.Stan.ExprFuncs, Data.DB, FireDAC.Comp.Client,
   FireDAC.Comp.DataSet, FireDAC.Phys.IB, FireDAC.Phys.IBLiteDef,
   FireDAC.VCLUI.Wait, FireDAC.Comp.UI, FireDAC.Phys.MySQL, FireDAC.Phys.MySQLDef,
-  FireDAC.Phys.IBDef, Data.FMTBcd, Data.DBXInterBase, Data.SqlExpr;
+  FireDAC.Phys.IBDef, Data.FMTBcd, Data.DBXInterBase, Data.SqlExpr,
+  FireDAC.Phys.FB, FireDAC.Phys.FBDef;
 
 type
   TDataModule1 = class(TDataModule)
@@ -18,7 +19,6 @@ type
     FDConnection1: TFDConnection;
     FDTable2: TFDTable;
     FDTable3: TFDTable;
-    FDGUIxWaitCursor1: TFDGUIxWaitCursor;
     DataSource1: TDataSource;
     FDTable1DBNUM: TIntegerField;
     FDTable4: TFDTable;
@@ -35,19 +35,16 @@ type
     FDTable2DATE: TDateField;
     FDTable3TITLE: TWideStringField;
     FDTable3TITLE2: TWideStringField;
-    FDTable3MENTE: TBooleanField;
     FDTable3INFO: TIntegerField;
     FDTable3COUNT: TIntegerField;
     FDTable4ID: TIntegerField;
     FDTable2PASS: TWideStringField;
-    FDTable5: TFDTable;
-    FDTable5ID: TIntegerField;
-    FDTable5NAME: TWideStringField;
-    FDTable5SOURCE: TBlobField;
     FDTable1DATABASE: TWideStringField;
     FDTable3password: TWideStringField;
     FDTable3ng: TWideStringField;
     FDQuery1: TFDQuery;
+    FDTable3mente: TBooleanField;
+    FDTable5: TFDTable;
   private
     { Private êÈåæ }
   public

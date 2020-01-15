@@ -129,7 +129,7 @@ implementation
 
 { %CLASSGROUP 'Vcl.Controls.TControl' }
 
-uses Unit1, IdHashSHA, IdGlobal, IdHash, IdHashMessageDigest;
+uses Unit1, IdHashSHA, IdGlobal, IdHash, IdHashMessageDigest, Jpeg, Graphics;
 
 {$R *.dfm}
 
@@ -548,7 +548,7 @@ begin
   else if TagString = 'css' then
     ReplaceText := css2.Content
   else if TagString = 'dbnum' then
-    Replacetext := Request.QueryFields.Values['dbnum'];
+    ReplaceText := Request.QueryFields.Values['dbnum'];
 end;
 
 procedure TWebModule1.setLastArticle;
@@ -607,7 +607,7 @@ begin
     begin
       FDQuery1.Open;
       FDTable1.First;
-      while (FDQuery1.Eof = false)and(FDTable1.Eof = false) do
+      while (FDQuery1.Eof = false) and (FDTable1.Eof = false) do
       begin
         if FDTable1.FieldByName('dbnum').AsInteger = FDQuery1.FieldByName
           ('dbnum').AsInteger then
@@ -872,14 +872,17 @@ procedure TWebModule1.WebModule1imgAction(Sender: TObject; Request: TWebRequest;
   Response: TWebResponse; var Handled: Boolean);
 var
   s: string;
-  res: TResourceStream;
+  res: TStream;
 begin
   with DataModule1.FDTable5 do
   begin
     s := Request.ContentFields.Values['name'];
     Response.ContentType := 'image/jpeg';
     if Locate('name', s) = true then
-      Response.ContentStream := CreateBlobStream(FieldByName('source'), bmRead)
+    begin
+      res := CreateBlobStream(FieldByName('source'), bmRead);
+      Response.ContentStream := res;
+    end
     else if s = 'sprites.png' then
     begin
       Response.ContentType := 'image/png';
@@ -1169,7 +1172,6 @@ end;
 procedure TWebModule1.WebModuleCreate(Sender: TObject);
 var
   i: Integer;
-  a: Variant;
   s: string;
 begin
   with DataModule1 do
@@ -1182,16 +1184,10 @@ begin
       FDTable3.CreateTable;
     if FDTable4.Exists = false then
       FDTable4.CreateTable;
-    if FDTable5.Exists = false then
-      FDTable5.CreateTable;
     FDTable1.Open;
     FDTable2.Open;
     FDTable3.Open;
     FDTable4.Open;
-    FDTable5.Open;
-    FDTable1.Refresh;
-    FDTable3.Refresh;
-    FDTable5.Refresh;
   end;
   if DataModule1.FDTable1.Bof and DataModule1.FDTable1.Eof then
   begin
@@ -1201,12 +1197,12 @@ begin
   end;
   if DataModule1.FDTable3.Bof and DataModule1.FDTable3.Eof then
   begin
-    a := DataModule1.FDTable1.Lookup('database', 'info', 'dbnum');
+    i := DataModule1.FDTable1.Lookup('database', 'info', 'dbnum');
     s := 'à¢ï€,îné≠,éÄÇÀ';
     DataModule1.FDTable3.AppendRecord
       (['Ç∆ÇÈÇÀÅ`Ç«çÜ',
       '<h1 style=color:maron;text-align:center;font-style:italic>Ç∆ÇÈÇÀÅ`Ç«çÜ</h1>',
-      false, a, 30, hash(hash('admin')), s]);
+      false, i, 30, hash(hash('admin')), s]);
   end;
 end;
 
