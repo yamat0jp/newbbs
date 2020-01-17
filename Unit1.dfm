@@ -23,11 +23,8 @@ object DataModule1: TDataModule1
   end
   object FDConnection1: TFDConnection
     Params.Strings = (
-      'Database=kainushi'
-      'User_Name=masasi'
-      'Password=kainushi'
-      'CharacterSet=utf8'
-      'DriverID=MySQL')
+      'ConnectionDef=test_server')
+    Connected = True
     Left = 144
     Top = 24
   end
@@ -168,6 +165,7 @@ object DataModule1: TDataModule1
     Top = 152
   end
   object FDTable5: TFDTable
+    Active = True
     Connection = FDConnection1
     UpdateOptions.UpdateTableName = 'IMAGES'
     TableName = 'IMAGES'

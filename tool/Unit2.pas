@@ -13,7 +13,8 @@ uses
   FireDAC.Comp.DataSet, FireDAC.Comp.Client, System.Rtti,
   System.Bindings.Outputs, Vcl.Bind.Editors, Data.Bind.EngExt,
   Vcl.Bind.DBEngExt, Data.Bind.Components, Data.Bind.DBScope,
-  FireDAC.VCLUI.Wait, FireDAC.Comp.UI, Vcl.DBCtrls, Jpeg, Vcl.Grids, Vcl.DBGrids,
+  FireDAC.VCLUI.Wait, FireDAC.Comp.UI, Vcl.DBCtrls, Jpeg, Vcl.Grids,
+  Vcl.DBGrids,
   FireDAC.Phys.IB, FireDAC.Phys.IBDef, FireDAC.Phys.FB, FireDAC.Phys.FBDef;
 
 type
@@ -23,7 +24,6 @@ type
     Button1: TButton;
     Button2: TButton;
     Button3: TButton;
-    Image1: TImage;
     Edit1: TEdit;
     Label1: TLabel;
     OpenPictureDialog1: TOpenPictureDialog;
@@ -39,11 +39,11 @@ type
     FDTable1NAME: TWideStringField;
     FDTable1SOURCE: TBlobField;
     Button4: TButton;
-    FDQuery1: TFDQuery;
+    FDTransaction1: TFDTransaction;
     procedure Button1Click(Sender: TObject);
-    procedure FormCreate(Sender: TObject);
     procedure Button4Click(Sender: TObject);
     procedure Button3Click(Sender: TObject);
+    procedure FormCreate(Sender: TObject);
   private
     { Private êÈåæ }
   public
@@ -60,19 +60,26 @@ implementation
 procedure TForm1.Button1Click(Sender: TObject);
 var
   i: Integer;
-  s,t: TStream;
+  t: TStream;
 begin
-  for i := 1 to 10 do
+  FDTransaction1.StartTransaction;
+  with FDTable1 do
   begin
-    t := TResourceStream.Create(HInstance, 'Resource_' + i.ToString, RT_RCDATA);
-    FDTable1.AppendRecord([i,Format('slide%d.jpg',[i]),nil]);
-    FDTable1.Edit;
-    s:=FDTable1.CreateBlobStream(FDTable1.FieldByName('source'),bmWrite);
-    s.CopyFrom(t,0);
-    FDTable1.Post;
-    s.Free;
-    t.Free;
+    for i := 1 to 10 do
+    begin
+      t := TResourceStream.Create(HInstance, 'Resource_' + i.ToString,
+        RT_RCDATA);
+      AppendRecord([i, Format('slide%d.jpg', [i]), nil]);
+      Edit;
+      FDTable1SOURCE.LoadFromStream(t);
+      Post;
+      t.Free;
+    end;
+    ApplyUpdates;
+    Reconcile;
+    CommitUpdates;
   end;
+  FDTransaction1.Commit;
 end;
 
 procedure TForm1.Button3Click(Sender: TObject);
@@ -80,28 +87,31 @@ var
   s: TStream;
   j: TJpegImage;
 begin
-  s:=FDTable1.CreateBlobStream(FDTable1.FieldByName('source'),bmRead);
-  j:=TJpegImage.Create;
-  s.Position:=0;
+  s := FDTable1.CreateBlobStream(FDTable1.FieldByName('source'), bmRead);
+  j := TJpegImage.Create;
   j.LoadFromStream(s);
+  Canvas.Draw(0, 0, j);
   s.Free;
-  Image1.Picture.Assign(j);
   j.Free;
 end;
 
 procedure TForm1.Button4Click(Sender: TObject);
 begin
-  FDTable1.Close;
-  FDQuery1.ExecSQL;
-  FDTable1.CreateTable;
-  FDTable1.Open;
+  with FDTable1 do
+  begin
+    repeat
+      Delete;
+    until (Bof = true) and (Eof = true);
+    ApplyUpdates;
+    Reconcile;
+    CommitUpdates;
+  end;
 end;
 
 procedure TForm1.FormCreate(Sender: TObject);
 begin
   if FDTable1.Exists = false then
-    FDTable1.CreateTable;
-  FDTable1.Open;
+    Button4Click(nil);
 end;
 
 end.
