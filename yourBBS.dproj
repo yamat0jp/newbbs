@@ -59,6 +59,7 @@
         <DCC_K>false</DCC_K>
     </PropertyGroup>
     <PropertyGroup Condition="'$(Base_Win32)'!=''">
+        <DCC_ExeOutput>F:\web\cgi-bin\</DCC_ExeOutput>
         <DCC_UsePackage>IndyIPClient;FireDACASADriver;FireDACSqliteDriver;bindcompfmx;FireDACDSDriver;DBXSqliteDriver;FireDACPgDriver;FireDACODBCDriver;RESTBackendComponents;emsclientfiredac;fmx;rtl;dbrtl;DbxClientDriver;IndySystem;FireDACCommon;bindcomp;inetdb;tethering;vclib;DBXInterBaseDriver;DataSnapClient;DataSnapServer;DataSnapCommon;DBXOdbcDriver;vclFireDAC;DataSnapProviderClient;xmlrtl;DataSnapNativeClient;DBXSybaseASEDriver;DbxCommonDriver;svnui;vclimg;ibxpress;IndyProtocols;dbxcds;DBXMySQLDriver;DatasnapConnectorsFreePascal;FireDACCommonDriver;MetropolisUILiveTile;bindengine;vclactnband;vcldb;bindcompdbx;soaprtl;vcldsnap;bindcompvcl;vclie;fmxFireDAC;FireDACADSDriver;vcltouch;DBXDb2Driver;emsclient;CustomIPTransport;DBXOracleDriver;vclribbon;VCLRESTComponents;FireDACMSSQLDriver;FireDAC;VclSmp;dsnap;DBXInformixDriver;vcl;DataSnapConnectors;fmxase;DataSnapServerMidas;DBXMSSQLDriver;IndyIPCommon;IndyCore;dsnapcon;FireDACIBDriver;DBXFirebirdDriver;inet;IndyIPServer;DataSnapFireDAC;fmxobj;CloudService;FireDACDBXDriver;FireDACMySQLDriver;soapmidas;vclx;soapserver;inetdbxpress;CodeSiteExpressPkg;svn;DBXSybaseASADriver;dsnapxml;FireDACOracleDriver;FireDACInfxDriver;FireDACDb2Driver;RESTComponents;fmxdae;FireDACMSAccDriver;dbexpress;DataSnapIndy10ServerTransport;adortl;$(DCC_UsePackage)</DCC_UsePackage>
         <VerInfo_IncludeVerInfo>true</VerInfo_IncludeVerInfo>
         <VerInfo_Locale>1033</VerInfo_Locale>
@@ -100,11 +101,6 @@
         <DelphiCompile Include="$(MainSource)">
             <MainSource>MainSource</MainSource>
         </DelphiCompile>
-        <DCCReference Include="Unit1.pas">
-            <Form>DataModule1</Form>
-            <FormType>dfm</FormType>
-            <DesignClass>TDataModule</DesignClass>
-        </DCCReference>
         <DCCReference Include="WebModuleUnit1.pas">
             <Form>WebModule1</Form>
             <FormType>dfm</FormType>
@@ -142,21 +138,27 @@
                 </Excluded_Packages>
             </Delphi.Personality>
             <Deployment>
-                <DeployFile LocalName="sprites.png" Configuration="Release" Class="ProjectFile"/>
                 <DeployFile LocalName="Win32\Release\yourBBS.exe" Configuration="Release" Class="ProjectOutput">
                     <Platform Name="Win32">
                         <RemoteName>yourBBS.exe</RemoteName>
                         <Overwrite>true</Overwrite>
                     </Platform>
                 </DeployFile>
-                <DeployFile LocalName="Win64\Release\yourBBS.exe" Configuration="Release" Class="ProjectOutput">
-                    <Platform Name="Win64">
+                <DeployFile LocalName="Win32\Debug\yourBBS.exe" Configuration="Debug" Class="ProjectOutput">
+                    <Platform Name="Win32">
                         <RemoteName>yourBBS.exe</RemoteName>
                         <Overwrite>true</Overwrite>
                     </Platform>
                 </DeployFile>
-                <DeployFile LocalName="Win32\Debug\yourBBS.exe" Configuration="Debug" Class="ProjectOutput">
+                <DeployFile LocalName="F:\web\cgi-bin\yourBBS.cgi" Configuration="Release" Class="ProjectOutput">
                     <Platform Name="Win32">
+                        <RemoteName>yourBBS.exe</RemoteName>
+                        <Overwrite>true</Overwrite>
+                    </Platform>
+                </DeployFile>
+                <DeployFile LocalName="sprites.png" Configuration="Release" Class="ProjectFile"/>
+                <DeployFile LocalName="Win64\Release\yourBBS.exe" Configuration="Release" Class="ProjectOutput">
+                    <Platform Name="Win64">
                         <RemoteName>yourBBS.exe</RemoteName>
                         <Overwrite>true</Overwrite>
                     </Platform>

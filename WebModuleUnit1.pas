@@ -7,7 +7,8 @@ uses System.SysUtils, System.Classes, Web.HTTPApp, Web.DSProd, Web.HTTPProd,
   Data.DB, Web.DBXpressWeb, System.Types, FireDAC.Stan.Intf,
   FireDAC.Stan.Option, FireDAC.Stan.Param, FireDAC.Stan.Error, FireDAC.DatS,
   FireDAC.Phys.Intf, FireDAC.DApt.Intf, FireDAC.Stan.Async, FireDAC.DApt,
-  FireDAC.Comp.DataSet, FireDAC.Comp.Client;
+  FireDAC.Comp.DataSet, FireDAC.Comp.Client, FireDAC.UI.Intf, FireDAC.Stan.Def,
+  FireDAC.Stan.Pool, FireDAC.Phys, FireDAC.Phys.FB, FireDAC.Phys.FBDef;
 
 type
   TWebModule1 = class(TWebModule)
@@ -36,6 +37,36 @@ type
     js5: TPageProducer;
     title: TPageProducer;
     ti: TDataSetPageProducer;
+    FDTable2: TFDTable;
+    FDTable2DBNUM: TIntegerField;
+    FDTable2NUMBER: TIntegerField;
+    FDTable2TITLE: TWideStringField;
+    FDTable2NAME: TWideStringField;
+    FDTable2COMMENT: TWideMemoField;
+    FDTable2RAW: TWideMemoField;
+    FDTable2DATE: TDateField;
+    FDTable2PASS: TWideStringField;
+    FDTable5: TFDTable;
+    FDQuery1: TFDQuery;
+    FDTable4: TFDTable;
+    FDTable4ID: TIntegerField;
+    FDTable4DBNAME: TIntegerField;
+    FDTable4POSNUM: TIntegerField;
+    FDTable4DATE: TDateField;
+    FDTable4REQUEST: TWideMemoField;
+    DataSource1: TDataSource;
+    FDTable3: TFDTable;
+    FDTable3TITLE: TWideStringField;
+    FDTable3TITLE2: TWideStringField;
+    FDTable3mente: TBooleanField;
+    FDTable3INFO: TIntegerField;
+    FDTable3COUNT: TIntegerField;
+    FDTable3password: TWideStringField;
+    FDTable3ng: TWideStringField;
+    FDConnection1: TFDConnection;
+    FDTable1: TFDTable;
+    FDTable1DBNUM: TIntegerField;
+    FDTable1DATABASE: TWideStringField;
     procedure indexHTMLTag(Sender: TObject; Tag: TTag; const TagString: string;
       TagParams: TStrings; var ReplaceText: string);
     procedure WebModule1indexpageAction(Sender: TObject; Request: TWebRequest;
@@ -129,7 +160,7 @@ implementation
 
 { %CLASSGROUP 'Vcl.Controls.TControl' }
 
-uses Unit1, IdHashSHA, IdGlobal, IdHash, IdHashMessageDigest, Jpeg, Graphics;
+uses IdHashSHA, IdGlobal, IdHash, IdHashMessageDigest, Jpeg, Graphics;
 
 {$R *.dfm}
 
@@ -143,7 +174,7 @@ begin
   if TagString = 'pr' then
     ReplaceText := promotion
   else if (TagString = 'mente') and
-    (DataModule1.FDTable3.FieldByName('mente').AsBoolean = true) then
+    (FDTable3.FieldByName('mente').AsBoolean = true) then
     ReplaceText := 'checked'
   else if TagString = 'database' then
     ReplaceText := Request.QueryFields.Values['db'];
@@ -169,14 +200,13 @@ begin
       '<a href=/jump?db=<#dbname>&num=<#posnum>>[ <#dbname>-<#posnum> ]</a>'
   else if TagString = 'article' then
   begin
-    with DataModule1 do
-      if (FDTable1.Locate('dbnum', FDTable4.FieldByName('dbname').AsInteger)
-        = false) or (FDTable2.Locate('number', FDTable4.FieldByName('posnum')
-        .AsInteger) = false) then
-      begin
-        ReplaceText := '<p>リクエスト';
-        Exit;
-      end;
+    if (FDTable1.Locate('dbnum', FDTable4.FieldByName('dbname').AsInteger)
+      = false) or (FDTable2.Locate('number', FDTable4.FieldByName('posnum')
+      .AsInteger) = false) then
+    begin
+      ReplaceText := '<p>リクエスト';
+      Exit;
+    end;
     s := TStringList.Create;
     try
       s.Text := articles.Content;
@@ -194,14 +224,14 @@ begin
     end;
   end
   else if TagString = 'request' then
-    ReplaceText := DataModule1.FDTable4.FieldByName('request').AsString;
+    ReplaceText := FDTable4.FieldByName('request').AsString;
 end;
 
 procedure TWebModule1.articlesHTMLTag(Sender: TObject; Tag: TTag;
   const TagString: string; TagParams: TStrings; var ReplaceText: string);
 begin
   if TagString = 'comment' then
-    ReplaceText := DataModule1.FDTable2.FieldByName('comment').AsString;
+    ReplaceText := FDTable2.FieldByName('comment').AsString;
 end;
 
 function TWebModule1.detail(ts, pid: string): string;
@@ -226,16 +256,15 @@ begin
       else
         ReplaceText := ReplaceText +
           Format(' <a style=text-decoration-line:none href="%s?db=%d&num=%d">%d</a> ',
-          [PString(Self.Tag)^, DataModule1.FDTable1.FieldByName('dbnum')
-          .AsInteger, i, i]);
+          [PString(Self.Tag)^, FDTable1.FieldByName('dbnum').AsInteger, i, i]);
   end
   else if TagString = 'recent' then
     if index.Tag = -1 then
       ReplaceText := TagString
     else
       ReplaceText := '<a style=text-decoration-line:none href="' +
-        PString(Self.Tag)^ + '?db=' + DataModule1.FDTable1.FieldByName('dbnum')
-        .AsString + '">recent</a>';
+        PString(Self.Tag)^ + '?db=' + FDTable1.FieldByName('dbnum').AsString +
+        '">recent</a>';
 end;
 
 function TWebModule1.hash(str: string): string;
@@ -307,28 +336,27 @@ begin
     ReplaceText := promotion
   else if TagString = 'article' then
   begin
-    for i := 1 to DataModule1.FDTable3.FieldByName('count').AsInteger do
+    for i := 1 to FDTable3.FieldByName('count').AsInteger do
     begin
-      if DataModule1.FDTable2.Eof = true then
+      if FDTable2.Eof = true then
         break;
       if isInfo = false then
         ReplaceText := ReplaceText + articles.Content
       else
         ReplaceText := articles.Content + ReplaceText;
-      DataModule1.FDTable2.Next;
+      FDTable2.Next;
     end;
   end
   else if TagString = 'footer' then
     ReplaceText := footer.Content
   else if TagString = 'header' then
-    if (DataModule1.FDTable1.FieldByName('dbnum')
-      .AsInteger = DataModule1.FDTable3.FieldByName('info').AsInteger) and
-      (loginCheck = false) then
+    if (FDTable1.FieldByName('dbnum').AsInteger = FDTable3.FieldByName('info')
+      .AsInteger) and (loginCheck = false) then
       ReplaceText := '<h1 style=text-align:center>管理人からお知らせがあります.</h1>'
     else
     begin
-      i := DataModule1.FDTable3.FieldByName('count').AsInteger;
-      if 10 * i <= DataModule1.FDTable2.RecordCount then
+      i := FDTable3.FieldByName('count').AsInteger;
+      if 10 * i <= FDTable2.RecordCount then
         ReplaceText := '<h1>これ以上投稿できません.</h1>'
       else
         ReplaceText := header.Content;
@@ -336,15 +364,15 @@ begin
   else if (TagString = 'css') or (TagString = 'js') then
     ReplaceText := detail(TagString, TagParams.Values['id'])
   else if TagString = 'dbnum' then
-    ReplaceText := DataModule1.FDTable1.FieldByName('dbnum').AsString
+    ReplaceText := FDTable1.FieldByName('dbnum').AsString
   else if TagString = 'database' then
-    ReplaceText := DataModule1.FDTable1.FieldByName('database').AsString;
+    ReplaceText := FDTable1.FieldByName('database').AsString;
 end;
 
 function TWebModule1.isInfo: Boolean;
 begin
-  result := DataModule1.FDTable1.FieldByName('dbnum')
-    .AsInteger = DataModule1.FDTable3.FieldByName('info').AsInteger;
+  result := FDTable1.FieldByName('dbnum').AsInteger = FDTable3.FieldByName
+    ('info').AsInteger;
 end;
 
 procedure TWebModule1.itemsHTMLTag(Sender: TObject; Tag: TTag;
@@ -358,7 +386,7 @@ begin
   begin
     s := TStringList.Create;
     try
-      s.Text := DataModule1.FDTable2.FieldByName('raw').AsString;
+      s.Text := FDTable2.FieldByName('raw').AsString;
       for i := 0 to s.count - 1 do
         for j := 0 to ss.count - 1 do
           if Pos(ss[j], s[i]) > 0 then
@@ -366,7 +394,7 @@ begin
               s[i] := '<p style=background-color:aqua>' + s[i]
             else
               s[i] := '<p style=background-color:yellow>' + s[i];
-      with DataModule1.FDTable2 do
+      with FDTable2 do
       begin
         i := FieldByName('dbnum').AsInteger;
         j := FieldByName('number').AsInteger;
@@ -386,8 +414,8 @@ end;
 
 function TWebModule1.loginCheck: Boolean;
 begin
-  result := hash(Request.CookieFields.Values['user'])
-    = DataModule1.FDTable3.FieldByName('password').AsString;
+  result := hash(Request.CookieFields.Values['user']) = FDTable3.FieldByName
+    ('password').AsString;
 end;
 
 procedure TWebModule1.loginHTMLTag(Sender: TObject; Tag: TTag;
@@ -403,7 +431,7 @@ begin
   if TagString = 'pr' then
     ReplaceText := promotion
   else if TagString = 'request' then
-    with DataModule1.FDTable4 do
+    with FDTable4 do
     begin
       First;
       ReplaceText := '<table border=1 align=center>';
@@ -422,7 +450,7 @@ end;
 
 function TWebModule1.mente: Boolean;
 begin
-  if DataModule1.FDTable3.FieldByName('mente').AsBoolean = true then
+  if FDTable3.FieldByName('mente').AsBoolean = true then
   begin
     result := true;
     Response.Content :=
@@ -437,7 +465,7 @@ procedure TWebModule1.pages(count: Integer; var page: Integer);
 var
   max: Integer;
 begin
-  max := DataModule1.FDTable3.FieldByName('count').AsInteger;
+  max := FDTable3.FieldByName('count').AsInteger;
   if (page > -1) and (count < max * (page - 1)) then
   begin
     page := (count div max) + 1;
@@ -447,12 +475,12 @@ begin
   case page of
     - 1:
       begin
-        DataModule1.FDTable2.Last;
-        DataModule1.FDTable2.MoveBy(1 - max);
+        FDTable2.Last;
+        FDTable2.MoveBy(1 - max);
       end;
   else
-    DataModule1.FDTable2.First;
-    DataModule1.FDTable2.MoveBy(max * (page - 1));
+    FDTable2.First;
+    FDTable2.MoveBy(max * (page - 1));
   end;
 end;
 
@@ -479,10 +507,10 @@ var
     j: Integer;
   label jump;
   begin
-    DataModule1.FDTable2.First;
-    while DataModule1.FDTable2.Eof = false do
+    FDTable2.First;
+    while FDTable2.Eof = false do
     begin
-      s.Text := DataModule1.FDTable2.FieldByName('raw').AsString;
+      s.Text := FDTable2.FieldByName('raw').AsString;
       ss.DelimitedText := Request.ContentFields.Values['word1'];
       for j := 0 to ss.count - 1 do
         for i := 0 to s.count - 1 do
@@ -505,7 +533,7 @@ var
           else if i = s.count - 1 then
             goto jump;
     jump:
-      DataModule1.FDTable2.Next;
+      FDTable2.Next;
     end;
   end;
 
@@ -525,11 +553,11 @@ begin
       ss.StrictDelimiter := false;
       if Request.QueryFields.Values['db'] = '' then
       begin
-        DataModule1.FDTable1.First;
-        while DataModule1.FDTable1.Eof = false do
+        FDTable1.First;
+        while FDTable1.Eof = false do
         begin
           sub;
-          DataModule1.FDTable1.Next;
+          FDTable1.Next;
         end;
       end
       else
@@ -553,7 +581,7 @@ end;
 
 procedure TWebModule1.setLastArticle;
 begin
-  DataModule1.FDTable2.Last;
+  FDTable2.Last;
 end;
 
 procedure TWebModule1.strsCheck(var Error: string; var list: TStringList);
@@ -565,7 +593,7 @@ begin
   x := false;
   s := TStringList.Create;
   try
-    s.DelimitedText := DataModule1.FDTable3.FieldByName('ng').AsString;
+    s.DelimitedText := FDTable3.FieldByName('ng').AsString;
     for i := 0 to s.count - 1 do
       for j := 0 to list.count - 1 do
       begin
@@ -584,11 +612,11 @@ procedure TWebModule1.tiHTMLTag(Sender: TObject; Tag: TTag;
   const TagString: string; TagParams: TStrings; var ReplaceText: string);
 begin
   if TagString = 'count' then
-    ReplaceText := DataModule1.FDTable2.RecordCount.ToString
+    ReplaceText := FDTable2.RecordCount.ToString
   else if TagString = 'database' then
-    ReplaceText := DataModule1.FDTable1.FieldByName('database').AsString
+    ReplaceText := FDTable1.FieldByName('database').AsString
   else if TagString = 'date' then
-    with DataModule1.FDTable2 do
+    with FDTable2 do
     begin
       Last;
       ReplaceText := FieldByName('date').AsString;
@@ -603,31 +631,28 @@ begin
   else if TagString = 'js' then
     ReplaceText := detail(TagString, TagParams.Values['id'])
   else if TagString = 'main' then
-    with DataModule1 do
+    FDQuery1.Open;
+  FDTable1.First;
+  while (FDQuery1.Eof = false) and (FDTable1.Eof = false) do
+  begin
+    if FDTable1.FieldByName('dbnum').AsInteger = FDQuery1.FieldByName('dbnum').AsInteger
+    then
     begin
-      FDQuery1.Open;
-      FDTable1.First;
-      while (FDQuery1.Eof = false) and (FDTable1.Eof = false) do
-      begin
-        if FDTable1.FieldByName('dbnum').AsInteger = FDQuery1.FieldByName
-          ('dbnum').AsInteger then
-        begin
-          ReplaceText := ReplaceText + ti.Content;
-          FDQuery1.Next;
-        end
-        else if FDTable2.Eof = false then
-        begin
-          ti.DataSet := nil;
-          try
-            ReplaceText := ReplaceText + ti.Content;
-          finally
-            ti.DataSet := FDQuery1;
-          end;
-        end;
-        FDTable1.Next;
+      ReplaceText := ReplaceText + ti.Content;
+      FDQuery1.Next;
+    end
+    else if FDTable2.Eof = false then
+    begin
+      ti.DataSet := nil;
+      try
+        ReplaceText := ReplaceText + ti.Content;
+      finally
+        ti.DataSet := FDQuery1;
       end;
-      FDQuery1.Close;
     end;
+    FDTable1.Next;
+  end;
+  FDQuery1.Close;
 end;
 
 procedure TWebModule1.topHTMLTag(Sender: TObject; Tag: TTag;
@@ -640,44 +665,44 @@ begin
     ReplaceText := promotion
   else if TagString = 'list' then
   begin
-    i := DataModule1.FDTable3.FieldByName('info').AsInteger;
+    i := FDTable3.FieldByName('info').AsInteger;
     for k := 0 to tcnt do
     begin
-      if DataModule1.FDTable1.Eof = true then
+      if FDTable1.Eof = true then
         break;
       t := '';
-      j := DataModule1.FDTable1.FieldByName('dbnum').AsInteger;
-      s := DataModule1.FDTable1.FieldByName('database').AsString;
+      j := FDTable1.FieldByName('dbnum').AsInteger;
+      s := FDTable1.FieldByName('database').AsString;
       if (i = j) or (s = 'master') then
       begin
-        DataModule1.FDTable1.Next;
+        FDTable1.Next;
         continue;
       end;
-      DataModule1.FDTable2.Last;
-      if (Now - DataModule1.FDTable2.FieldByName('date').AsDateTime < 1) and
-        (DataModule1.FDTable2.RecordCount > 0) then
+      FDTable2.Last;
+      if (Now - FDTable2.FieldByName('date').AsDateTime < 1) and
+        (FDTable2.RecordCount > 0) then
         t := 'background-color:aqua;';
-      if DataModule1.FDTable2.RecordCount >= 10 *
-        DataModule1.FDTable3.FieldByName('count').AsInteger then
+      if FDTable2.RecordCount >= 10 * FDTable3.FieldByName('count').AsInteger
+      then
         t := t + 'color:red;';
       if t <> '' then
         t := ' style=' + t;
       ReplaceText := ReplaceText +
         Format('<p><a%s target=_blank href="/index?db=%d">%s</a><br></p>',
         [t, j, s]);
-      DataModule1.FDTable1.Next;
+      FDTable1.Next;
     end;
   end
   else if TagString = 'info' then
-    ReplaceText := DataModule1.FDTable1.Lookup('dbnum',
-      DataModule1.FDTable3.FieldByName('info').AsInteger, 'database')
+    ReplaceText := FDTable1.Lookup('dbnum', FDTable3.FieldByName('info')
+      .AsInteger, 'database')
   else if TagString = 'dbnum' then
-    ReplaceText := DataModule1.FDTable3.FieldByName('info').AsString
+    ReplaceText := FDTable3.FieldByName('info').AsString
   else if (TagString = 'css') or (TagString = 'js') then
     ReplaceText := detail(TagString, TagParams.Values['id'])
   else if TagString = 'slide' then
   begin
-    for i := 1 to (DataModule1.FDTable1.RecordCount div tcnt) + 1 do
+    for i := 1 to (FDTable1.RecordCount div tcnt) + 1 do
       ReplaceText := ReplaceText +
         '<div class="slide"><img src="/src?name=slide' + i.ToString +
         '.jpg" style=float:right;height:465px><#list></div>';
@@ -692,7 +717,7 @@ var
   match: TMatch;
 begin
   j := 0;
-  DataModule1.FDTable2.RecNo := admin.Tag;
+  FDTable2.RecNo := admin.Tag;
   for i := 0 to Request.ContentFields.count - 1 do
   begin
     reg := TRegEx.Create('\d+');
@@ -702,8 +727,8 @@ begin
       k := match.Value.ToInteger - j - 1;
       j := match.Value.ToInteger;
       for m := 1 to k do
-        DataModule1.FDTable2.Next;
-      DataModule1.FDTable2.Delete;
+        FDTable2.Next;
+      FDTable2.Delete;
     end;
   end;
   WebModule1adminAction(nil, Request, Response, Handled);
@@ -721,13 +746,13 @@ begin
     WebModule1loginAction(nil, Request, Response, Handled);
     Exit;
   end;
-  admin.MaxRows := DataModule1.FDTable3.FieldByName('count').AsInteger;
+  admin.MaxRows := FDTable3.FieldByName('count').AsInteger;
   t := Request.QueryFields.Values['db'];
   if t <> '' then
-    DataModule1.FDTable1.Locate('dbnum', t, []);
+    FDTable1.Locate('dbnum', t, []);
   s := Request.QueryFields.Values['num'];
   i := StrToIntDef(s, -1);
-  pages(DataModule1.FDTable2.RecordCount, i);
+  pages(FDTable2.RecordCount, i);
   index.Tag := i;
   tagstr := '/admin';
   Self.Tag := Integer(@tagstr);
@@ -740,7 +765,7 @@ begin
     t := '?db=' + t;
   admin.footer.Add('<p style=text-align:center><a href="/index' + t +
     '">戻る</a>');
-  admin.Tag := DataModule1.FDTable2.RecNo;
+  admin.Tag := FDTable2.RecNo;
   Response.ContentType := 'text/html;charset=utf-8';
   Response.Content := admin.Content;
 end;
@@ -751,7 +776,7 @@ var
   s: string;
 begin
   s := Request.ContentFields.Values['pass'];
-  with DataModule1.FDTable3 do
+  with FDTable3 do
   begin
     Edit;
     FieldByName('mente').AsBoolean := Request.ContentFields.Values
@@ -779,19 +804,19 @@ var
   num1, num2, i: Integer;
   s: string;
 begin
-  num1 := DataModule1.FDTable1.FieldByName('dbnum').AsInteger;
+  num1 := FDTable1.FieldByName('dbnum').AsInteger;
   num2 := StrToIntDef(Request.QueryFields.Values['num'], -1);
   if num2 = -1 then
     num1 := -1;
   if Request.MethodType = mtGet then
   begin
-    DataModule1.FDTable2.Locate('number', num2, []);
+    FDTable2.Locate('number', num2, []);
     Response.ContentType := 'text/html;charset=utf-8';
     Response.Content := mail.Content;
   end
   else
   begin
-    with DataModule1.FDTable4 do
+    with FDTable4 do
     begin
       Last;
       i := FieldByName('id').AsInteger + 1;
@@ -819,7 +844,7 @@ begin
     Exit;
   num := s.ToInteger;
   s := hash(Request.ContentFields.Values['password']);
-  with DataModule1.FDTable2 do
+  with FDTable2 do
     if Locate('number;pass', VarArrayOf([num, s])) = true then
     begin
       Edit;
@@ -858,9 +883,9 @@ begin
   if Request.MethodType = mtPost then
   begin
     s := Request.ContentFields.Values['help'];
-    DataModule1.FDTable4.Last;
-    k := DataModule1.FDTable4.FieldByName('id').AsInteger + 1;
-    DataModule1.FDTable4.AppendRecord([k, -1, -1, Now, s]);
+    FDTable4.Last;
+    k := FDTable4.FieldByName('id').AsInteger + 1;
+    FDTable4.AppendRecord([k, -1, -1, Now, s]);
     help.Tag := 1;
   end
   else
@@ -874,7 +899,7 @@ var
   s: string;
   res: TStream;
 begin
-  with DataModule1.FDTable5 do
+  with FDTable5 do
   begin
     s := Request.ContentFields.Values['name'];
     Response.ContentType := 'image/jpeg';
@@ -902,10 +927,10 @@ var
 begin
   s := Request.QueryFields.Values['db'];
   if s <> '' then
-    DataModule1.FDTable1.Locate('dbnum', s, []);
+    FDTable1.Locate('dbnum', s, []);
   i := StrToIntDef(Request.QueryFields.Values['num'], -1);
   isInfo;
-  pages(DataModule1.FDTable2.RecordCount, i);
+  pages(FDTable2.RecordCount, i);
   index.Tag := i;
   tagstr := '/index';
   Self.Tag := Integer(@tagstr);
@@ -923,10 +948,10 @@ begin
   DB := Request.QueryFields.Values['db'];
   s := Request.ContentFields.Values['num'];
   if DB <> '' then
-    DataModule1.FDTable1.Locate('dbnum', DB.ToInteger, []);
-  DataModule1.FDTable2.Locate('number', s.ToInteger, []);
+    FDTable1.Locate('dbnum', DB.ToInteger, []);
+  FDTable2.Locate('number', s.ToInteger, []);
   page := 10;
-  pages(DataModule1.FDTable2.RecNo, page);
+  pages(FDTable2.RecNo, page);
   Response.SendRedirect(Format('/index?db=%s&num=%d#%s', [DB, page, s]));
 end;
 
@@ -940,7 +965,7 @@ begin
   if s = '' then
     Exit;
   num := s.ToInteger;
-  if DataModule1.FDTable2.Locate('number', num, []) = true then
+  if FDTable2.Locate('number', num, []) = true then
   begin
     Response.ContentType := 'text/html;charset=utf-8';
     Response.Content := articles.Content;
@@ -961,7 +986,7 @@ begin
     Exit;
   end;
   s := Request.ContentFields.Values['record'];
-  v := DataModule1.FDTable1.Lookup('database', s, 'dbnum');
+  v := FDTable1.Lookup('database', s, 'dbnum');
   if VarIsNull(v) = false then
   begin
     with Response.Cookies.Add do
@@ -998,9 +1023,8 @@ begin
   end;
   s := Request.QueryFields.Values['db'];
   i := StrToIntDef(s, -1);
-  x := DataModule1.FDTable1.Locate('dbnum', i);
-  if (x = true) and (DataModule1.FDTable1.FieldByName('database')
-    .AsString = 'master') then
+  x := FDTable1.Locate('dbnum', i);
+  if (x = true) and (FDTable1.FieldByName('database').AsString = 'master') then
     x := false;
   if x = false then
     Response.SendRedirect('/')
@@ -1016,7 +1040,7 @@ var
 begin
   if loginCheck = false then
   begin
-    with DataModule1.FDTable1 do
+    with FDTable1 do
       if Locate('database', 'master') = false then
       begin
         Last;
@@ -1030,25 +1054,25 @@ begin
   begin
     s := Request.ContentFields.Values['delete'];
     if s = 'all' then
-      with DataModule1.FDTable4 do
+      with FDTable4 do
         while (Bof = false) or (Eof = false) do
           Delete
     else
     begin
-      DataModule1.FDTable4.First;
-      while DataModule1.FDTable4.Eof = false do
+      FDTable4.First;
+      while FDTable4.Eof = false do
       begin
-        i := DataModule1.FDTable4.FieldByName('dbname').AsInteger;
-        if DataModule1.FDTable1.Locate('dbnum', i) = true then
+        i := FDTable4.FieldByName('dbname').AsInteger;
+        if FDTable1.Locate('dbnum', i) = true then
         begin
-          i := DataModule1.FDTable4.FieldByName('posnum').AsInteger;
-          if DataModule1.FDTable2.Locate('number', i) = false then
-            DataModule1.FDTable4.Delete
+          i := FDTable4.FieldByName('posnum').AsInteger;
+          if FDTable2.Locate('number', i) = false then
+            FDTable4.Delete
           else
-            DataModule1.FDTable4.Next;
+            FDTable4.Next;
         end
         else
-          DataModule1.FDTable4.Delete;
+          FDTable4.Delete;
       end;
     end;
   end;
@@ -1091,7 +1115,7 @@ begin
   if kotoba <> 'げんき' then
     Error := Error + '<p>合言葉がちがいます.';
   setLastArticle;
-  number := DataModule1.FDTable2.FieldByName('number').AsInteger + 1;
+  number := FDTable2.FieldByName('number').AsInteger + 1;
   with Request.ContentFields do
   begin
     title := Values['title'];
@@ -1134,9 +1158,9 @@ begin
     end
     else
     begin
-      i := DataModule1.FDTable1.FieldByName('dbnum').AsInteger;
-      DataModule1.FDTable2.AppendRecord([i, number, title, na, comment.Text,
-        raw, Now, pass]);
+      i := FDTable1.FieldByName('dbnum').AsInteger;
+      FDTable2.AppendRecord([i, number, title, na, comment.Text, raw,
+        Now, pass]);
       Response.SendRedirect('index?db=' + i.ToString + '#article');
       Exit;
     end;
@@ -1164,7 +1188,7 @@ procedure TWebModule1.WebModule1topAction(Sender: TObject; Request: TWebRequest;
   Response: TWebResponse; var Handled: Boolean);
 begin
   Response.ContentType := 'text/html;charset=utf-8';
-  DataModule1.FDTable1.First;
+  FDTable1.First;
   if mente = false then
     Response.Content := top.ContentFromString(top.Content);
 end;
@@ -1174,32 +1198,29 @@ var
   i: Integer;
   s: string;
 begin
-  with DataModule1 do
+  if FDTable1.Exists = false then
+    FDTable1.CreateTable;
+  if FDTable2.Exists = false then
+    FDTable2.CreateTable;
+  if FDTable3.Exists = false then
+    FDTable3.CreateTable;
+  if FDTable4.Exists = false then
+    FDTable4.CreateTable;
+  FDTable1.Open;
+  FDTable2.Open;
+  FDTable3.Open;
+  FDTable4.Open;
+  if FDTable1.Bof and FDTable1.Eof then
   begin
-    if FDTable1.Exists = false then
-      FDTable1.CreateTable;
-    if FDTable2.Exists = false then
-      FDTable2.CreateTable;
-    if FDTable3.Exists = false then
-      FDTable3.CreateTable;
-    if FDTable4.Exists = false then
-      FDTable4.CreateTable;
-    FDTable1.Open;
-    FDTable2.Open;
-    FDTable3.Open;
-    FDTable4.Open;
-  end;
-  if DataModule1.FDTable1.Bof and DataModule1.FDTable1.Eof then
-  begin
-    DataModule1.FDTable1.AppendRecord([0, 'info']);
+    FDTable1.AppendRecord([0, 'info']);
     for i := 1 to 10 do
-      DataModule1.FDTable1.AppendRecord([i, '掲示板' + i.ToString]);
+      FDTable1.AppendRecord([i, '掲示板' + i.ToString]);
   end;
-  if DataModule1.FDTable3.Bof and DataModule1.FDTable3.Eof then
+  if FDTable3.Bof and FDTable3.Eof then
   begin
-    i := DataModule1.FDTable1.Lookup('database', 'info', 'dbnum');
+    i := FDTable1.Lookup('database', 'info', 'dbnum');
     s := '阿保,馬鹿,死ね';
-    DataModule1.FDTable3.AppendRecord
+    FDTable3.AppendRecord
       (['とるね～ど号',
       '<h1 style=color:maron;text-align:center;font-style:italic>とるね～ど号</h1>',
       false, i, 30, hash(hash('admin')), s]);

@@ -103,7 +103,7 @@ object WebModule1: TWebModule1
       OnAction = WebModule1titleAction
     end>
   Height = 385
-  Width = 436
+  Width = 909
   object articles: TDataSetPageProducer
     HTMLDoc.Strings = (
       '                                            <hr size=1>'
@@ -120,7 +120,6 @@ object WebModule1: TWebModule1
         '<section id=master style=text-align:right><a href=/alert?db=<#db' +
         'num>&num=<#number>>'#22577#21578'</a></section>'
       #9'<p>'#9651#9660#9651#9660#9651#9660#9651)
-    DataSet = DataModule1.FDTable2
     OnHTMLTag = articlesHTMLTag
     Left = 112
     Top = 88
@@ -185,7 +184,6 @@ object WebModule1: TWebModule1
         #12525#12464#12452#12531'</a></p>'
       '  </body>'
       '</html>')
-    DataSet = DataModule1.FDTable3
     OnHTMLTag = indexHTMLTag
     Left = 112
     Top = 32
@@ -210,7 +208,6 @@ object WebModule1: TWebModule1
     Footer.Strings = (
       '')
     MaxRows = 30
-    DataSet = DataModule1.FDTable2
     OnFormatCell = adminFormatCell
     Left = 176
     Top = 32
@@ -277,7 +274,6 @@ object WebModule1: TWebModule1
       #9
       #9'<section id=comment><#item></section>'
       '')
-    DataSet = DataModule1.FDTable2
     OnHTMLTag = itemsHTMLTag
     Left = 240
     Top = 144
@@ -432,7 +428,6 @@ object WebModule1: TWebModule1
       '<p><#plus><#date>'
       '<p><#article></td><td><#request>'
       '</td><tr>')
-    DataSet = DataModule1.FDTable4
     OnHTMLTag = alertHTMLTag
     Left = 48
     Top = 192
@@ -440,7 +435,6 @@ object WebModule1: TWebModule1
   object footer: TDataSetPageProducer
     HTMLDoc.Strings = (
       '<p style=text-align:center>[ <#link> ] <#recent>')
-    DataSet = DataModule1.FDTable1
     OnHTMLTag = footerHTMLTag
     Left = 112
     Top = 192
@@ -1356,7 +1350,6 @@ object WebModule1: TWebModule1
       '      </table>'
       '    </form>'
       '    </header><#preview>')
-    DataSet = DataModule1.FDTable1
     OnHTMLTag = headerHTMLTag
     Left = 240
     Top = 192
@@ -1383,7 +1376,6 @@ object WebModule1: TWebModule1
       '      <p style=text-align:center><br><a href=/ >TOP'#12408#31227#21205'</a></p>'
       '  </body>'
       '</html>')
-    DataSet = DataModule1.FDTable1
     OnHTMLTag = loginHTMLTag
     Left = 304
     Top = 144
@@ -1916,9 +1908,177 @@ object WebModule1: TWebModule1
         '</a>'#8595'</p>'
       '<div>'#12479#12452#12488#12523': <#title> ; '#35352#20107#25968': <#count> ; '#26356#26032#26178#21051': <#date></div><p>'
       '')
-    DataSet = DataModule1.FDQuery1
     OnHTMLTag = tiHTMLTag
     Left = 48
     Top = 320
+  end
+  object FDTable2: TFDTable
+    IndexFieldNames = 'DBNUM;NUMBER'
+    MasterSource = DataSource1
+    MasterFields = 'DBNUM'
+    Connection = FDConnection1
+    FetchOptions.AssignedValues = [evLiveWindowParanoic]
+    FetchOptions.LiveWindowParanoic = True
+    UpdateOptions.UpdateTableName = 'article'
+    TableName = 'article'
+    Left = 584
+    Top = 120
+    object FDTable2DBNUM: TIntegerField
+      FieldName = 'DBNUM'
+      Origin = 'DBNUM'
+      ProviderFlags = [pfInUpdate, pfInWhere, pfInKey]
+      Required = True
+    end
+    object FDTable2NUMBER: TIntegerField
+      FieldName = 'NUMBER'
+      Origin = 'NUMBER'
+      ProviderFlags = [pfInUpdate, pfInWhere, pfInKey]
+      Required = True
+    end
+    object FDTable2TITLE: TWideStringField
+      FieldName = 'TITLE'
+      Origin = 'TITLE'
+      Size = 160
+    end
+    object FDTable2NAME: TWideStringField
+      FieldName = 'NAME'
+      Origin = 'NAME'
+      Size = 160
+    end
+    object FDTable2COMMENT: TWideMemoField
+      FieldName = 'COMMENT'
+      Origin = 'COMMENT'
+      BlobType = ftWideMemo
+    end
+    object FDTable2RAW: TWideMemoField
+      FieldName = 'RAW'
+      Origin = 'RAW'
+      BlobType = ftWideMemo
+    end
+    object FDTable2DATE: TDateField
+      FieldName = 'DATE'
+      Origin = 'DATE'
+    end
+    object FDTable2PASS: TWideStringField
+      FieldName = 'PASS'
+      Origin = 'PASS'
+      FixedChar = True
+      Size = 40
+    end
+  end
+  object FDTable5: TFDTable
+    Connection = FDConnection1
+    UpdateOptions.UpdateTableName = 'IMAGES'
+    TableName = 'IMAGES'
+    Left = 712
+    Top = 184
+  end
+  object FDQuery1: TFDQuery
+    Connection = FDConnection1
+    SQL.Strings = (
+      'select dbnum,number,title from article'
+      ' where number = 1;')
+    Left = 624
+    Top = 184
+  end
+  object FDTable4: TFDTable
+    IndexFieldNames = 'ID'
+    Connection = FDConnection1
+    UpdateOptions.UpdateTableName = 'req'
+    TableName = 'req'
+    Left = 712
+    Top = 120
+    object FDTable4ID: TIntegerField
+      FieldName = 'ID'
+      Origin = 'ID'
+      Required = True
+    end
+    object FDTable4DBNAME: TIntegerField
+      FieldName = 'DBNAME'
+      Origin = 'DBNAME'
+    end
+    object FDTable4POSNUM: TIntegerField
+      FieldName = 'POSNUM'
+      Origin = 'POSNUM'
+    end
+    object FDTable4DATE: TDateField
+      FieldName = 'DATE'
+      Origin = 'DATE'
+      Required = True
+    end
+    object FDTable4REQUEST: TWideMemoField
+      FieldName = 'REQUEST'
+      Origin = 'REQUEST'
+      BlobType = ftWideMemo
+    end
+  end
+  object DataSource1: TDataSource
+    DataSet = FDTable1
+    Left = 520
+    Top = 184
+  end
+  object FDTable3: TFDTable
+    Connection = FDConnection1
+    UpdateOptions.UpdateTableName = 'setting'
+    TableName = 'setting'
+    Left = 648
+    Top = 120
+    object FDTable3TITLE: TWideStringField
+      FieldName = 'TITLE'
+      Origin = 'TITLE'
+      Size = 160
+    end
+    object FDTable3TITLE2: TWideStringField
+      FieldName = 'TITLE2'
+      Origin = 'TITLE2'
+      Size = 320
+    end
+    object FDTable3mente: TBooleanField
+      FieldKind = fkCalculated
+      FieldName = 'mente'
+      Calculated = True
+    end
+    object FDTable3INFO: TIntegerField
+      FieldName = 'INFO'
+      Origin = 'INFO'
+    end
+    object FDTable3COUNT: TIntegerField
+      FieldName = 'COUNT'
+      Origin = 'COUNT'
+    end
+    object FDTable3password: TWideStringField
+      FieldName = 'password'
+      Size = 100
+    end
+    object FDTable3ng: TWideStringField
+      FieldName = 'ng'
+      Size = 300
+    end
+  end
+  object FDConnection1: TFDConnection
+    Params.Strings = (
+      'Database=F:\web\cgi-bin\MYDATA.FDB'
+      'ConnectionDef=test_server')
+    Left = 632
+    Top = 56
+  end
+  object FDTable1: TFDTable
+    IndexFieldNames = 'DBNUM'
+    Connection = FDConnection1
+    UpdateOptions.UpdateTableName = 'dbname'
+    TableName = 'dbname'
+    Left = 520
+    Top = 120
+    object FDTable1DBNUM: TIntegerField
+      FieldName = 'DBNUM'
+      Origin = 'DBNUM'
+      Required = True
+    end
+    object FDTable1DATABASE: TWideStringField
+      FieldName = 'DATABASE'
+      Origin = 'DATABASE'
+      Required = True
+      Size = 80
+    end
   end
 end
