@@ -108,8 +108,8 @@ object WebModule1: TWebModule1
     HTMLDoc.Strings = (
       '                                            <hr size=1>'
       
-        #9'<section id=number><a name=<#number>></a><a href=/jump?num=<#nu' +
-        'mber> style=text-decoration:none>'
+        #9'<section id=number><a name=<#number>></a><a href=<#uri>/jump?nu' +
+        'm=<#number> style=text-decoration:none>'
       #9#9'[<#number>]</a></section>'
       #9'<section id=title><#title></section>'
       #9'<section id=name>'#12288'Name:<h1><#name></h1></section>'
@@ -117,8 +117,8 @@ object WebModule1: TWebModule1
       #9'<p>'#9661#9650#9661#9650#9661#9650#9661
       #9'<section id=comment><#comment></section>'
       
-        '<section id=master style=text-align:right><a href=/alert?db=<#db' +
-        'num>&num=<#number>>'#22577#21578'</a></section>'
+        '<section id=master style=text-align:right><a href=<#uri>/alert?d' +
+        'b=<#dbnum>&num=<#number>>'#22577#21578'</a></section>'
       #9'<p>'#9651#9660#9651#9660#9651#9660#9651)
     OnHTMLTag = articlesHTMLTag
     Left = 112
@@ -155,23 +155,25 @@ object WebModule1: TWebModule1
       '  </head>'
       '  <body>'
       '<#pr>'
-      '    <a href=/ style=text-decoration:none><#title2></a>'
+      '    <a href=<#uri>/ style=text-decoration:none><#title2></a>'
       ''
       '    <#header>'
       ''
       '    <hr size="1" width="100%">'
-      '    <form action=/userdel?db=<#dbnum> method="post" id=search>'
+      
+        '    <form action=<#uri>/userdel?db=<#dbnum> method="post" id=sea' +
+        'rch>'
       '      <label><p>'#35352#20107'No</p><input name="num"></label>'
       
         '      <label><p>Pass</p><input type="password" name="password"><' +
         '/label>'
       '      <input type="submit" value="'#21066#38500'">'
       '    </form>'
-      '    <form action=/jump?db=<#dbnum> method=post id=search>'
+      '    <form action=<#uri>/jump?db=<#dbnum> method=post id=search>'
       '      <label><p>'#35352#20107'No</p><input name=num></label>'
       '      <input type=submit value='#31227#21205'>'
       '    </form>'
-      '    <p><a href=/search?db=<#dbnum>>'#26908#32034#12506#12540#12472'</a></p>'
+      '    <p><a href=<#uri>/search?db=<#dbnum>>'#26908#32034#12506#12540#12472'</a></p>'
       '    <p style=text-align:right><a href=#article>'#19979#12408#31227#21205'</a></p>'
       '    <p style=text-align:center><#database></p>'
       '    <#footer>'
@@ -180,8 +182,8 @@ object WebModule1: TWebModule1
       #9'<p style=text-align:right><a href=#top>Top'#12408#31227#21205'</a></p>'
       '  <#footer>'
       
-        '    <p style=text-align:center><a href="/admin?db=<#dbnum>">'#31649#29702#32773#29992 +
-        #12525#12464#12452#12531'</a></p>'
+        '    <p style=text-align:center><a href="<#uri>/admin?db=<#dbnum>' +
+        '">'#31649#29702#32773#29992#12525#12464#12452#12531'</a></p>'
       '  </body>'
       '</html>')
     OnHTMLTag = indexHTMLTag
@@ -208,6 +210,7 @@ object WebModule1: TWebModule1
     Footer.Strings = (
       '')
     MaxRows = 30
+    DataSet = FDTable2
     OnFormatCell = adminFormatCell
     Left = 176
     Top = 32
@@ -229,7 +232,7 @@ object WebModule1: TWebModule1
       ''
       '  <body>'
       '<#pr>'
-      '    <form action="/search<#query>" method="post">'
+      '    <form action="<#uri>/search<#query>" method="post">'
       '    <p align="center"><strong>'#25237#31295#26908#32034
       '</strong>'
       '    </p>'
@@ -256,7 +259,7 @@ object WebModule1: TWebModule1
       '      <p>'
       '    <input type="submit" value="'#26908#32034'"></p>'
       '    </form>'
-      '      <p><a href="/index?db=<#dbnum>">'#25522#31034#26495#12408#25147#12427
+      '      <p><a href="<#select>">'#25522#31034#26495#12408#25147#12427
       '</a></p>'
       '    <#items>'
       '  </body>'
@@ -297,7 +300,7 @@ object WebModule1: TWebModule1
       '<p>'
       '<p>'#21033#29992#35215#32004
       '<p>'#12371#12428#12363#12425#26360#12365#12414#12377
-      '<p style=text-align:center><a href=/>'#25147#12427'</a>'
+      '<p style=text-align:center><a href=<#uri>/>'#25147#12427'</a>'
       '</body>'
       '</html>')
     OnHTMLTag = helpHTMLTag
@@ -325,8 +328,8 @@ object WebModule1: TWebModule1
       
         ' <script src="//ajax.googleapis.com/ajax/libs/jqueryui/1.10.4/jq' +
         'uery-ui.min.js"></script>'
-      '<script src="/file?type=js&id=3">org</script>'
-      '<script src="/file?type=js&id=4">moder</script>'
+      '<script src="<#uri>/file?type=js&id=3">org</script>'
+      '<script src="<#uri>/file?type=js&id=4">moder</script>'
       '</head>'
       '<body>'
       '<#pr>'
@@ -359,8 +362,8 @@ object WebModule1: TWebModule1
       '</div>'
       '<p>'#12288'<em style="background-color: aqua;">'#12288#12288#12288#12288'</em>'#12539#12539#12539'new!'
       
-        '        <p>[ <a href=/index?db=<#dbnum>><#info></a> ] ='#12362#30693#12425#12379' <p>[' +
-        ' <a href="/master">master'
+        '        <p>[ <a href=<#uri>/index?db=<#dbnum>><#info></a> ] ='#12362#30693#12425 +
+        #12379' <p>[ <a href="<#uri>/master">master'
       
         '</a> ] ='#31649#29702#20154'<div class="fb-like" data-href="http://pybbs.herokuap' +
         'p.com" data-layout="box_count" data-action="like" data-size="sma' +
@@ -371,10 +374,10 @@ object WebModule1: TWebModule1
         'counter.php?id=pybbs" border="0"></a>'
       '<footer>'
       '<p><br>'
-      '<p><a href=/title>'#12479#12452#12488#12523#34920#31034'</a>'
-      '<p><a href="/help">'#20351#12356#26041#26696#20869
+      '<p><a href=<#uri>/title>'#12479#12452#12488#12523#34920#31034'</a>'
+      '<p><a href="<#uri>/help">'#20351#12356#26041#26696#20869
       '</a>'
-      '<p><a href=/search>'#26908#32034'</a>'
+      '<p><a href=<#uri>/search>'#26908#32034'</a>'
       '<p>PR '#12522#12531#12463'<br>'
       
         '<p><a href="https://www.amazon.co.jp/%E9%AB%98%E6%A0%A1%E5%8D%92' +
@@ -409,14 +412,14 @@ object WebModule1: TWebModule1
       '</head>'
       '<body>'
       '<#pr>'
-      '<form action=/master method=post>'
+      '<form action=<#uri>/master method=post>'
       '<p><#request>'
       '<input type=radio name=delete value=some checked>'#21066#38500#28168#12415#12434#28040#21435#12288
       '<input type=radio name=delete value=all>'#12377#12409#12390#28040#21435
       '<input type=submit value="'#36865#20449'">'
       '</form>'
-      '<p style=text-align:center><a href=/logout>'#12525#12464#12450#12454#12488'</a>'
-      '<p style=text-align:center><a href=/>'#25147#12427'</a>'
+      '<p style=text-align:center><a href=<#uri>/logout>'#12525#12464#12450#12454#12488'</a>'
+      '<p style=text-align:center><a href=<#uri>/>'#25147#12427'</a>'
       '</body></html>')
     OnHTMLTag = masterHTMLTag
     Left = 48
@@ -446,11 +449,11 @@ object WebModule1: TWebModule1
       '<head><meta charset=utf-8></head>'
       '<body>'
       '<#pr>'
-      '<form action=/alert<#query>  method=post>'
+      '<form action=<#uri>/alert<#query>  method=post>'
       '  <#content>'
       '<textarea name=request></textarea>'
       '<input type=submit>'
-      '<p style=text-align:center><a href=/jump<#query>>'#25147#12427'</a>'
+      '<p style=text-align:center><a href=<#uri>/jump<#query>>'#25147#12427'</a>'
       '</form>'
       '</body></html>')
     OnHTMLTag = mailHTMLTag
@@ -529,7 +532,7 @@ object WebModule1: TWebModule1
       ''
       '.slideshow-nav a:before,'
       '.slideshow-indicator a:before {'
-      #9'content:url("/src?name=sprites.png");'
+      #9'content:url("<#uri>/src?name=sprites.png");'
       #9'display:inline-block;'
       #9'font-size:0;'
       #9'line-height:0'
@@ -610,6 +613,7 @@ object WebModule1: TWebModule1
       '.no-js .slideshow-indicator {'
       #9'display:none'
       '}')
+    OnHTMLTag = css1HTMLTag
     Left = 360
     Top = 96
   end
@@ -1314,7 +1318,7 @@ object WebModule1: TWebModule1
     HTMLDoc.Strings = (
       '    <header>'
       '    <a name=top></a>'
-      '    <form action=/regist?db=<#dbnum> method="post">'
+      '    <form action=<#uri>/regist?db=<#dbnum> method="post">'
       '      <table>'
       '        <tr><td>'
       
@@ -1366,14 +1370,16 @@ object WebModule1: TWebModule1
       '    <p style=text-align:center>'#31649#29702#32773#29992#12525#12464#12452#12531#30011#38754
       '</p>'
       '    <br>'
-      '    <form action=/login method="post">'
+      '    <form action=<#uri>/login method="post">'
       '    <p style=text-align:center>'
       '      <input type=text name=record value=<#database>>'
       '    '#9'  <input style=height:25px type="password" name="password">'
       '      <input type="submit" value="'#12525#12464#12452#12531'">'
       '    </p>'
       '    </form>'
-      '      <p style=text-align:center><br><a href=/ >TOP'#12408#31227#21205'</a></p>'
+      
+        '      <p style=text-align:center><br><a href=<#uri>/ >TOP'#12408#31227#21205'</a>' +
+        '</p>'
       '  </body>'
       '</html>')
     OnHTMLTag = loginHTMLTag
@@ -1814,7 +1820,9 @@ object WebModule1: TWebModule1
   object adhead: TPageProducer
     HTMLDoc.Strings = (
       '<#pr>'
-      '<form method=post action=/adminset style=text-align:center>'
+      
+        '<form method=post action=<#uri>/adminset style=text-align:center' +
+        '>'
       '    <label><p>'#12497#12473#12527#12540#12489#12398#22793#26356
       
         '      <input type="password" style="HEIGHT: 23px; WIDTH: 85px" n' +
@@ -1826,9 +1834,11 @@ object WebModule1: TWebModule1
         '    <input type="checkbox" value="on" name="mente" <#mente>>'#12513#12531#12486#12490 +
         #12531#12473#34920#31034'</p>'
       '    <p><input type="submit" value="'#22793#26356'"></p>'
-      '    <p><a href="/logout?db=<#database>">'#12525#12464#12450#12454#12488'</a></p>'
+      '    <p><a href="<#uri>/logout?db=<#database>">'#12525#12464#12450#12454#12488'</a></p>'
       '</form>'
-      '<form action=/admindel method=post style=text-align:center>')
+      
+        '<form action=<#uri>/admindel method=post style=text-align:center' +
+        '>')
     OnHTMLTag = adheadHTMLTag
     Left = 176
     Top = 88
@@ -1894,7 +1904,7 @@ object WebModule1: TWebModule1
       '<body>'
       '<#pr>'
       '<#main>'
-      '<p style=text-align:center><a href=/>'#25147#12427'</a>'
+      '<p style=text-align:center><a href=<#uri>/>'#25147#12427'</a>'
       '</body>'
       '</html>')
     OnHTMLTag = titleHTMLTag
@@ -1904,8 +1914,8 @@ object WebModule1: TWebModule1
   object ti: TDataSetPageProducer
     HTMLDoc.Strings = (
       
-        '<p style=font-weight:bold><a href=/index?db=<#dbnum>><#database>' +
-        '</a>'#8595'</p>'
+        '<p style=font-weight:bold><a href=<#uri>/index?db=<#dbnum>><#dat' +
+        'abase></a>'#8595'</p>'
       '<div>'#12479#12452#12488#12523': <#title> ; '#35352#20107#25968': <#count> ; '#26356#26032#26178#21051': <#date></div><p>'
       '')
     OnHTMLTag = tiHTMLTag
@@ -2073,7 +2083,7 @@ object WebModule1: TWebModule1
   end
   object FDConnection1: TFDConnection
     Params.Strings = (
-      'ConnectionDef=first_sql')
+      'ConnectionDef=test_server')
     Left = 632
     Top = 56
   end

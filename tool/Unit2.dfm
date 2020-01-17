@@ -86,8 +86,7 @@ object Form1: TForm1
   end
   object FDConnection1: TFDConnection
     Params.Strings = (
-      'Database=F:\web\cgi-bin\MYDATA.FDB'
-      'ConnectionDef=test_server')
+      'ConnectionDef=first_sql')
     Connected = True
     Transaction = FDTransaction1
     Left = 144
@@ -96,6 +95,7 @@ object Form1: TForm1
   object FDTable1: TFDTable
     Active = True
     CachedUpdates = True
+    IndexFieldNames = 'id'
     Connection = FDConnection1
     Transaction = FDTransaction1
     FetchOptions.AssignedValues = [evDetailCascade, evDetailServerCascade]

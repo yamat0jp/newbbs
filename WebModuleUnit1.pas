@@ -141,6 +141,8 @@ type
       TagParams: TStrings; var ReplaceText: string);
     procedure loginHTMLTag(Sender: TObject; Tag: TTag; const TagString: string;
       TagParams: TStrings; var ReplaceText: string);
+    procedure css1HTMLTag(Sender: TObject; Tag: TTag; const TagString: string;
+      TagParams: TStrings; var ReplaceText: string);
   private
     { private 宣言 }
     ss: TStringList;
@@ -177,6 +179,8 @@ procedure TWebModule1.adheadHTMLTag(Sender: TObject; Tag: TTag;
 begin
   if TagString = 'pr' then
     ReplaceText := promotion
+  else if TagString = 'uri' then
+    ReplaceText := Request.ScriptName
   else if (TagString = 'mente') and
     (FDTable3.FieldByName('mente').AsBoolean = true) then
     ReplaceText := 'checked'
@@ -200,8 +204,8 @@ var
   i: Integer;
 begin
   if (TagString = 'plus') and (alert.Tag = 0) then
-    ReplaceText :=
-      '<a href=/jump?db=<#dbname>&num=<#posnum>>[ <#dbname>-<#posnum> ]</a>'
+    ReplaceText := '<a href=' + Request.ScriptName +
+      '/jump?db=<#dbname>&num=<#posnum>>[ <#dbname>-<#posnum> ]</a>'
   else if TagString = 'article' then
   begin
     if (FDTable1.Locate('dbnum', FDTable4.FieldByName('dbname').AsInteger)
@@ -234,8 +238,17 @@ end;
 procedure TWebModule1.articlesHTMLTag(Sender: TObject; Tag: TTag;
   const TagString: string; TagParams: TStrings; var ReplaceText: string);
 begin
-  if TagString = 'comment' then
+  if TagString = 'uri' then
+    ReplaceText := Request.ScriptName
+  else if TagString = 'comment' then
     ReplaceText := FDTable2.FieldByName('comment').AsString;
+end;
+
+procedure TWebModule1.css1HTMLTag(Sender: TObject; Tag: TTag;
+  const TagString: string; TagParams: TStrings; var ReplaceText: string);
+begin
+  if TagString = 'uri' then
+    ReplaceText := Request.ScriptName;
 end;
 
 function TWebModule1.detail(ts, pid: string): string;
@@ -260,15 +273,16 @@ begin
       else
         ReplaceText := ReplaceText +
           Format(' <a style=text-decoration-line:none href="%s?db=%d&num=%d">%d</a> ',
-          [PString(Self.Tag)^, FDTable1.FieldByName('dbnum').AsInteger, i, i]);
+          [Request.ScriptName + PString(Self.Tag)^,
+          FDTable1.FieldByName('dbnum').AsInteger, i, i]);
   end
   else if TagString = 'recent' then
     if index.Tag = -1 then
       ReplaceText := TagString
     else
       ReplaceText := '<a style=text-decoration-line:none href="' +
-        PString(Self.Tag)^ + '?db=' + FDTable1.FieldByName('dbnum').AsString +
-        '">recent</a>';
+        Request.ScriptName + PString(Self.Tag)^ + '?db=' +
+        FDTable1.FieldByName('dbnum').AsString + '">recent</a>';
 end;
 
 function TWebModule1.hash(str: string): string;
@@ -288,7 +302,9 @@ procedure TWebModule1.headerHTMLTag(Sender: TObject; Tag: TTag;
 var
   s: string;
 begin
-  if TagString = 'cookie' then
+  if TagString = 'uri' then
+    ReplaceText := Request.ScriptName
+  else if TagString = 'cookie' then
   begin
     s := TagParams.Values['param'];
     ReplaceText := TNetEncoding.URL.Decode(Request.CookieFields.Values[s]);
@@ -311,12 +327,15 @@ procedure TWebModule1.helpHTMLTag(Sender: TObject; Tag: TTag;
 begin
   if TagString = 'pr' then
     ReplaceText := promotion
+  else if TagString = 'uri' then
+    ReplaceText := Request.ScriptName
   else if TagString = 'area' then
     if help.Tag = 0 then
     begin
       ss := TStringList.Create;
       try
-        ss.Add('<form action=/help method=post><p>お問い合わせ<削除依頼など何でも></p>');
+        ss.Add('<form action=' + Request.ScriptName +
+          '/help method=post><p>お問い合わせ<削除依頼など何でも></p>');
         ss.Add('<textarea name=help style=height:100px;width:250px>投稿者名など：');
         ss.Add('相談内容：');
         ss.Add('その他：</textarea><br>');
@@ -338,6 +357,8 @@ var
 begin
   if TagString = 'pr' then
     ReplaceText := promotion
+  else if TagString = 'uri' then
+    ReplaceText := Request.ScriptName
   else if TagString = 'article' then
   begin
     for i := 1 to FDTable3.FieldByName('count').AsInteger do
@@ -404,10 +425,11 @@ begin
         j := FieldByName('number').AsInteger;
         str := Request.QueryFields.Values['db'];
         if str = '' then
-          t := Format('<a href="/jump?db=%d&num=%d">[ %d-%d ]</a>',
-            [i, j, i, j])
+          t := Format('<a href="%s/jump?db=%d&num=%d">[ %d-%d ]</a>',
+            [Request.ScriptName, i, j, i, j])
         else
-          t := Format('<a href="/jump?db=%s&num=%d">[ %d ]</a>', [str, j, j]);
+          t := Format('<a href="%s/jump?db=%s&num=%d">[ %d ]</a>',
+            [Request.ScriptName, str, j, j]);
       end;
       ReplaceText := t + s.Text;
     finally
@@ -426,7 +448,9 @@ procedure TWebModule1.loginHTMLTag(Sender: TObject; Tag: TTag;
   const TagString: string; TagParams: TStrings; var ReplaceText: string);
 begin
   if TagString = 'pr' then
-    ReplaceText := promotion;
+    ReplaceText := promotion
+  else if TagString = 'uri' then
+    ReplaceText := Request.ScriptName;
 end;
 
 procedure TWebModule1.masterHTMLTag(Sender: TObject; Tag: TTag;
@@ -434,6 +458,8 @@ procedure TWebModule1.masterHTMLTag(Sender: TObject; Tag: TTag;
 begin
   if TagString = 'pr' then
     ReplaceText := promotion
+  else if TagString = 'uri' then
+    ReplaceText := Request.ScriptName
   else if TagString = 'request' then
     with FDTable4 do
     begin
@@ -459,7 +485,8 @@ begin
     result := true;
     Response.Content :=
       '<p><br><h1 style=text-align:center>ただいまメンテナンス中です^_^</h1>' +
-      '<p style=text-align:center><a href=/admin>管理者用ログイン</a>'
+      Format('<p style=text-align:center><a href=%s/admin>管理者用ログイン</a>',
+      [Request.ScriptName]);
   end
   else
     result := false;
@@ -493,6 +520,8 @@ procedure TWebModule1.mailHTMLTag(Sender: TObject; Tag: TTag;
 begin
   if TagString = 'pr' then
     ReplaceText := promotion
+  else if TagString = 'uri' then
+    ReplaceText := Request.ScriptName
   else if TagString = 'content' then
     ReplaceText := articles.Content
   else if TagString = 'query' then
@@ -505,6 +534,7 @@ procedure TWebModule1.searchHTMLTag(Sender: TObject; Tag: TTag;
   const TagString: string; TagParams: TStrings; var ReplaceText: string);
 var
   s: TStringList;
+  str: string;
   procedure sub;
   var
     i: Integer;
@@ -544,6 +574,16 @@ var
 begin
   if TagString = 'pr' then
     ReplaceText := promotion
+  else if TagString = 'uri' then
+    ReplaceText := Request.ScriptName
+  else if TagString = 'select' then
+  begin
+    str:=Request.QueryFields.Values['db'];
+    if str = '' then
+      ReplaceText:=Request.ScriptName+'/'
+    else
+      ReplaceText:=Request.ScriptName+'/index?db='+str;
+  end
   else if (Request.MethodType = mtPost) and (TagString = 'items') then
   begin
     if Request.ContentFields.Values['type'] = 'OR' then
@@ -615,7 +655,9 @@ end;
 procedure TWebModule1.tiHTMLTag(Sender: TObject; Tag: TTag;
   const TagString: string; TagParams: TStrings; var ReplaceText: string);
 begin
-  if TagString = 'count' then
+  if TagString = 'uri' then
+    ReplaceText := Request.ScriptName
+  else if TagString = 'count' then
     ReplaceText := FDTable2.RecordCount.ToString
   else if TagString = 'database' then
     ReplaceText := FDTable1.FieldByName('database').AsString
@@ -632,6 +674,8 @@ procedure TWebModule1.titleHTMLTag(Sender: TObject; Tag: TTag;
 begin
   if TagString = 'pr' then
     ReplaceText := promotion
+  else if TagString = 'uri' then
+    ReplaceText := Request.ScriptName
   else if TagString = 'js' then
     ReplaceText := detail(TagString, TagParams.Values['id'])
   else if TagString = 'main' then
@@ -667,6 +711,8 @@ var
 begin
   if TagString = 'pr' then
     ReplaceText := promotion
+  else if TagString = 'uri' then
+    ReplaceText := Request.ScriptName
   else if TagString = 'list' then
   begin
     i := FDTable3.FieldByName('info').AsInteger;
@@ -692,8 +738,8 @@ begin
       if t <> '' then
         t := ' style=' + t;
       ReplaceText := ReplaceText +
-        Format('<p><a%s target=_blank href="/index?db=%d">%s</a><br></p>',
-        [t, j, s]);
+        Format('<p><a%s target=_blank href="%s/index?db=%d">%s</a><br></p>',
+        [t, Request.ScriptName, j, s]);
       FDTable1.Next;
     end;
   end
@@ -708,8 +754,10 @@ begin
   begin
     for i := 1 to (FDTable1.RecordCount div tcnt) + 1 do
       ReplaceText := ReplaceText +
-        '<div class="slide"><img src="/src?name=slide' + i.ToString +
-        '.jpg" style=float:right;height:465px><#list></div>';
+        Format('<div class="slide"><img src="%s/src?name=slide%d.jpg"',
+        [Request.ScriptName, i]) +
+        ' style=float:right;height:465px><#list></div>';
+
   end;
 end;
 
@@ -767,8 +815,9 @@ begin
   admin.footer.Add(footer.Content);
   if t <> '' then
     t := '?db=' + t;
-  admin.footer.Add('<p style=text-align:center><a href="/index' + t +
-    '">戻る</a>');
+  admin.footer.Add
+    (Format('<p style=text-align:center><a href="%s/index%s">戻る</a>',
+    [Request.ScriptName, t]));
   admin.Tag := FDTable2.RecNo;
   Response.ContentType := 'text/html;charset=utf-8';
   Response.Content := admin.Content;
@@ -830,8 +879,8 @@ begin
       AppendRecord([i, num1, num2, Now, s]);
     end;
     if num1 > -1 then
-      Response.SendRedirect(Format('/index?db=%d&num=%d#%d',
-        [num1, num2, num2]))
+      Response.SendRedirect(Format('%s/index?db=%d&num=%d#%d',
+        [Request.ScriptName, num1, num2, num2]))
     else
       Response.SendRedirect('/top');
   end;
@@ -956,7 +1005,8 @@ begin
   FDTable2.Locate('number', s.ToInteger, []);
   page := 10;
   pages(FDTable2.RecNo, page);
-  Response.SendRedirect(Format('/index?db=%s&num=%d#%s', [DB, page, s]));
+  Response.SendRedirect(Format('%s/index?db=%s&num=%d#%s', [Request.ScriptName,
+    DB, page, s]));
 end;
 
 procedure TWebModule1.WebModule1linkAction(Sender: TObject;
@@ -1002,9 +1052,9 @@ begin
     end;
     i := v;
     if s = 'master' then
-      Response.SendRedirect('/master')
+      Response.SendRedirect(Request.ScriptName + '/master')
     else
-      Response.SendRedirect('/admin?db=' + i.ToString);
+      Response.SendRedirect(Request.ScriptName + '/admin?db=' + i.ToString);
   end
   else
   begin
@@ -1031,9 +1081,9 @@ begin
   if (x = true) and (FDTable1.FieldByName('database').AsString = 'master') then
     x := false;
   if x = false then
-    Response.SendRedirect('/')
+    Response.SendRedirect(Request.ScriptName+ '/')
   else
-    Response.SendRedirect('/index?db=' + s);
+    Response.SendRedirect(Request.ScriptName + '/index?db=' + s);
 end;
 
 procedure TWebModule1.WebModule1masterAction(Sender: TObject;
@@ -1106,8 +1156,8 @@ var
       Delete(Text, coll[j].index, coll[j].Length);
       t := Copy(coll[j].Value, Length(s) + 1, coll[j].Length);
       result := Format
-        ('<a class=minpreview data-preview-url=/link?num=%s href=/jump?num=%s>>>%s</a>',
-        [t, t, t]);
+        ('<a class=minpreview data-preview-url=%s/link?num=%s href=/jump?num=%s>>>%s</a>',
+        [Request.ScriptName, t, t, t]);
       Insert(result, Text, coll[j].index);
     end;
     result := Text;
@@ -1165,7 +1215,8 @@ begin
       i := FDTable1.FieldByName('dbnum').AsInteger;
       FDTable2.AppendRecord([i, number, title, na, comment.Text, raw,
         Now, pass]);
-      Response.SendRedirect('index?db=' + i.ToString + '#article');
+      Response.SendRedirect(Request.ScriptName + '/index?db=' + i.ToString +
+        '#article');
       Exit;
     end;
   finally
