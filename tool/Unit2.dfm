@@ -86,6 +86,7 @@ object Form1: TForm1
   end
   object FDConnection1: TFDConnection
     Params.Strings = (
+      'Database=F:\web\cgi-bin\MYDATA.FDB'
       'ConnectionDef=test_server')
     Connected = True
     Transaction = FDTransaction1

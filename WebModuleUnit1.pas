@@ -67,6 +67,9 @@ type
     FDTable1: TFDTable;
     FDTable1DBNUM: TIntegerField;
     FDTable1DATABASE: TWideStringField;
+    FDTable5ID: TIntegerField;
+    FDTable5NAME: TWideStringField;
+    FDTable5SOURCE: TBlobField;
     procedure indexHTMLTag(Sender: TObject; Tag: TTag; const TagString: string;
       TagParams: TStrings; var ReplaceText: string);
     procedure WebModule1indexpageAction(Sender: TObject; Request: TWebRequest;
@@ -1206,10 +1209,13 @@ begin
     FDTable3.CreateTable;
   if FDTable4.Exists = false then
     FDTable4.CreateTable;
+  if FDTable5.Exists = false then
+    FDTable5.CreateTable;
   FDTable1.Open;
   FDTable2.Open;
   FDTable3.Open;
   FDTable4.Open;
+  FDTable5.Open;
   if FDTable1.Bof and FDTable1.Eof then
   begin
     FDTable1.AppendRecord([0, 'info']);

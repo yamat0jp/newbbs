@@ -111,7 +111,11 @@ end;
 procedure TForm1.FormCreate(Sender: TObject);
 begin
   if FDTable1.Exists = false then
-    Button4Click(nil);
+  begin
+    FDTable1.Close;
+    FDTable1.CreateTable;
+    FDTable1.Open;
+  end;
 end;
 
 end.

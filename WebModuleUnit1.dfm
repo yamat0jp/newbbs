@@ -1967,11 +1967,27 @@ object WebModule1: TWebModule1
     end
   end
   object FDTable5: TFDTable
+    IndexFieldNames = 'ID'
     Connection = FDConnection1
     UpdateOptions.UpdateTableName = 'IMAGES'
     TableName = 'IMAGES'
     Left = 712
     Top = 184
+    object FDTable5ID: TIntegerField
+      FieldName = 'ID'
+      Origin = 'ID'
+      ProviderFlags = [pfInUpdate, pfInWhere, pfInKey]
+      Required = True
+    end
+    object FDTable5NAME: TWideStringField
+      FieldName = 'NAME'
+      Origin = 'NAME'
+      Size = 30
+    end
+    object FDTable5SOURCE: TBlobField
+      FieldName = 'SOURCE'
+      Origin = '"SOURCE"'
+    end
   end
   object FDQuery1: TFDQuery
     Connection = FDConnection1
@@ -2059,6 +2075,7 @@ object WebModule1: TWebModule1
     Params.Strings = (
       'Database=F:\web\cgi-bin\MYDATA.FDB'
       'ConnectionDef=test_server')
+    Connected = True
     Left = 632
     Top = 56
   end
