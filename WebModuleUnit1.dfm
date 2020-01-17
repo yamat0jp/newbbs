@@ -120,6 +120,7 @@ object WebModule1: TWebModule1
         '<section id=master style=text-align:right><a href=<#uri>/alert?d' +
         'b=<#dbnum>&num=<#number>>'#22577#21578'</a></section>'
       #9'<p>'#9651#9660#9651#9660#9651#9660#9651)
+    DataSet = FDTable2
     OnHTMLTag = articlesHTMLTag
     Left = 112
     Top = 88
@@ -186,6 +187,7 @@ object WebModule1: TWebModule1
         '">'#31649#29702#32773#29992#12525#12464#12452#12531'</a></p>'
       '  </body>'
       '</html>')
+    DataSet = FDTable3
     OnHTMLTag = indexHTMLTag
     Left = 112
     Top = 32
@@ -277,6 +279,7 @@ object WebModule1: TWebModule1
       #9
       #9'<section id=comment><#item></section>'
       '')
+    DataSet = FDTable4
     OnHTMLTag = itemsHTMLTag
     Left = 240
     Top = 144
@@ -314,11 +317,11 @@ object WebModule1: TWebModule1
       '<head>'
       #9'<title>Top Page</title>'
       
-        '<link rel=stylesheet type=text/css href="/file?type=css&id=1" re' +
-        'f=top>'
+        '<link rel=stylesheet type=text/css href="<#uri>/file?type=css&id' +
+        '=1" ref=top>'
       
-        '<link rel=stylesheet type=text/css href="/file?type=css&id=3" re' +
-        'f=normal>'
+        '<link rel=stylesheet type=text/css href="<#uri>/file?type=css&id' +
+        '=3" ref=normal>'
       
         ' <script type="text/javascript" src="//ajax.googleapis.com/ajax/' +
         'libs/jquery/2.1.4/jquery.min.js"></script>'
@@ -431,6 +434,7 @@ object WebModule1: TWebModule1
       '<p><#plus><#date>'
       '<p><#article></td><td><#request>'
       '</td><tr>')
+    DataSet = FDTable4
     OnHTMLTag = alertHTMLTag
     Left = 48
     Top = 192
@@ -1354,6 +1358,7 @@ object WebModule1: TWebModule1
       '      </table>'
       '    </form>'
       '    </header><#preview>')
+    DataSet = FDTable1
     OnHTMLTag = headerHTMLTag
     Left = 240
     Top = 192
@@ -1793,8 +1798,8 @@ object WebModule1: TWebModule1
     HTMLDoc.Strings = (
       '<#pr>'
       
-        '<form method=post action=<#uri>/adminset style=text-align:center' +
-        '>'
+        '<form method=post action=<#uri>/adminset?db=<#database> style=te' +
+        'xt-align:center>'
       '    <label><p>'#12497#12473#12527#12540#12489#12398#22793#26356
       
         '      <input type="password" style="HEIGHT: 23px; WIDTH: 85px" n' +
@@ -1809,8 +1814,8 @@ object WebModule1: TWebModule1
       '    <p><a href="<#uri>/logout?db=<#database>">'#12525#12464#12450#12454#12488'</a></p>'
       '</form>'
       
-        '<form action=<#uri>/admindel method=post style=text-align:center' +
-        '>')
+        '<form action=<#uri>/admindel?db=<#database> method=post style=te' +
+        'xt-align:center>')
     OnHTMLTag = adheadHTMLTag
     Left = 176
     Top = 88
@@ -1890,6 +1895,7 @@ object WebModule1: TWebModule1
         'abase></a>'#8595'</p>'
       '<div>'#12479#12452#12488#12523': <#title> ; '#35352#20107#25968': <#count> ; '#26356#26032#26178#21051': <#date></div><p>'
       '')
+    DataSet = FDTable2
     OnHTMLTag = tiHTMLTag
     Left = 48
     Top = 320
@@ -2055,7 +2061,7 @@ object WebModule1: TWebModule1
   end
   object FDConnection1: TFDConnection
     Params.Strings = (
-      'ConnectionDef=test_server')
+      'ConnectionDef=first_sql')
     Left = 632
     Top = 56
   end

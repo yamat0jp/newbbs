@@ -88,7 +88,6 @@ object Form1: TForm1
     Params.Strings = (
       'ConnectionDef=first_sql')
     Connected = True
-    Transaction = FDTransaction1
     Left = 144
     Top = 64
   end
@@ -97,7 +96,6 @@ object Form1: TForm1
     CachedUpdates = True
     IndexFieldNames = 'id'
     Connection = FDConnection1
-    Transaction = FDTransaction1
     FetchOptions.AssignedValues = [evDetailCascade, evDetailServerCascade]
     FetchOptions.DetailCascade = True
     FetchOptions.DetailServerCascade = True
@@ -160,10 +158,5 @@ object Form1: TForm1
     DataSet = FDTable1
     Left = 232
     Top = 112
-  end
-  object FDTransaction1: TFDTransaction
-    Connection = FDConnection1
-    Left = 456
-    Top = 80
   end
 end

@@ -39,7 +39,6 @@ type
     FDTable1NAME: TWideStringField;
     FDTable1SOURCE: TBlobField;
     Button4: TButton;
-    FDTransaction1: TFDTransaction;
     procedure Button1Click(Sender: TObject);
     procedure Button4Click(Sender: TObject);
     procedure Button3Click(Sender: TObject);
@@ -62,14 +61,13 @@ var
   i: Integer;
   t: TStream;
 begin
-  FDTransaction1.StartTransaction;
   with FDTable1 do
   begin
     for i := 1 to 10 do
     begin
       t := TResourceStream.Create(HInstance, 'Resource_' + i.ToString,
         RT_RCDATA);
-      AppendRecord([i, Format('slide%d.jpg', [i]), nil]);
+      AppendRecord([i, Format('slide%d.jpg', [i])]);
       Edit;
       FDTable1SOURCE.LoadFromStream(t);
       Post;
@@ -79,7 +77,6 @@ begin
     Reconcile;
     CommitUpdates;
   end;
-  FDTransaction1.Commit;
 end;
 
 procedure TForm1.Button3Click(Sender: TObject);

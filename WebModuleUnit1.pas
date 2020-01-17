@@ -447,7 +447,7 @@ end;
 procedure TWebModule1.loginHTMLTag(Sender: TObject; Tag: TTag;
   const TagString: string; TagParams: TStrings; var ReplaceText: string);
 var
-  i: integer;
+  i: Integer;
 begin
   if TagString = 'pr' then
     ReplaceText := promotion
@@ -455,9 +455,9 @@ begin
     ReplaceText := Request.ScriptName
   else if TagString = 'database' then
   begin
-    i:=StrToIntDef(Request.QueryFields.Values['db'],-1);
-    if FDTable1.Locate('dbnum',i) = true then
-      ReplaceText:=FDTable1.FieldByName('database').AsString;
+    i := StrToIntDef(Request.QueryFields.Values['db'], -1);
+    if FDTable1.Locate('dbnum', i) = true then
+      ReplaceText := FDTable1.FieldByName('database').AsString;
   end;
 end;
 
@@ -586,11 +586,11 @@ begin
     ReplaceText := Request.ScriptName
   else if TagString = 'select' then
   begin
-    str:=Request.QueryFields.Values['db'];
+    str := Request.QueryFields.Values['db'];
     if str = '' then
-      ReplaceText:=Request.ScriptName+'/'
+      ReplaceText := Request.ScriptName + '/'
     else
-      ReplaceText:=Request.ScriptName+'/index?db='+str;
+      ReplaceText := Request.ScriptName + '/index?db=' + str;
   end
   else if (Request.MethodType = mtPost) and (TagString = 'items') then
   begin
@@ -687,28 +687,23 @@ begin
   else if TagString = 'js' then
     ReplaceText := detail(TagString, TagParams.Values['id'])
   else if TagString = 'main' then
-    FDQuery1.Open;
-  FDTable1.First;
-  while (FDQuery1.Eof = false) and (FDTable1.Eof = false) do
   begin
-    if FDTable1.FieldByName('dbnum').AsInteger = FDQuery1.FieldByName('dbnum').AsInteger
-    then
+    FDQuery1.Open;
+    FDTable1.First;
+    while (FDQuery1.Eof = false) and (FDTable1.Eof = false) do
     begin
-      ReplaceText := ReplaceText + ti.Content;
-      FDQuery1.Next;
-    end
-    else if FDTable2.Eof = false then
-    begin
-      ti.DataSet := nil;
-      try
+      if FDTable1.FieldByName('dbnum').AsInteger = FDQuery1.FieldByName('dbnum')
+        .AsInteger then
+      begin
         ReplaceText := ReplaceText + ti.Content;
-      finally
-        ti.DataSet := FDQuery1;
-      end;
+        FDQuery1.Next;
+      end
+      else if FDTable2.Eof = false then
+        ReplaceText := ReplaceText + ti.Content;
+      FDTable1.Next;
     end;
-    FDTable1.Next;
+    FDQuery1.Close;
   end;
-  FDQuery1.Close;
 end;
 
 procedure TWebModule1.topHTMLTag(Sender: TObject; Tag: TTag;
@@ -765,7 +760,6 @@ begin
         Format('<div class="slide"><img src="%s/src?name=slide%d.jpg"',
         [Request.ScriptName, i]) +
         ' style=float:right;height:465px><#list></div>';
-
   end;
 end;
 
@@ -777,7 +771,7 @@ var
   match: TMatch;
 begin
   j := 0;
-  FDTable2.RecNo := admin.Tag;
+  FDTable1.Locate('dbnum',Request.QueryFields.Values['db']);
   for i := 0 to Request.ContentFields.count - 1 do
   begin
     reg := TRegEx.Create('\d+');
@@ -856,7 +850,7 @@ begin
     end;
     Post;
   end;
-  WebModule1adminAction(nil, Request, Response, Handled);
+  WebModule1adminAction(nil,Request,Response,Handled);
 end;
 
 procedure TWebModule1.WebModule1alertAction(Sender: TObject;
@@ -890,7 +884,7 @@ begin
       Response.SendRedirect(Format('%s/index?db=%d&num=%d#%d',
         [Request.ScriptName, num1, num2, num2]))
     else
-      Response.SendRedirect('/top');
+      Response.SendRedirect('/');
   end;
 end;
 
@@ -1089,7 +1083,7 @@ begin
   if (x = true) and (FDTable1.FieldByName('database').AsString = 'master') then
     x := false;
   if x = false then
-    Response.SendRedirect(Request.ScriptName+ '/')
+    Response.SendRedirect(Request.ScriptName + '/')
   else
     Response.SendRedirect(Request.ScriptName + '/index?db=' + s);
 end;
@@ -1176,8 +1170,6 @@ begin
   Error := '';
   if kotoba <> 'Ç∞ÇÒÇ´' then
     Error := Error + '<p>çáåæótÇ™ÇøÇ™Ç¢Ç‹Ç∑.';
-  setLastArticle;
-  number := FDTable2.FieldByName('number').AsInteger + 1;
   with Request.ContentFields do
   begin
     title := Values['title'];
@@ -1220,11 +1212,18 @@ begin
     end
     else
     begin
-      i := FDTable1.FieldByName('dbnum').AsInteger;
-      FDTable2.AppendRecord([i, number, title, na, comment.Text, raw,
-        Now, pass]);
-      Response.SendRedirect(Request.ScriptName + '/index?db=' + i.ToString +
-        '#article');
+      i := StrToIntDef(Request.QueryFields.Values['db'], -1);
+      if FDTable1.Locate('dbnum', i) = false then
+        Response.SendRedirect(Request.ScriptName + '/')
+      else
+      begin
+        setLastArticle;
+        number := FDTable2.FieldByName('number').AsInteger + 1;
+        FDTable2.AppendRecord([i, number, title, na, comment.Text, raw,
+          Now, pass]);
+        Response.SendRedirect(Request.ScriptName + '/index?db=' + i.ToString +
+          '#article');
+      end;
       Exit;
     end;
   finally
