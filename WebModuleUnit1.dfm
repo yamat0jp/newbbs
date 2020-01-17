@@ -108,8 +108,9 @@ object WebModule1: TWebModule1
     HTMLDoc.Strings = (
       '                                            <hr size=1>'
       
-        #9'<section id=number><a name=<#number>></a><a href=<#uri>/jump?nu' +
-        'm=<#number> style=text-decoration:none>'
+        #9'<section id=number><a name=<#number>></a><a href=<#uri>/jump?db' +
+        '=<#dbnum>&num=<#number>'
+      '         style=text-decoration:none>'
       #9#9'[<#number>]</a></section>'
       #9'<section id=title><#title></section>'
       #9'<section id=name>'#12288'Name:<h1><#name></h1></section>'
@@ -437,13 +438,6 @@ object WebModule1: TWebModule1
     DataSet = FDTable4
     OnHTMLTag = alertHTMLTag
     Left = 48
-    Top = 192
-  end
-  object footer: TDataSetPageProducer
-    HTMLDoc.Strings = (
-      '<p style=text-align:center>[ <#link> ] <#recent>')
-    OnHTMLTag = footerHTMLTag
-    Left = 112
     Top = 192
   end
   object mail: TPageProducer
@@ -2111,5 +2105,12 @@ object WebModule1: TWebModule1
     OnHTMLTag = loginHTMLTag
     Left = 296
     Top = 96
+  end
+  object footer: TPageProducer
+    HTMLDoc.Strings = (
+      '<p style=text-align:center>[ <#link> ] <#recent>')
+    OnHTMLTag = footerHTMLTag
+    Left = 112
+    Top = 192
   end
 end

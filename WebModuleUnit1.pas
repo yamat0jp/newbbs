@@ -22,7 +22,6 @@ type
     top: TPageProducer;
     master: TPageProducer;
     alert: TDataSetPageProducer;
-    footer: TDataSetPageProducer;
     mail: TPageProducer;
     css1: TPageProducer;
     css2: TPageProducer;
@@ -71,6 +70,7 @@ type
     FDTable5NAME: TWideStringField;
     FDTable5SOURCE: TBlobField;
     login: TPageProducer;
+    footer: TPageProducer;
     procedure indexHTMLTag(Sender: TObject; Tag: TTag; const TagString: string;
       TagParams: TStrings; var ReplaceText: string);
     procedure WebModule1indexpageAction(Sender: TObject; Request: TWebRequest;
@@ -148,13 +148,14 @@ type
     ss: TStringList;
     tagstr: string;
     procedure pages(count: Integer; var page: Integer);
-    procedure strsCheck(var Error: string; var list: TStringList);
+    procedure strsCheck(var Error: string; list: TStringList);
     procedure setLastArticle;
     function isInfo: Boolean;
     function loginCheck: Boolean;
     function hash(str: string): string;
     function mente: Boolean;
     function detail(ts, pid: string): string;
+    function scan(text: string): string;
   public
     { public 宣言 }
   end;
@@ -217,7 +218,7 @@ begin
     end;
     s := TStringList.Create;
     try
-      s.Text := articles.Content;
+      s.text := articles.Content;
       for i := 1 to 2 do
         s.Delete(1);
       for i := s.count - 1 downto 0 do
@@ -226,7 +227,7 @@ begin
           s.Delete(i);
           break;
         end;
-      ReplaceText := s.Text;
+      ReplaceText := s.text;
     finally
       s.Free;
     end;
@@ -340,7 +341,7 @@ begin
         ss.Add('相談内容：');
         ss.Add('その他：</textarea><br>');
         ss.Add('<input type=submit value="送信"></form>');
-        ReplaceText := ss.Text;
+        ReplaceText := ss.text;
       finally
         ss.Free;
       end;
@@ -411,7 +412,7 @@ begin
   begin
     s := TStringList.Create;
     try
-      s.Text := FDTable2.FieldByName('raw').AsString;
+      s.text := FDTable2.FieldByName('raw').AsString;
       for i := 0 to s.count - 1 do
         for j := 0 to ss.count - 1 do
           if Pos(ss[j], s[i]) > 0 then
@@ -431,7 +432,7 @@ begin
           t := Format('<a href="%s/jump?db=%s&num=%d">[ %d ]</a>',
             [Request.ScriptName, str, j, j]);
       end;
-      ReplaceText := t + s.Text;
+      ReplaceText := t + s.text;
     finally
       s.Free;
     end;
@@ -538,6 +539,30 @@ begin
     ReplaceText := Request.QueryFields.Values['num'];
 end;
 
+function TWebModule1.scan(text: string): string;
+var
+  reg: TRegEx;
+  coll: TMatchCollection;
+  i, j: Integer;
+  s, t: string;
+begin
+  i := Request.QueryFields.Values['db'].ToInteger;
+  text := TNetEncoding.HTML.Encode(text);
+  s := TNetEncoding.HTML.Encode('>>');
+  reg := TRegEx.Create(s + '(\d+)');
+  coll := reg.Matches(text);
+  for j := coll.count - 1 downto 0 do
+  begin
+    Delete(text, coll[j].index, coll[j].Length);
+    t := Copy(coll[j].Value, Length(s) + 1, coll[j].Length);
+    result := Format
+      ('<a class=minpreview data-preview-url=%s/link?db=%d&num=%s href=/jump?db=%d&num=%s>>>%s</a>',
+      [Request.ScriptName, i, t, i, t, t]);
+    Insert(result, text, coll[j].index);
+  end;
+  result := text;
+end;
+
 procedure TWebModule1.searchHTMLTag(Sender: TObject; Tag: TTag;
   const TagString: string; TagParams: TStrings; var ReplaceText: string);
 var
@@ -552,7 +577,7 @@ var
     FDTable2.First;
     while FDTable2.Eof = false do
     begin
-      s.Text := FDTable2.FieldByName('raw').AsString;
+      s.text := FDTable2.FieldByName('raw').AsString;
       ss.DelimitedText := Request.ContentFields.Values['word1'];
       for j := 0 to ss.count - 1 do
         for i := 0 to s.count - 1 do
@@ -636,7 +661,7 @@ begin
   FDTable2.Last;
 end;
 
-procedure TWebModule1.strsCheck(var Error: string; var list: TStringList);
+procedure TWebModule1.strsCheck(var Error: string; list: TStringList);
 var
   s: TStringList;
   i, j: Integer;
@@ -648,11 +673,13 @@ begin
     s.DelimitedText := FDTable3.FieldByName('ng').AsString;
     for i := 0 to s.count - 1 do
       for j := 0 to list.count - 1 do
-      begin
         if Pos(s[i], list[j]) > 0 then
+        begin
           x := true;
-        list[j] := '<p>' + list[j];
-      end;
+          break;
+        end;
+    for i := 0 to list.Count-1 do
+      list[i]:='<p>'+scan(list[i]);
   finally
     s.Free;
   end;
@@ -771,7 +798,7 @@ var
   match: TMatch;
 begin
   j := 0;
-  FDTable1.Locate('dbnum',Request.QueryFields.Values['db']);
+  FDTable1.Locate('dbnum', Request.QueryFields.Values['db']);
   for i := 0 to Request.ContentFields.count - 1 do
   begin
     reg := TRegEx.Create('\d+');
@@ -810,7 +837,7 @@ begin
   index.Tag := i;
   tagstr := '/admin';
   Self.Tag := Integer(@tagstr);
-  admin.header.Text := adhead.Content;
+  admin.header.text := adhead.Content;
   admin.footer.Clear;
   admin.footer.Add
     ('<input type=submit value=削除する><input type=reset value=リセット></form>');
@@ -820,7 +847,6 @@ begin
   admin.footer.Add
     (Format('<p style=text-align:center><a href="%s/index%s">戻る</a>',
     [Request.ScriptName, t]));
-  admin.Tag := FDTable2.RecNo;
   Response.ContentType := 'text/html;charset=utf-8';
   Response.Content := admin.Content;
 end;
@@ -850,7 +876,7 @@ begin
     end;
     Post;
   end;
-  WebModule1adminAction(nil,Request,Response,Handled);
+  WebModule1adminAction(nil, Request, Response, Handled);
 end;
 
 procedure TWebModule1.WebModule1alertAction(Sender: TObject;
@@ -1001,10 +1027,10 @@ var
   page: Integer;
 begin
   DB := Request.QueryFields.Values['db'];
-  s := Request.ContentFields.Values['num'];
+  s := Request.QueryFields.Values['num'];
   if DB <> '' then
-    FDTable1.Locate('dbnum', DB.ToInteger, []);
-  FDTable2.Locate('number', s.ToInteger, []);
+    FDTable1.Locate('dbnum', DB.ToInteger);
+  FDTable2.Locate('number', s.ToInteger);
   page := 10;
   pages(FDTable2.RecNo, page);
   Response.SendRedirect(Format('%s/index?db=%s&num=%d#%s', [Request.ScriptName,
@@ -1014,14 +1040,12 @@ end;
 procedure TWebModule1.WebModule1linkAction(Sender: TObject;
   Request: TWebRequest; Response: TWebResponse; var Handled: Boolean);
 var
-  num: Integer;
   s: string;
 begin
   s := Request.QueryFields.Values['num'];
   if s = '' then
     Exit;
-  num := s.ToInteger;
-  if FDTable2.Locate('number', num, []) = true then
+  if FDTable2.Locate('number', s.ToInteger) = true then
   begin
     Response.ContentType := 'text/html;charset=utf-8';
     Response.Content := articles.Content;
@@ -1140,94 +1164,80 @@ procedure TWebModule1.WebModule1registAction(Sender: TObject;
   Request: TWebRequest; Response: TWebResponse; var Handled: Boolean);
 var
   number, i: Integer;
-  title, na, raw, pass, kotoba, Error: string;
+  title, na, raw, pass, kotoba, Error, temp: string;
   comment: TStringList;
-  function scan(Text: string): string;
-  var
-    reg: TRegEx;
-    coll: TMatchCollection;
-    j: Integer;
-    s, t: string;
-  begin
-    Text := TNetEncoding.HTML.Encode(Text);
-    s := TNetEncoding.HTML.Encode('>>');
-    reg := TRegEx.Create(s + '(\d+)');
-    coll := reg.Matches(Text);
-    for j := coll.count - 1 downto 0 do
-    begin
-      Delete(Text, coll[j].index, coll[j].Length);
-      t := Copy(coll[j].Value, Length(s) + 1, coll[j].Length);
-      result := Format
-        ('<a class=minpreview data-preview-url=%s/link?num=%s href=/jump?num=%s>>>%s</a>',
-        [Request.ScriptName, t, t, t]);
-      Insert(result, Text, coll[j].index);
-    end;
-    result := Text;
-  end;
-
+  review: Boolean;
 begin
-  kotoba := Request.ContentFields.Values['aikotoba'];
   Error := '';
-  if kotoba <> 'げんき' then
-    Error := Error + '<p>合言葉がちがいます.';
-  with Request.ContentFields do
+  temp := Request.ContentFields.Values['preview'];
+  if temp = '' then
   begin
-    title := Values['title'];
-    na := Values['name'];
-    raw := Values['comment'];
-    pass := hash(Values['password']);
-  end;
-  if title = '' then
-    title := 'タイトルなし.';
-  with Response.Cookies.Add do
-  begin
-    Name := 'name';
-    if na = '' then
-      Value := '誰かさん.'
-    else
-      Value := na;
-    Expires := Now + 14;
-  end;
-  if Error = '' then
+    kotoba := Request.ContentFields.Values['aikotoba'];
+    if kotoba <> 'げんき' then
+      Error := Error + '<p>合言葉がちがいます.';
+    with Request.ContentFields do
+    begin
+      title := Values['title'];
+      na := Values['name'];
+      raw := Values['comment'];
+      pass := hash(Values['password']);
+    end;
+    if title = '' then
+      title := 'タイトルなし.';
     with Response.Cookies.Add do
     begin
-      Name := 'aikotoba';
-      Value := kotoba;
+      Name := 'name';
+      if na = '' then
+        Value := '誰かさん.'
+      else
+        Value := na;
       Expires := Now + 14;
     end;
-  comment := TStringList.Create;
-  try
-    comment.Text := raw;
-    strsCheck(Error, comment);
-    Request.ContentFields.Values['raw'] := raw;
-    if Error <> '' then
-      Request.ContentFields.Values['preview'] := '<section style=color:red>' +
-        Error + '</section>'
-    else if Request.ContentFields.Values['show'] = 'true' then
-    begin
-      Error := '<p style=font-size:2.3em;color:blue>↓↓プレビュー↓↓<p>' +
-        comment.Text;
-      Request.ContentFields.Values['preview'] := Error;
-      Request.ContentFields.Values['show'] := 'false';
-    end
+    if Error = '' then
+      with Response.Cookies.Add do
+      begin
+        Name := 'aikotoba';
+        Value := kotoba;
+        Expires := Now + 14;
+      end;
+    comment := TStringList.Create;
+    try
+      comment.text := raw;
+      strsCheck(Error, comment);
+      temp := comment.text;
+    finally
+      comment.Free;
+    end;
+  end
+  else
+    review := true;
+  Request.ContentFields.Values['comment'] := raw;
+  if Error <> '' then
+    Request.ContentFields.Values['preview'] := '<section style=color:red>' +
+      Error + '</section>'
+  else if Request.ContentFields.Values['show'] = 'true' then
+  begin
+    if review = false then
+      Error := '<p style=font-size:2.3em;color:blue>↓↓プレビュー↓↓<p>' + temp
+    else
+      Error := temp;
+    Request.ContentFields.Values['preview'] := Error;
+    Request.ContentFields.Values['show'] := 'false';
+  end
+  else
+  begin
+    i := StrToIntDef(Request.QueryFields.Values['db'], -1);
+    if FDTable1.Locate('dbnum', i) = false then
+      Response.SendRedirect(Request.ScriptName + '/')
     else
     begin
-      i := StrToIntDef(Request.QueryFields.Values['db'], -1);
-      if FDTable1.Locate('dbnum', i) = false then
-        Response.SendRedirect(Request.ScriptName + '/')
-      else
-      begin
-        setLastArticle;
-        number := FDTable2.FieldByName('number').AsInteger + 1;
-        FDTable2.AppendRecord([i, number, title, na, comment.Text, raw,
-          Now, pass]);
-        Response.SendRedirect(Request.ScriptName + '/index?db=' + i.ToString +
-          '#article');
-      end;
-      Exit;
+      setLastArticle;
+      number := FDTable2.FieldByName('number').AsInteger + 1;
+      FDTable2.AppendRecord([i, number, title, na, temp, raw, Now, pass]);
+      Response.SendRedirect(Request.ScriptName + '/index?db=' + i.ToString +
+        '#article');
     end;
-  finally
-    comment.Free;
+    Exit;
   end;
   WebModule1indexpageAction(nil, Request, Response, Handled);
 end;
