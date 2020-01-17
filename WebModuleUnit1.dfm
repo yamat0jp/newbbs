@@ -1358,34 +1358,6 @@ object WebModule1: TWebModule1
     Left = 240
     Top = 192
   end
-  object login: TDataSetPageProducer
-    HTMLDoc.Strings = (
-      '<!DOCTYPE HTML>'
-      '  <head>'
-      '    <meta charset=utf-8>'
-      '    <title>'#12525#12464#12452#12531'</title>'
-      '  </head>'
-      '  <body>'
-      '<#pr>'
-      '    <p style=text-align:center>'#31649#29702#32773#29992#12525#12464#12452#12531#30011#38754
-      '</p>'
-      '    <br>'
-      '    <form action=<#uri>/login method="post">'
-      '    <p style=text-align:center>'
-      '      <input type=text name=record value=<#database>>'
-      '    '#9'  <input style=height:25px type="password" name="password">'
-      '      <input type="submit" value="'#12525#12464#12452#12531'">'
-      '    </p>'
-      '    </form>'
-      
-        '      <p style=text-align:center><br><a href=<#uri>/ >TOP'#12408#31227#21205'</a>' +
-        '</p>'
-      '  </body>'
-      '</html>')
-    OnHTMLTag = loginHTMLTag
-    Left = 304
-    Top = 144
-  end
   object js1: TPageProducer
     HTMLDoc.Strings = (
       '$(function(){'
@@ -2105,5 +2077,33 @@ object WebModule1: TWebModule1
       Required = True
       Size = 80
     end
+  end
+  object login: TPageProducer
+    HTMLDoc.Strings = (
+      '<!DOCTYPE HTML>'
+      '  <head>'
+      '    <meta charset=utf-8>'
+      '    <title>'#12525#12464#12452#12531'</title>'
+      '  </head>'
+      '  <body>'
+      '<#pr>'
+      '    <p style=text-align:center>'#31649#29702#32773#29992#12525#12464#12452#12531#30011#38754
+      '</p>'
+      '    <br>'
+      '    <form action=<#uri>/login method="post">'
+      '    <p style=text-align:center>'
+      '      <input type=text name=record value=<#database>>'
+      '    '#9'  <input style=height:25px type="password" name="password">'
+      '      <input type="submit" value="'#12525#12464#12452#12531'">'
+      '    </p>'
+      '    </form>'
+      
+        '      <p style=text-align:center><br><a href=<#uri>/ >TOP'#12408#31227#21205'</a>' +
+        '</p>'
+      '  </body>'
+      '</html>')
+    OnHTMLTag = loginHTMLTag
+    Left = 296
+    Top = 96
   end
 end

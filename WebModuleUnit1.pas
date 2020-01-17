@@ -29,7 +29,6 @@ type
     css3: TPageProducer;
     css4: TPageProducer;
     header: TDataSetPageProducer;
-    login: TDataSetPageProducer;
     js1: TPageProducer;
     js2: TPageProducer;
     js3: TPageProducer;
@@ -71,6 +70,7 @@ type
     FDTable5ID: TIntegerField;
     FDTable5NAME: TWideStringField;
     FDTable5SOURCE: TBlobField;
+    login: TPageProducer;
     procedure indexHTMLTag(Sender: TObject; Tag: TTag; const TagString: string;
       TagParams: TStrings; var ReplaceText: string);
     procedure WebModule1indexpageAction(Sender: TObject; Request: TWebRequest;
@@ -446,11 +446,19 @@ end;
 
 procedure TWebModule1.loginHTMLTag(Sender: TObject; Tag: TTag;
   const TagString: string; TagParams: TStrings; var ReplaceText: string);
+var
+  i: integer;
 begin
   if TagString = 'pr' then
     ReplaceText := promotion
   else if TagString = 'uri' then
-    ReplaceText := Request.ScriptName;
+    ReplaceText := Request.ScriptName
+  else if TagString = 'database' then
+  begin
+    i:=StrToIntDef(Request.QueryFields.Values['db'],-1);
+    if FDTable1.Locate('dbnum',i) = true then
+      ReplaceText:=FDTable1.FieldByName('database').AsString;
+  end;
 end;
 
 procedure TWebModule1.masterHTMLTag(Sender: TObject; Tag: TTag;
