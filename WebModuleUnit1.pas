@@ -446,8 +446,7 @@ end;
 procedure TWebModule1.loginHTMLTag(Sender: TObject; Tag: TTag;
   const TagString: string; TagParams: TStrings; var ReplaceText: string);
 var
-  i: Integer;
-  v: Variant;
+  i: integer;
 begin
   if TagString = 'pr' then
     ReplaceText := promotion
@@ -455,18 +454,10 @@ begin
     ReplaceText := Request.ScriptName
   else if TagString = 'database' then
   begin
-    i := StrToIntDef(Request.QueryFields.Values['db'], -1);
+    i := StrToIntDef(Request.QueryFields.Values['db'],
+      FDTable3.FieldByName('info').AsInteger);
     if FDTable1.Locate('dbnum', i) = true then
-      ReplaceText := FDTable1.FieldByName('database').AsString
-    else
-    begin
-      v := FDTable1.Lookup('database', 'master', 'dbnum');
-      if VarIsNull(v) = false then
-      begin
-        ReplaceText := 'master';
-        Request.QueryFields.Values['db'] := v;
-      end;
-    end;
+      ReplaceText := FDTable1.FieldByName('database').AsString;
   end;
 end;
 
@@ -1065,7 +1056,7 @@ procedure TWebModule1.WebModule1loginAction(Sender: TObject;
 var
   v: Variant;
   i: Integer;
-  s: string;
+  s, t: string;
 begin
   if Request.MethodType = mtGet then
   begin
@@ -1075,12 +1066,14 @@ begin
   end;
   s := Request.ContentFields.Values['record'];
   v := FDTable1.Lookup('database', s, 'dbnum');
-  if VarIsNull(v) = false then
+  t := hash(Request.ContentFields.Values['password']);
+  if (VarIsNull(v) = false) and (hash(t) = FDTable3.FieldByName('password').AsString)
+  then
   begin
     with Response.Cookies.Add do
     begin
       Name := 'user';
-      Value := hash(Request.ContentFields.Values['password']);
+      Value := t;
       Expires := Now + 14;
       // Secure := true;
     end;
@@ -1090,11 +1083,13 @@ begin
     else
       Response.SendRedirect(Request.ScriptName + '/admin?db=' + i.ToString);
   end
-  else
+  else if VarIsNull(v) = false then
   begin
-    Response.ContentType := 'text/html;charset=utf-8';
-    Response.Content := login.Content;
-  end;
+    t:=v;
+    Response.SendRedirect(Request.ScriptName+'/login?db='+t);
+  end
+  else
+    Response.SendRedirect(Request.ScriptName+'/login');
 end;
 
 procedure TWebModule1.WebModule1logoutAction(Sender: TObject;
