@@ -981,7 +981,7 @@ var
 begin
   with FDTable5 do
   begin
-    s := Request.ContentFields.Values['name'];
+    s := Request.QueryFields.Values['name'];
     Response.ContentType := 'image/jpeg';
     if Locate('name', s) = true then
     begin
