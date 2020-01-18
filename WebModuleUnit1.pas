@@ -544,20 +544,21 @@ var
   reg: TRegEx;
   coll: TMatchCollection;
   i, j: Integer;
-  s, t: string;
+  s, t, str: string;
 begin
   i := Request.QueryFields.Values['db'].ToInteger;
+  s := Request.ScriptName;
   text := TNetEncoding.HTML.Encode(text);
-  s := TNetEncoding.HTML.Encode('>>');
-  reg := TRegEx.Create(s + '(\d+)');
+  str := TNetEncoding.HTML.Encode('>>');
+  reg := TRegEx.Create(str + '(\d+)');
   coll := reg.Matches(text);
   for j := coll.count - 1 downto 0 do
   begin
     Delete(text, coll[j].index, coll[j].Length);
-    t := Copy(coll[j].Value, Length(s) + 1, coll[j].Length);
+    t := Copy(coll[j].Value, Length(str) + 1, coll[j].Length);
     result := Format
-      ('<a class=minpreview data-preview-url=%s/link?db=%d&num=%s href=/jump?db=%d&num=%s>>>%s</a>',
-      [Request.ScriptName, i, t, i, t, t]);
+      ('<a class=minpreview data-preview-url=%s/link?db=%d&num=%s href=%s/jump?db=%d&num=%s>>>%s</a>',
+      [s, i, t, s, i, t, t]);
     Insert(result, text, coll[j].index);
   end;
   result := text;
@@ -678,8 +679,8 @@ begin
           x := true;
           break;
         end;
-    for i := 0 to list.Count-1 do
-      list[i]:='<p>'+scan(list[i]);
+    for i := 0 to list.count - 1 do
+      list[i] := '<p>' + scan(list[i]);
   finally
     s.Free;
   end;
@@ -1024,17 +1025,14 @@ procedure TWebModule1.WebModule1jumpAction(Sender: TObject;
   Request: TWebRequest; Response: TWebResponse; var Handled: Boolean);
 var
   DB, s: string;
-  page: Integer;
+  i: Integer;
 begin
   DB := Request.QueryFields.Values['db'];
   s := Request.QueryFields.Values['num'];
-  if DB <> '' then
-    FDTable1.Locate('dbnum', DB.ToInteger);
-  FDTable2.Locate('number', s.ToInteger);
-  page := 10;
-  pages(FDTable2.RecNo, page);
+  i := 10;
+  pages(s.ToInteger, i);
   Response.SendRedirect(Format('%s/index?db=%s&num=%d#%s', [Request.ScriptName,
-    DB, page, s]));
+    DB, i, s]));
 end;
 
 procedure TWebModule1.WebModule1linkAction(Sender: TObject;
@@ -1042,10 +1040,11 @@ procedure TWebModule1.WebModule1linkAction(Sender: TObject;
 var
   s: string;
 begin
-  s := Request.QueryFields.Values['num'];
-  if s = '' then
+  s := Request.QueryFields.Values['db'];
+  if (s = '') or (FDTable1.Locate('dbnum', s.ToInteger) = false) then
     Exit;
-  if FDTable2.Locate('number', s.ToInteger) = true then
+  s := Request.QueryFields.Values['num'];
+  if (s <> '') and (FDTable2.Locate('number', s.ToInteger) = true) then
   begin
     Response.ContentType := 'text/html;charset=utf-8';
     Response.Content := articles.Content;
@@ -1211,7 +1210,7 @@ begin
   end
   else
     review := true;
-  Request.ContentFields.Values['comment'] := raw;
+  Request.ContentFields.Values['raw'] := raw;
   if Error <> '' then
     Request.ContentFields.Values['preview'] := '<section style=color:red>' +
       Error + '</section>'
