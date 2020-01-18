@@ -143,6 +143,8 @@ type
       TagParams: TStrings; var ReplaceText: string);
     procedure css1HTMLTag(Sender: TObject; Tag: TTag; const TagString: string;
       TagParams: TStrings; var ReplaceText: string);
+    procedure WebModule1usrdelAction(Sender: TObject; Request: TWebRequest;
+      Response: TWebResponse; var Handled: Boolean);
   private
     { private êÈåæ }
     ss: TStringList;
@@ -446,7 +448,7 @@ end;
 procedure TWebModule1.loginHTMLTag(Sender: TObject; Tag: TTag;
   const TagString: string; TagParams: TStrings; var ReplaceText: string);
 var
-  i: integer;
+  i: Integer;
 begin
   if TagString = 'pr' then
     ReplaceText := promotion
@@ -1025,6 +1027,8 @@ var
 begin
   DB := Request.QueryFields.Values['db'];
   s := Request.QueryFields.Values['num'];
+  if s = '' then
+    s := Request.ContentFields.Values['num'];
   i := 10;
   pages(s.ToInteger, i);
   Response.SendRedirect(Format('%s/index?db=%s&num=%d#%s', [Request.ScriptName,
@@ -1063,8 +1067,8 @@ begin
   s := Request.ContentFields.Values['record'];
   v := FDTable1.Lookup('database', s, 'dbnum');
   t := hash(Request.ContentFields.Values['password']);
-  if (VarIsNull(v) = false) and (hash(t) = FDTable3.FieldByName('password').AsString)
-  then
+  if (VarIsNull(v) = false) and (hash(t) = FDTable3.FieldByName('password')
+    .AsString) then
   begin
     with Response.Cookies.Add do
     begin
@@ -1081,11 +1085,11 @@ begin
   end
   else if VarIsNull(v) = false then
   begin
-    t:=v;
-    Response.SendRedirect(Request.ScriptName+'/login?db='+t);
+    t := v;
+    Response.SendRedirect(Request.ScriptName + '/login?db=' + t);
   end
   else
-    Response.SendRedirect(Request.ScriptName+'/login');
+    Response.SendRedirect(Request.ScriptName + '/login');
 end;
 
 procedure TWebModule1.WebModule1logoutAction(Sender: TObject;
@@ -1260,6 +1264,20 @@ begin
   FDTable1.First;
   if mente = false then
     Response.Content := top.ContentFromString(top.Content);
+end;
+
+procedure TWebModule1.WebModule1usrdelAction(Sender: TObject;
+  Request: TWebRequest; Response: TWebResponse; var Handled: Boolean);
+var
+  s, t, p: string;
+begin
+  s := Request.QueryFields.Values['db'];
+  t := Request.ContentFields.Values['num'];
+  p := Request.ContentFields.Values['password'];
+  if FDTable2.Locate('dbnum;number;pass',
+    VarArrayOf([s.ToInteger, t.ToInteger, p])) = true then
+    FDTable2.Delete;
+  WebModule1indexpageAction(nil, Request, Response, Handled);
 end;
 
 procedure TWebModule1.WebModuleCreate(Sender: TObject);

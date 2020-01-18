@@ -50,6 +50,7 @@ object WebModule1: TWebModule1
       MethodType = mtPost
       Name = 'usrdel'
       PathInfo = '/userdel'
+      OnAction = WebModule1usrdelAction
     end
     item
       Name = 'jump'
