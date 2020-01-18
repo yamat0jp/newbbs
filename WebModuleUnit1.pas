@@ -57,7 +57,6 @@ type
     FDTable3: TFDTable;
     FDTable3TITLE: TWideStringField;
     FDTable3TITLE2: TWideStringField;
-    FDTable3mente: TBooleanField;
     FDTable3INFO: TIntegerField;
     FDTable3COUNT: TIntegerField;
     FDTable3password: TWideStringField;
@@ -71,6 +70,7 @@ type
     FDTable5SOURCE: TBlobField;
     login: TPageProducer;
     footer: TPageProducer;
+    FDTable3mente: TBooleanField;
     procedure indexHTMLTag(Sender: TObject; Tag: TTag; const TagString: string;
       TagParams: TStrings; var ReplaceText: string);
     procedure WebModule1indexpageAction(Sender: TObject; Request: TWebRequest;
@@ -184,7 +184,7 @@ begin
     ReplaceText := Request.ScriptName
   else if (TagString = 'mente') and
     (FDTable3.FieldByName('mente').AsBoolean = true) then
-    ReplaceText := 'checked'
+    ReplaceText := 'checked="checked"'
   else if TagString = 'database' then
     ReplaceText := Request.QueryFields.Values['db'];
 end;
@@ -202,16 +202,16 @@ procedure TWebModule1.alertHTMLTag(Sender: TObject; Tag: TTag;
   const TagString: string; TagParams: TStrings; var ReplaceText: string);
 var
   s: TStringList;
-  i: Integer;
+  i, j: Integer;
 begin
   if (TagString = 'plus') and (alert.Tag = 0) then
     ReplaceText := '<a href=' + Request.ScriptName +
       '/jump?db=<#dbname>&num=<#posnum>>[ <#dbname>-<#posnum> ]</a>'
   else if TagString = 'article' then
   begin
-    if (FDTable1.Locate('dbnum', FDTable4.FieldByName('dbname').AsInteger)
-      = false) or (FDTable2.Locate('number', FDTable4.FieldByName('posnum')
-      .AsInteger) = false) then
+    i := FDTable4.FieldByName('dbname').AsInteger;
+    j := FDTable4.FieldByName('posnum').AsInteger;
+    if FDTable2.Locate('dbnum;number', VarArrayOf([i, j])) = false then
     begin
       ReplaceText := '<p>リクエスト';
       Exit;
@@ -231,9 +231,7 @@ begin
     finally
       s.Free;
     end;
-  end
-  else if TagString = 'request' then
-    ReplaceText := FDTable4.FieldByName('request').AsString;
+  end;
 end;
 
 procedure TWebModule1.articlesHTMLTag(Sender: TObject; Tag: TTag;
@@ -449,6 +447,7 @@ procedure TWebModule1.loginHTMLTag(Sender: TObject; Tag: TTag;
   const TagString: string; TagParams: TStrings; var ReplaceText: string);
 var
   i: Integer;
+  v: Variant;
 begin
   if TagString = 'pr' then
     ReplaceText := promotion
@@ -458,12 +457,23 @@ begin
   begin
     i := StrToIntDef(Request.QueryFields.Values['db'], -1);
     if FDTable1.Locate('dbnum', i) = true then
-      ReplaceText := FDTable1.FieldByName('database').AsString;
+      ReplaceText := FDTable1.FieldByName('database').AsString
+    else
+    begin
+      v := FDTable1.Lookup('database', 'master', 'dbnum');
+      if VarIsNull(v) = false then
+      begin
+        ReplaceText := 'master';
+        Request.QueryFields.Values['db'] := v;
+      end;
+    end;
   end;
 end;
 
 procedure TWebModule1.masterHTMLTag(Sender: TObject; Tag: TTag;
   const TagString: string; TagParams: TStrings; var ReplaceText: string);
+var
+  i: Integer;
 begin
   if TagString = 'pr' then
     ReplaceText := promotion
@@ -473,7 +483,6 @@ begin
     with FDTable4 do
     begin
       First;
-      ReplaceText := '<table border=1 align=center>';
       while Eof = false do
       begin
         if FieldByName('posnum').AsInteger = -1 then
@@ -483,7 +492,9 @@ begin
         ReplaceText := ReplaceText + alert.ContentFromString(alert.Content);
         Next;
       end;
-      ReplaceText := ReplaceText + '</table>';
+      if ReplaceText <> '' then
+        ReplaceText := '<table border=1 align=center>' + ReplaceText +
+          '</table>';
     end;
 end;
 
@@ -886,12 +897,13 @@ var
   num1, num2, i: Integer;
   s: string;
 begin
-  num1 := FDTable1.FieldByName('dbnum').AsInteger;
+  num1 := Request.QueryFields.Values['db'].ToInteger;
   num2 := StrToIntDef(Request.QueryFields.Values['num'], -1);
   if num2 = -1 then
-    num1 := -1;
+    Exit;
   if Request.MethodType = mtGet then
   begin
+    FDTable1.Locate('dbnum', num1);
     FDTable2.Locate('number', num2, []);
     Response.ContentType := 'text/html;charset=utf-8';
     Response.Content := mail.Content;
@@ -907,11 +919,8 @@ begin
         s := '(No Comment)';
       AppendRecord([i, num1, num2, Now, s]);
     end;
-    if num1 > -1 then
-      Response.SendRedirect(Format('%s/index?db=%d&num=%d#%d',
-        [Request.ScriptName, num1, num2, num2]))
-    else
-      Response.SendRedirect('/');
+    Response.SendRedirect(Format('%s/index?db=%d&num=%d#%d',
+      [Request.ScriptName, num1, num2, num2]))
   end;
 end;
 
@@ -1119,13 +1128,8 @@ var
 begin
   if loginCheck = false then
   begin
-    with FDTable1 do
-      if Locate('database', 'master') = false then
-      begin
-        Last;
-        i := FieldByName('dbnum').AsInteger + 1;
-        AppendRecord([i, 'master']);
-      end;
+    Request.QueryFields.Values['db'] := FDTable1.Lookup('database',
+      'master', 'dbnum');
     WebModule1loginAction(nil, Request, Response, Handled);
     Exit;
   end;
@@ -1134,26 +1138,27 @@ begin
     s := Request.ContentFields.Values['delete'];
     if s = 'all' then
       with FDTable4 do
-        while (Bof = false) or (Eof = false) do
-          Delete
-    else
-    begin
-      FDTable4.First;
-      while FDTable4.Eof = false do
+        repeat
+          Delete;
+        until (Bof = true) and (Eof = true)
+      else
       begin
-        i := FDTable4.FieldByName('dbname').AsInteger;
-        if FDTable1.Locate('dbnum', i) = true then
+        FDTable4.First;
+        while FDTable4.Eof = false do
         begin
-          i := FDTable4.FieldByName('posnum').AsInteger;
-          if FDTable2.Locate('number', i) = false then
-            FDTable4.Delete
+          i := FDTable4.FieldByName('dbname').AsInteger;
+          if FDTable1.Locate('dbnum', i) = true then
+          begin
+            i := FDTable4.FieldByName('posnum').AsInteger;
+            if FDTable2.Locate('number', i) = false then
+              FDTable4.Delete
+            else
+              FDTable4.Next;
+          end
           else
-            FDTable4.Next;
-        end
-        else
-          FDTable4.Delete;
+            FDTable4.Delete;
+        end;
       end;
-    end;
   end;
   Response.ContentType := 'text/html;charset=utf-8';
   Response.Content := master.Content;
@@ -1179,6 +1184,7 @@ begin
       title := Values['title'];
       na := Values['name'];
       raw := Values['comment'];
+      Values['comment'] := '';
       pass := hash(Values['password']);
     end;
     if title = '' then
@@ -1207,6 +1213,7 @@ begin
     finally
       comment.Free;
     end;
+    review := false;
   end
   else
     review := true;
@@ -1284,13 +1291,18 @@ begin
   FDTable3.Open;
   FDTable4.Open;
   FDTable5.Open;
-  if FDTable1.Bof and FDTable1.Eof then
+  FDTable1.Refresh;
+  FDTable3.Refresh;
+  FDTable4.Refresh;
+  FDTable5.Refresh;
+  if (FDTable1.Bof = true) and (FDTable1.Eof = true) then
   begin
     FDTable1.AppendRecord([0, 'info']);
+    FDTable1.AppendRecord([1, 'master']);
     for i := 1 to 10 do
-      FDTable1.AppendRecord([i, '掲示板' + i.ToString]);
+      FDTable1.AppendRecord([i + 1, '掲示板' + i.ToString]);
   end;
-  if FDTable3.Bof and FDTable3.Eof then
+  if (FDTable3.Bof = true) and (FDTable3.Eof = true) then
   begin
     i := FDTable1.Lookup('database', 'info', 'dbnum');
     s := '阿保,馬鹿,死ね';

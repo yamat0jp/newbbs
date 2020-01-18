@@ -1951,8 +1951,8 @@ object WebModule1: TWebModule1
   object FDTable5: TFDTable
     IndexFieldNames = 'ID'
     Connection = FDConnection1
-    UpdateOptions.UpdateTableName = 'IMAGES'
-    TableName = 'IMAGES'
+    UpdateOptions.UpdateTableName = 'images'
+    TableName = 'images'
     Left = 712
     Top = 184
     object FDTable5ID: TIntegerField
@@ -2032,9 +2032,7 @@ object WebModule1: TWebModule1
       Size = 320
     end
     object FDTable3mente: TBooleanField
-      FieldKind = fkCalculated
       FieldName = 'mente'
-      Calculated = True
     end
     object FDTable3INFO: TIntegerField
       FieldName = 'INFO'
@@ -2056,6 +2054,7 @@ object WebModule1: TWebModule1
   object FDConnection1: TFDConnection
     Params.Strings = (
       'ConnectionDef=first_sql')
+    Connected = True
     Left = 632
     Top = 56
   end
