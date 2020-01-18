@@ -476,10 +476,6 @@ begin
       First;
       while Eof = false do
       begin
-        if FieldByName('posnum').AsInteger = -1 then
-          alert.Tag := 1
-        else
-          alert.Tag := 0;
         ReplaceText := ReplaceText + alert.ContentFromString(alert.Content);
         Next;
       end;
@@ -895,7 +891,7 @@ begin
   if Request.MethodType = mtGet then
   begin
     FDTable1.Locate('dbnum', num1);
-    FDTable2.Locate('number', num2, []);
+    FDTable2.Locate('number', num2);
     Response.ContentType := 'text/html;charset=utf-8';
     Response.Content := mail.Content;
   end
