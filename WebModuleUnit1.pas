@@ -519,7 +519,7 @@ begin
   max := FDTable3.FieldByName('count').AsInteger;
   if (page > -1) and (count < max * (page - 1)) then
   begin
-    page := count div max;
+    page := (count div max) + 1;
     if count mod max = 0 then
       dec(page);
   end;
@@ -919,8 +919,7 @@ begin
         s := '(No Comment)';
       AppendRecord([i, num1, num2, Now, s]);
     end;
-    Response.SendRedirect(Format('%s/index?db=%d&num=%d#%d',
-      [Request.ScriptName, num1, num2, num2]))
+    WebModule1jumpAction(nil, Request, Response, Handled);
   end;
 end;
 
