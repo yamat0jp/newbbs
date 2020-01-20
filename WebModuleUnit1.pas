@@ -1143,9 +1143,8 @@ begin
     s := Request.ContentFields.Values['delete'];
     with FDTable4 do
       if s = 'all' then
-        repeat
-          Delete;
-        until (Bof = true) and (Eof = true)
+        while not (Bof = true) and (Eof = true) do
+          Delete
       else
       begin
         First;
