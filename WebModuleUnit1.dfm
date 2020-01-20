@@ -1890,7 +1890,7 @@ object WebModule1: TWebModule1
         'abase></a>'#8595'</p>'
       '<div>'#12479#12452#12488#12523': <#title> ; '#35352#20107#25968': <#count> ; '#26356#26032#26178#21051': <#date></div><p>'
       '')
-    DataSet = FDTable2
+    DataSet = FDQuery1
     OnHTMLTag = tiHTMLTag
     Left = 48
     Top = 320
@@ -1971,14 +1971,6 @@ object WebModule1: TWebModule1
       FieldName = 'SOURCE'
       Origin = '"SOURCE"'
     end
-  end
-  object FDQuery1: TFDQuery
-    Connection = FDConnection1
-    SQL.Strings = (
-      'select dbnum,number,title from article'
-      ' where number = 1;')
-    Left = 624
-    Top = 184
   end
   object FDTable4: TFDTable
     IndexFieldNames = 'ID'
@@ -2117,5 +2109,13 @@ object WebModule1: TWebModule1
     Provider = 'Forms'
     Left = 632
     Top = 256
+  end
+  object FDQuery1: TFDQuery
+    Connection = FDConnection1
+    SQL.Strings = (
+      'select dbnum,title,max(date) from article '
+      ' group by dbnum order by max(date);')
+    Left = 616
+    Top = 184
   end
 end

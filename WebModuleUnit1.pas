@@ -47,7 +47,6 @@ type
     FDTable2DATE: TDateField;
     FDTable2PASS: TWideStringField;
     FDTable5: TFDTable;
-    FDQuery1: TFDQuery;
     FDTable4: TFDTable;
     FDTable4ID: TIntegerField;
     FDTable4DBNAME: TIntegerField;
@@ -73,6 +72,7 @@ type
     footer: TPageProducer;
     FDTable3mente: TBooleanField;
     FDGUIxWaitCursor1: TFDGUIxWaitCursor;
+    FDQuery1: TFDQuery;
     procedure indexHTMLTag(Sender: TObject; Tag: TTag; const TagString: string;
       TagParams: TStrings; var ReplaceText: string);
     procedure WebModule1indexpageAction(Sender: TObject; Request: TWebRequest;
@@ -714,11 +714,7 @@ begin
   else if TagString = 'database' then
     ReplaceText := FDTable1.FieldByName('database').AsString
   else if TagString = 'date' then
-    with FDTable2 do
-    begin
-      Last;
-      ReplaceText := FieldByName('date').AsString;
-    end;
+    ReplaceText := FDQuery1.FieldByName('max(date)').AsString;
 end;
 
 procedure TWebModule1.titleHTMLTag(Sender: TObject; Tag: TTag;
@@ -733,18 +729,11 @@ begin
   else if TagString = 'main' then
   begin
     FDQuery1.Open;
-    FDTable1.First;
-    while (FDQuery1.Eof = false) and (FDTable1.Eof = false) do
+    while FDQuery1.Eof = false do
     begin
-      if FDTable1.FieldByName('dbnum').AsInteger = FDQuery1.FieldByName('dbnum')
-        .AsInteger then
-      begin
-        ReplaceText := ReplaceText + ti.Content;
-        FDQuery1.Next;
-      end
-      else if FDTable2.Eof = false then
-        ReplaceText := ReplaceText + ti.Content;
-      FDTable1.Next;
+      FDTable1.Locate('dbnum',FDQuery1.FieldByName('dbnum').AsInteger);
+      ReplaceText:=ReplaceText+ti.Content;
+      FDQuery1.Next;
     end;
     FDQuery1.Close;
   end;
