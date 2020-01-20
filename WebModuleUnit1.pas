@@ -499,14 +499,19 @@ begin
 end;
 
 function TWebModule1.mente: Boolean;
+var
+  s: string;
 begin
   if FDTable3.FieldByName('mente').AsBoolean = true then
   begin
+    s:=Request.QueryFields.Values['db'];
+    if s <> '' then
+      s:='?db='+s;
     result := true;
     Response.Content :=
       '<p><br><h1 style=text-align:center>ただいまメンテナンス中です^_^</h1>' +
-      Format('<p style=text-align:center><a href=%s/admin>管理者用ログイン</a>',
-      [Request.ScriptName]);
+      Format('<p style=text-align:center><a href=%s/admin%s>管理者用ログイン</a>',
+      [Request.ScriptName,s]);
   end
   else
     result := false;
@@ -1015,6 +1020,9 @@ var
   i: Integer;
   s: string;
 begin
+  Response.ContentType := 'text/html; charset="utf-8"';
+  if mente = true then
+    Exit;
   s := Request.QueryFields.Values['db'];
   if s <> '' then
     FDTable1.Locate('dbnum', s, []);
@@ -1024,9 +1032,7 @@ begin
   index.Tag := i;
   tagstr := '/index';
   Self.Tag := Integer(@tagstr);
-  Response.ContentType := 'text/html; charset="utf-8"';
-  if mente = false then
-    Response.Content := index.Content;
+  Response.Content := index.Content;
 end;
 
 procedure TWebModule1.WebModule1jumpAction(Sender: TObject;
