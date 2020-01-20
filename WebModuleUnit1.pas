@@ -1143,7 +1143,7 @@ begin
     s := Request.ContentFields.Values['delete'];
     with FDTable4 do
       if s = 'all' then
-        while not (Bof = true) and (Eof = true) do
+        while not((Bof = true) and (Eof = true)) do
           Delete
       else
       begin
@@ -1164,6 +1164,7 @@ begin
         end;
       end;
   end;
+  FDTable4.First;
   Response.ContentType := 'text/html;charset=utf-8';
   Response.Content := master.Content;
 end;
