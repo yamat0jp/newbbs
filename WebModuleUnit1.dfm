@@ -2113,4 +2113,9 @@ object WebModule1: TWebModule1
     Left = 112
     Top = 192
   end
+  object FDGUIxWaitCursor1: TFDGUIxWaitCursor
+    Provider = 'Forms'
+    Left = 632
+    Top = 256
+  end
 end

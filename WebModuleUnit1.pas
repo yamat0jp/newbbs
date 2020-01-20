@@ -9,7 +9,8 @@ uses System.SysUtils, System.Classes, Web.HTTPApp, Web.DSProd, Web.HTTPProd,
   FireDAC.Phys.Intf, FireDAC.DApt.Intf, FireDAC.Stan.Async, FireDAC.DApt,
   FireDAC.Comp.DataSet, FireDAC.Comp.Client, FireDAC.UI.Intf, FireDAC.Stan.Def,
   FireDAC.Stan.Pool, FireDAC.Phys, FireDAC.Phys.FB, FireDAC.Phys.FBDef,
-  FireDAC.Phys.MySQL, FireDAC.Phys.MySQLDef;
+  FireDAC.Phys.MySQL, FireDAC.Phys.MySQLDef, FireDAC.VCLUI.Wait,
+  FireDAC.Comp.UI;
 
 type
   TWebModule1 = class(TWebModule)
@@ -71,6 +72,7 @@ type
     login: TPageProducer;
     footer: TPageProducer;
     FDTable3mente: TBooleanField;
+    FDGUIxWaitCursor1: TFDGUIxWaitCursor;
     procedure indexHTMLTag(Sender: TObject; Tag: TTag; const TagString: string;
       TagParams: TStrings; var ReplaceText: string);
     procedure WebModule1indexpageAction(Sender: TObject; Request: TWebRequest;
@@ -204,16 +206,14 @@ procedure TWebModule1.alertHTMLTag(Sender: TObject; Tag: TTag;
   const TagString: string; TagParams: TStrings; var ReplaceText: string);
 var
   s: TStringList;
-  i, j: Integer;
+  i: Integer;
 begin
   if (TagString = 'plus') and (alert.Tag = 0) then
     ReplaceText := '<a href=' + Request.ScriptName +
       '/jump?db=<#dbname>&num=<#posnum>>[ <#dbname>-<#posnum> ]</a>'
   else if TagString = 'article' then
   begin
-    i := FDTable4.FieldByName('dbname').AsInteger;
-    j := FDTable4.FieldByName('posnum').AsInteger;
-    if FDTable2.Locate('dbnum;number', VarArrayOf([i, j])) = false then
+    if alert.Tag = 1 then
     begin
       ReplaceText := '<p>リクエスト';
       Exit;
@@ -466,18 +466,26 @@ end;
 procedure TWebModule1.masterHTMLTag(Sender: TObject; Tag: TTag;
   const TagString: string; TagParams: TStrings; var ReplaceText: string);
 var
-  i: Integer;
+  i, j: Integer;
 begin
   if TagString = 'pr' then
     ReplaceText := promotion
   else if TagString = 'uri' then
     ReplaceText := Request.ScriptName
   else if TagString = 'request' then
+  begin
+    FDTable1.Close;
     with FDTable4 do
     begin
       First;
       while Eof = false do
       begin
+        i := FieldByName('dbname').AsInteger;
+        j := FieldByName('posnum').AsInteger;
+        if FDTable2.Locate('dbnum;number', VarArrayOf([i, j])) = true then
+          alert.Tag := 0
+        else
+          alert.Tag := 1;
         ReplaceText := ReplaceText + alert.ContentFromString(alert.Content);
         Next;
       end;
@@ -485,6 +493,9 @@ begin
         ReplaceText := '<table border=1 align=center>' + ReplaceText +
           '</table>';
     end;
+    FDTable1.Open;
+    FDTable1.Refresh;
+  end;
 end;
 
 function TWebModule1.mente: Boolean;
@@ -508,7 +519,7 @@ begin
   max := FDTable3.FieldByName('count').AsInteger;
   if (page > -1) and (count < max * (page - 1)) then
   begin
-    page := (count div max) + 1;
+    page := count div max;
     if count mod max = 0 then
       dec(page);
   end;
@@ -1131,27 +1142,27 @@ begin
   if Request.MethodType = mtPost then
   begin
     s := Request.ContentFields.Values['delete'];
-    if s = 'all' then
-      with FDTable4 do
+    with FDTable4 do
+      if s = 'all' then
         repeat
           Delete;
         until (Bof = true) and (Eof = true)
       else
       begin
-        FDTable4.First;
-        while FDTable4.Eof = false do
+        First;
+        while Eof = false do
         begin
-          i := FDTable4.FieldByName('dbname').AsInteger;
+          i := FieldByName('dbname').AsInteger;
           if FDTable1.Locate('dbnum', i) = true then
           begin
-            i := FDTable4.FieldByName('posnum').AsInteger;
+            i := FieldByName('posnum').AsInteger;
             if FDTable2.Locate('number', i) = false then
-              FDTable4.Delete
+              Delete
             else
-              FDTable4.Next;
+              Next;
           end
           else
-            FDTable4.Delete;
+            Delete;
         end;
       end;
   end;
