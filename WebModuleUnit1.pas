@@ -72,7 +72,7 @@ type
     footer: TPageProducer;
     FDGUIxWaitCursor1: TFDGUIxWaitCursor;
     FDQuery1: TFDQuery;
-    FDTable3MENTE: TSmallintField;
+    FDTable3mente: TSmallintField;
     procedure indexHTMLTag(Sender: TObject; Tag: TTag; const TagString: string;
       TagParams: TStrings; var ReplaceText: string);
     procedure WebModule1indexpageAction(Sender: TObject; Request: TWebRequest;
@@ -186,8 +186,8 @@ begin
     ReplaceText := promotion
   else if TagString = 'uri' then
     ReplaceText := Request.ScriptName
-  else if (TagString = 'mente') and
-    (FDTable3.FieldByName('mente').AsInteger = 1) then
+  else if (TagString = 'mente') and (FDTable3.FieldByName('mente').AsInteger = 1)
+  then
     ReplaceText := 'checked="checked"'
   else if TagString = 'database' then
     ReplaceText := Request.QueryFields.Values['db'];
@@ -263,7 +263,8 @@ end;
 
 procedure TWebModule1.footerHTMLTag(Sender: TObject; Tag: TTag;
   const TagString: string; TagParams: TStrings; var ReplaceText: string);
-var  i: Integer;
+var
+  i: Integer;
 begin
   if TagString = 'link' then
   begin
@@ -501,8 +502,7 @@ function TWebModule1.mente: Boolean;
 var
   s: string;
 begin
-  if FDTable3.FieldByName('mente').AsInteger = 1
-   then
+  if FDTable3.FieldByName('mente').AsInteger = 1 then
   begin
     s := Request.QueryFields.Values['db'];
     if s <> '' then
@@ -861,17 +861,17 @@ procedure TWebModule1.WebModule1adminsetAction(Sender: TObject;
   Request: TWebRequest; Response: TWebResponse; var Handled: Boolean);
 var
   s: string;
-  i: integer;
+  i: Integer;
 begin
   s := Request.ContentFields.Values['pass'];
   with FDTable3 do
   begin
     Edit;
     if Request.ContentFields.Values['mente'] = 'on' then
-      i:=1
+      i := 1
     else
-      i:=0;
-    FieldByName('mente').AsInteger:=i;
+      i := 0;
+    FieldByName('mente').AsInteger := i;
     if s <> '' then
     begin
       s := hash(s);

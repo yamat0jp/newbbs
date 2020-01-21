@@ -2023,9 +2023,8 @@ object WebModule1: TWebModule1
       Origin = 'TITLE2'
       Size = 320
     end
-    object FDTable3MENTE: TSmallintField
-      FieldName = 'MENTE'
-      Origin = 'MENTE'
+    object FDTable3mente: TSmallintField
+      FieldName = 'mente'
     end
     object FDTable3INFO: TIntegerField
       FieldName = 'INFO'
@@ -2046,8 +2045,7 @@ object WebModule1: TWebModule1
   end
   object FDConnection1: TFDConnection
     Params.Strings = (
-      'ConnectionDef=test_server')
-    Connected = True
+      'ConnectionDef=first_sql')
     Left = 632
     Top = 56
   end
