@@ -17,8 +17,9 @@ object Form1: TForm1
   object Label1: TLabel
     Left = 48
     Top = 56
-    Width = 3
+    Width = 6
     Height = 13
+    Caption = '1'
   end
   object Button1: TButton
     Left = 296
@@ -53,6 +54,7 @@ object Form1: TForm1
     Height = 21
     ReadOnly = True
     TabOrder = 3
+    Text = 'slide1.jpg'
   end
   object DBNavigator1: TDBNavigator
     Left = 224
@@ -86,7 +88,7 @@ object Form1: TForm1
   end
   object FDConnection1: TFDConnection
     Params.Strings = (
-      'ConnectionDef=first_sql')
+      'ConnectionDef=test_server')
     Connected = True
     Left = 144
     Top = 64
@@ -126,8 +128,8 @@ object Form1: TForm1
   object BindSourceDB1: TBindSourceDB
     DataSet = FDTable1
     ScopeMappings = <>
-    Left = 312
-    Top = 152
+    Left = 176
+    Top = 216
   end
   object BindingsList1: TBindingsList
     Methods = <>

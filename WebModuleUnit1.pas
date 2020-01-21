@@ -70,9 +70,9 @@ type
     FDTable5SOURCE: TBlobField;
     login: TPageProducer;
     footer: TPageProducer;
-    FDTable3mente: TBooleanField;
     FDGUIxWaitCursor1: TFDGUIxWaitCursor;
     FDQuery1: TFDQuery;
+    FDTable3MENTE: TSmallintField;
     procedure indexHTMLTag(Sender: TObject; Tag: TTag; const TagString: string;
       TagParams: TStrings; var ReplaceText: string);
     procedure WebModule1indexpageAction(Sender: TObject; Request: TWebRequest;
@@ -187,7 +187,7 @@ begin
   else if TagString = 'uri' then
     ReplaceText := Request.ScriptName
   else if (TagString = 'mente') and
-    (FDTable3.FieldByName('mente').AsBoolean = true) then
+    (FDTable3.FieldByName('mente').AsInteger = 1) then
     ReplaceText := 'checked="checked"'
   else if TagString = 'database' then
     ReplaceText := Request.QueryFields.Values['db'];
@@ -263,8 +263,7 @@ end;
 
 procedure TWebModule1.footerHTMLTag(Sender: TObject; Tag: TTag;
   const TagString: string; TagParams: TStrings; var ReplaceText: string);
-var
-  i: Integer;
+var  i: Integer;
 begin
   if TagString = 'link' then
   begin
@@ -502,16 +501,17 @@ function TWebModule1.mente: Boolean;
 var
   s: string;
 begin
-  if FDTable3.FieldByName('mente').AsBoolean = true then
+  if FDTable3.FieldByName('mente').AsInteger = 1
+   then
   begin
-    s:=Request.QueryFields.Values['db'];
+    s := Request.QueryFields.Values['db'];
     if s <> '' then
-      s:='?db='+s;
+      s := '?db=' + s;
     result := true;
     Response.Content :=
       '<p><br><h1 style=text-align:center>ただいまメンテナンス中です^_^</h1>' +
       Format('<p style=text-align:center><a href=%s/admin%s>管理者用ログイン</a>',
-      [Request.ScriptName,s]);
+      [Request.ScriptName, s]);
   end
   else
     result := false;
@@ -731,8 +731,8 @@ begin
     FDQuery1.Open;
     while FDQuery1.Eof = false do
     begin
-      FDTable1.Locate('dbnum',FDQuery1.FieldByName('dbnum').AsInteger);
-      ReplaceText:=ReplaceText+ti.Content;
+      FDTable1.Locate('dbnum', FDQuery1.FieldByName('dbnum').AsInteger);
+      ReplaceText := ReplaceText + ti.Content;
       FDQuery1.Next;
     end;
     FDQuery1.Close;
@@ -861,13 +861,17 @@ procedure TWebModule1.WebModule1adminsetAction(Sender: TObject;
   Request: TWebRequest; Response: TWebResponse; var Handled: Boolean);
 var
   s: string;
+  i: integer;
 begin
   s := Request.ContentFields.Values['pass'];
   with FDTable3 do
   begin
     Edit;
-    FieldByName('mente').AsBoolean := Request.ContentFields.Values
-      ['mente'] = 'on';
+    if Request.ContentFields.Values['mente'] = 'on' then
+      i:=1
+    else
+      i:=0;
+    FieldByName('mente').AsInteger:=i;
     if s <> '' then
     begin
       s := hash(s);
@@ -1323,7 +1327,7 @@ begin
     FDTable3.AppendRecord
       (['とるね～ど号',
       '<h1 style=color:maron;text-align:center;font-style:italic>とるね～ど号</h1>',
-      false, i, 30, hash(hash('admin')), s]);
+      0, i, 30, hash(hash('admin')), s]);
   end;
 end;
 

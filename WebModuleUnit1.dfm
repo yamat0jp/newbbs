@@ -1901,7 +1901,6 @@ object WebModule1: TWebModule1
     MasterFields = 'DBNUM'
     Connection = FDConnection1
     FetchOptions.AssignedValues = [evLiveWindowParanoic]
-    FetchOptions.LiveWindowParanoic = True
     UpdateOptions.UpdateTableName = 'article'
     TableName = 'article'
     Left = 584
@@ -2024,8 +2023,9 @@ object WebModule1: TWebModule1
       Origin = 'TITLE2'
       Size = 320
     end
-    object FDTable3mente: TBooleanField
-      FieldName = 'mente'
+    object FDTable3MENTE: TSmallintField
+      FieldName = 'MENTE'
+      Origin = 'MENTE'
     end
     object FDTable3INFO: TIntegerField
       FieldName = 'INFO'
@@ -2046,7 +2046,7 @@ object WebModule1: TWebModule1
   end
   object FDConnection1: TFDConnection
     Params.Strings = (
-      'ConnectionDef=first_sql')
+      'ConnectionDef=test_server')
     Connected = True
     Left = 632
     Top = 56

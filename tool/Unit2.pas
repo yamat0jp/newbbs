@@ -74,7 +74,6 @@ begin
       t.Free;
     end;
     ApplyUpdates;
-    Reconcile;
     CommitUpdates;
   end;
 end;
@@ -112,6 +111,7 @@ begin
     FDTable1.Close;
     FDTable1.CreateTable;
     FDTable1.Open;
+    FDTable1.Refresh;
   end;
 end;
 
