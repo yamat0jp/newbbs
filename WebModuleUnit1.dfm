@@ -197,7 +197,7 @@ object WebModule1: TWebModule1
   object admin: TDataSetTableProducer
     Columns = <
       item
-        Title.Caption = 'check'
+        FieldName = 'CHECK'
       end
       item
         FieldName = 'NUMBER'
@@ -215,6 +215,10 @@ object WebModule1: TWebModule1
       '')
     MaxRows = 30
     DataSet = FDTable2
+    RowAttributes.Align = haCenter
+    TableAttributes.Align = haCenter
+    TableAttributes.BgColor = 'White'
+    TableAttributes.Width = 80
     OnFormatCell = adminFormatCell
     Left = 176
     Top = 32
@@ -2046,6 +2050,7 @@ object WebModule1: TWebModule1
   object FDConnection1: TFDConnection
     Params.Strings = (
       'ConnectionDef=first_sql')
+    Connected = True
     Left = 632
     Top = 56
   end

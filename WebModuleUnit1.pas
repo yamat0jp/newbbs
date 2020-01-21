@@ -198,8 +198,18 @@ procedure TWebModule1.adminFormatCell(Sender: TObject;
   var Align: THTMLAlign; var VAlign: THTMLVAlign;
   var CustomAttrs, CellData: string);
 begin
-  if (CellColumn = 0) and (CellRow > 0) then
-    CellData := Format('<input name=check%d type=checkbox>', [CellRow]);
+  if CellRow = 0 then
+    Exit;
+  case CellColumn of
+    0:
+      CellData := Format('<input name=check%d type=checkbox>', [CellRow]);
+    1:
+      CellData := '<b>' + CellData + '</b>';
+    2:
+      CellData := '<p style=color:red>' + CellData + '</p>';
+    3:
+      CellData := '<p style=color:green>' + CellData + '</p>';
+  end;
 end;
 
 procedure TWebModule1.alertHTMLTag(Sender: TObject; Tag: TTag;
@@ -1329,6 +1339,7 @@ begin
       '<h1 style=color:maron;text-align:center;font-style:italic>Ç∆ÇÈÇÀÅ`Ç«çÜ</h1>',
       0, i, 30, hash(hash('admin')), s]);
   end;
+  admin.MaxRows:=FDTable3.FieldByName('count').AsInteger;
 end;
 
 end.
