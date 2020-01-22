@@ -882,7 +882,7 @@ begin
     else
       i := 0;
     FieldByName('mente').AsInteger := i;
-    if s <> '' then
+    if (s <> '')and(s = Request.ContentFields.Values['pass2']) then
     begin
       s := hash(s);
       FieldByName('password').AsString := hash(s);

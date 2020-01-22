@@ -197,9 +197,11 @@ object WebModule1: TWebModule1
   object admin: TDataSetTableProducer
     Columns = <
       item
+        Custom = 'width=10%'
         FieldName = 'CHECK'
       end
       item
+        Custom = 'width=10%'
         FieldName = 'NUMBER'
       end
       item
@@ -1803,6 +1805,10 @@ object WebModule1: TWebModule1
       
         '      <input type="password" style="HEIGHT: 23px; WIDTH: 85px" n' +
         'ame="pass">'
+      '       / '#30906#35469
+      
+        '      <input type=password style=height:23px;width:85px name=pas' +
+        's2>'
       '      </p>'
       '    </label>'
       '    <p>'
