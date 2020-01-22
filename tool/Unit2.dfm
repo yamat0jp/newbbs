@@ -2,7 +2,7 @@ object Form1: TForm1
   Left = 0
   Top = 0
   Caption = 'Form1'
-  ClientHeight = 299
+  ClientHeight = 657
   ClientWidth = 635
   Color = clBtnFace
   Font.Charset = DEFAULT_CHARSET
@@ -17,9 +17,29 @@ object Form1: TForm1
   object Label1: TLabel
     Left = 48
     Top = 56
-    Width = 6
+    Width = 3
     Height = 13
-    Caption = '1'
+  end
+  object Label2: TLabel
+    Left = 20
+    Top = 531
+    Width = 14
+    Height = 13
+    Caption = 'NG'
+  end
+  object Label3: TLabel
+    Left = 8
+    Top = 579
+    Width = 36
+    Height = 13
+    Caption = #35373#23450#29992
+  end
+  object Label4: TLabel
+    Left = 286
+    Top = 489
+    Width = 36
+    Height = 13
+    Caption = #35519#25972#20013
   end
   object Button1: TButton
     Left = 296
@@ -54,7 +74,6 @@ object Form1: TForm1
     Height = 21
     ReadOnly = True
     TabOrder = 3
-    Text = 'slide1.jpg'
   end
   object DBNavigator1: TDBNavigator
     Left = 224
@@ -86,9 +105,89 @@ object Form1: TForm1
     TabOrder = 6
     OnClick = Button4Click
   end
+  object Memo1: TMemo
+    Left = 64
+    Top = 376
+    Width = 425
+    Height = 89
+    TabOrder = 7
+  end
+  object CheckBox1: TCheckBox
+    Left = 64
+    Top = 488
+    Width = 97
+    Height = 17
+    Caption = 'mente'
+    TabOrder = 8
+    OnClick = CheckBox1Click
+  end
+  object Edit3: TEdit
+    Left = 64
+    Top = 528
+    Width = 425
+    Height = 21
+    TabOrder = 9
+  end
+  object Edit4: TEdit
+    Left = 64
+    Top = 325
+    Width = 209
+    Height = 21
+    TabOrder = 10
+  end
+  object Button5: TButton
+    Left = 520
+    Top = 323
+    Width = 75
+    Height = 25
+    Caption = 'default'
+    TabOrder = 11
+  end
+  object Edit5: TEdit
+    Left = 328
+    Top = 486
+    Width = 65
+    Height = 21
+    TabOrder = 12
+  end
+  object UpDown1: TUpDown
+    Left = 393
+    Top = 486
+    Width = 16
+    Height = 21
+    Associate = Edit5
+    Min = 5
+    Max = 300
+    Position = 30
+    TabOrder = 13
+  end
+  object Edit6: TEdit
+    Left = 64
+    Top = 576
+    Width = 121
+    Height = 21
+    TabOrder = 14
+  end
+  object ComboBox1: TComboBox
+    Left = 280
+    Top = 576
+    Width = 145
+    Height = 21
+    TabOrder = 15
+    OnSelect = ComboBox1Select
+  end
+  object Button6: TButton
+    Left = 520
+    Top = 368
+    Width = 75
+    Height = 25
+    Caption = 'adapt'
+    TabOrder = 16
+    OnClick = Button6Click
+  end
   object FDConnection1: TFDConnection
     Params.Strings = (
-      'ConnectionDef=test_server')
+      'ConnectionDef=first_sql')
     Connected = True
     Left = 144
     Top = 64
@@ -150,6 +249,34 @@ object Form1: TForm1
       Control = Edit1
       Track = True
     end
+    object LinkControlToField1: TLinkControlToField
+      Category = #12463#12452#12483#12463' '#12496#12452#12531#12487#12451#12531#12464
+      DataSource = BindSourceDB2
+      FieldName = 'ng'
+      Control = Edit3
+      Track = True
+    end
+    object LinkControlToField5: TLinkControlToField
+      Category = #12463#12452#12483#12463' '#12496#12452#12531#12487#12451#12531#12464
+      DataSource = BindSourceDB2
+      FieldName = 'title'
+      Control = Edit4
+      Track = True
+    end
+    object LinkControlToField6: TLinkControlToField
+      Category = #12463#12452#12483#12463' '#12496#12452#12531#12487#12451#12531#12464
+      DataSource = BindSourceDB2
+      FieldName = 'count'
+      Control = Edit5
+      Track = True
+    end
+    object LinkControlToField4: TLinkControlToField
+      Category = #12463#12452#12483#12463' '#12496#12452#12531#12487#12451#12531#12464
+      DataSource = BindSourceDB2
+      FieldName = 'title2'
+      Control = Memo1
+      Track = False
+    end
   end
   object FDGUIxWaitCursor1: TFDGUIxWaitCursor
     Provider = 'Forms'
@@ -160,5 +287,28 @@ object Form1: TForm1
     DataSet = FDTable1
     Left = 232
     Top = 112
+  end
+  object FDQuery1: TFDQuery
+    Connection = FDConnection1
+    SQL.Strings = (
+      'use kainushi;'
+      'create table images(id int primary key,'
+      ' name varchar(30), source mediumblob);')
+    Left = 440
+    Top = 112
+  end
+  object FDTable2: TFDTable
+    Active = True
+    Connection = FDConnection1
+    UpdateOptions.UpdateTableName = 'setting'
+    TableName = 'setting'
+    Left = 496
+    Top = 280
+  end
+  object BindSourceDB2: TBindSourceDB
+    DataSet = FDTable2
+    ScopeMappings = <>
+    Left = 368
+    Top = 304
   end
 end

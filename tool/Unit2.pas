@@ -15,7 +15,8 @@ uses
   Vcl.Bind.DBEngExt, Data.Bind.Components, Data.Bind.DBScope,
   FireDAC.VCLUI.Wait, FireDAC.Comp.UI, Vcl.DBCtrls, Jpeg, Vcl.Grids,
   Vcl.DBGrids,
-  FireDAC.Phys.IB, FireDAC.Phys.IBDef, FireDAC.Phys.FB, FireDAC.Phys.FBDef;
+  FireDAC.Phys.IB, FireDAC.Phys.IBDef, FireDAC.Phys.FB, FireDAC.Phys.FBDef,
+  Vcl.ComCtrls;
 
 type
   TForm1 = class(TForm)
@@ -39,10 +40,33 @@ type
     FDTable1NAME: TWideStringField;
     FDTable1SOURCE: TBlobField;
     Button4: TButton;
+    FDQuery1: TFDQuery;
+    Memo1: TMemo;
+    CheckBox1: TCheckBox;
+    Edit3: TEdit;
+    Label2: TLabel;
+    FDTable2: TFDTable;
+    BindSourceDB2: TBindSourceDB;
+    LinkControlToField1: TLinkControlToField;
+    Edit4: TEdit;
+    LinkControlToField5: TLinkControlToField;
+    Button5: TButton;
+    Edit5: TEdit;
+    UpDown1: TUpDown;
+    Edit6: TEdit;
+    LinkControlToField6: TLinkControlToField;
+    LinkControlToField4: TLinkControlToField;
+    ComboBox1: TComboBox;
+    Button6: TButton;
+    Label3: TLabel;
+    Label4: TLabel;
     procedure Button1Click(Sender: TObject);
     procedure Button4Click(Sender: TObject);
     procedure Button3Click(Sender: TObject);
     procedure FormCreate(Sender: TObject);
+    procedure Button6Click(Sender: TObject);
+    procedure ComboBox1Select(Sender: TObject);
+    procedure CheckBox1Click(Sender: TObject);
   private
     { Private êÈåæ }
   public
@@ -53,6 +77,8 @@ var
   Form1: TForm1;
 
 implementation
+
+uses System.NetEncoding, IdHashSHA, IdHashMessageDigest;
 
 {$R *.dfm}
 
@@ -104,15 +130,75 @@ begin
   end;
 end;
 
+procedure TForm1.Button6Click(Sender: TObject);
+  function hash(str: string): string;
+  begin
+    with TIdHashSHA1.Create do
+    begin
+      try
+        result:=HashStringAsHex(str);
+      finally
+        Free;
+      end;
+    end;
+  end;
+begin
+  if Edit6.Text <> '' then
+    FDTable2.FieldByName('password').AsString:=hash(hash(Edit6.Text));
+  FDTable2.Post;
+  FDTable2.Edit;
+end;
+
+procedure TForm1.CheckBox1Click(Sender: TObject);
+var
+  i: Integer;
+begin
+  if CheckBox1.Checked = true then
+    i := 1
+  else
+    i := 0;
+  FDTable2.FieldByName('mente').AsInteger := i;
+end;
+
+procedure TForm1.ComboBox1Select(Sender: TObject);
+var
+  i: Integer;
+begin
+  FDQuery1.Open('select * from dbname');
+  FDTable2.FieldByName('info').AsInteger := FDQuery1.Lookup('database',
+    ComboBox1.Text, 'dbnum');
+  FDQuery1.Close;
+end;
+
 procedure TForm1.FormCreate(Sender: TObject);
+var
+  s: string;
 begin
   if FDTable1.Exists = false then
   begin
     FDTable1.Close;
-    FDTable1.CreateTable;
+    FDQuery1.ExecSQL;
     FDTable1.Open;
-    FDTable1.Refresh;
   end;
+  FDTable1.Refresh;
+  FDTable2.Refresh;
+  ComboBox1.Items.Clear;
+  with FDQuery1 do
+  begin
+    Open('select * from dbname;');
+    while Eof = false do
+    begin
+      s := FieldByName('database').AsString;
+      if s <> 'master' then
+        ComboBox1.Items.Add(s);
+      Next;
+    end;
+    ComboBox1.Text := Lookup('dbnum', FDTable2.FieldByName('info').AsInteger,
+      'database');
+    Close;
+  end;
+  FDTable2.Edit;
+  CheckBox1Click(nil);
 end;
 
 end.
