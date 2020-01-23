@@ -54,7 +54,6 @@ type
     Edit5: TEdit;
     UpDown1: TUpDown;
     Edit6: TEdit;
-    LinkControlToField6: TLinkControlToField;
     LinkControlToField4: TLinkControlToField;
     ComboBox1: TComboBox;
     Button6: TButton;
@@ -67,6 +66,7 @@ type
     procedure Button6Click(Sender: TObject);
     procedure ComboBox1Select(Sender: TObject);
     procedure CheckBox1Click(Sender: TObject);
+    procedure UpDown1Click(Sender: TObject; Button: TUDBtnType);
   private
     { Private êÈåæ }
   public
@@ -136,15 +136,16 @@ procedure TForm1.Button6Click(Sender: TObject);
     with TIdHashSHA1.Create do
     begin
       try
-        result:=HashStringAsHex(str);
+        result := HashStringAsHex(str);
       finally
         Free;
       end;
     end;
   end;
+
 begin
   if Edit6.Text <> '' then
-    FDTable2.FieldByName('password').AsString:=hash(hash(Edit6.Text));
+    FDTable2.FieldByName('password').AsString := hash(hash(Edit6.Text));
   FDTable2.Post;
   FDTable2.Edit;
 end;
@@ -161,8 +162,6 @@ begin
 end;
 
 procedure TForm1.ComboBox1Select(Sender: TObject);
-var
-  i: Integer;
 begin
   FDQuery1.Open('select * from dbname');
   FDTable2.FieldByName('info').AsInteger := FDQuery1.Lookup('database',
@@ -197,8 +196,14 @@ begin
       'database');
     Close;
   end;
+  CheckBox1.Checked := FDTable2.FieldByName('mente').AsInteger = 1;
+  UpDown1.Position := FDTable2.FieldByName('count').AsInteger;
   FDTable2.Edit;
-  CheckBox1Click(nil);
+end;
+
+procedure TForm1.UpDown1Click(Sender: TObject; Button: TUDBtnType);
+begin
+  FDTable2.FieldByName('count').AsInteger := UpDown1.Position;
 end;
 
 end.

@@ -148,6 +148,7 @@ object Form1: TForm1
     Top = 486
     Width = 65
     Height = 21
+    ReadOnly = True
     TabOrder = 12
   end
   object UpDown1: TUpDown
@@ -160,6 +161,7 @@ object Form1: TForm1
     Max = 300
     Position = 30
     TabOrder = 13
+    OnClick = UpDown1Click
   end
   object Edit6: TEdit
     Left = 64
@@ -261,13 +263,6 @@ object Form1: TForm1
       DataSource = BindSourceDB2
       FieldName = 'title'
       Control = Edit4
-      Track = True
-    end
-    object LinkControlToField6: TLinkControlToField
-      Category = #12463#12452#12483#12463' '#12496#12452#12531#12487#12451#12531#12464
-      DataSource = BindSourceDB2
-      FieldName = 'count'
-      Control = Edit5
       Track = True
     end
     object LinkControlToField4: TLinkControlToField
