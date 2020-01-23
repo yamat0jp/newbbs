@@ -58,6 +58,7 @@ type
     ComboBox1: TComboBox;
     Button6: TButton;
     Label3: TLabel;
+    Bevel1: TBevel;
     procedure Button1Click(Sender: TObject);
     procedure Button4Click(Sender: TObject);
     procedure Button3Click(Sender: TObject);
@@ -139,7 +140,7 @@ begin
   Edit6.Text := 'admin';
   ComboBox1.Text := 'info';
   UpDown1.Position := 30;
-  UpDown1Click(nil);
+  UpDown1Click(nil, btNext);
   CheckBox1.Checked := false;
   CheckBox1Click(nil);
   FDTable2.Post;

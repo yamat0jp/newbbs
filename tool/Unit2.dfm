@@ -34,6 +34,13 @@ object Form1: TForm1
     Height = 13
     Caption = #35373#23450#29992
   end
+  object Bevel1: TBevel
+    Left = 20
+    Top = 280
+    Width = 575
+    Height = 50
+    Shape = bsTopLine
+  end
   object Button1: TButton
     Left = 296
     Top = 56
