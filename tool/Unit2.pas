@@ -139,6 +139,7 @@ begin
   Edit3.Text := '”nŽ­,ˆ¢•Û,Ž€‚Ë,ŽE‚·';
   Edit6.Text := 'admin';
   ComboBox1.Text := 'info';
+  ComboBox1Select(nil);
   UpDown1.Position := 30;
   UpDown1Click(nil, btNext);
   CheckBox1.Checked := false;
@@ -163,6 +164,11 @@ procedure TForm1.Button6Click(Sender: TObject);
 begin
   if Edit6.Text <> '' then
     FDTable2.FieldByName('password').AsString := hash(hash(Edit6.Text));
+  if ComboBox1.Items.IndexOf(ComboBox1.Text) = -1 then
+  begin
+    ComboBox1.ItemIndex := 0;
+    ComboBox1Select(nil);
+  end;
   FDTable2.Post;
   FDTable2.Edit;
 end;
