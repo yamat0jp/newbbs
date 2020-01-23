@@ -34,13 +34,6 @@ object Form1: TForm1
     Height = 13
     Caption = #35373#23450#29992
   end
-  object Label4: TLabel
-    Left = 286
-    Top = 489
-    Width = 36
-    Height = 13
-    Caption = #35519#25972#20013
-  end
   object Button1: TButton
     Left = 296
     Top = 56
@@ -142,6 +135,7 @@ object Form1: TForm1
     Height = 25
     Caption = 'default'
     TabOrder = 11
+    OnClick = Button5Click
   end
   object Edit5: TEdit
     Left = 328
@@ -150,6 +144,7 @@ object Form1: TForm1
     Height = 21
     ReadOnly = True
     TabOrder = 12
+    Text = '30'
   end
   object UpDown1: TUpDown
     Left = 393

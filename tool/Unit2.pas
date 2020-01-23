@@ -58,7 +58,6 @@ type
     ComboBox1: TComboBox;
     Button6: TButton;
     Label3: TLabel;
-    Label4: TLabel;
     procedure Button1Click(Sender: TObject);
     procedure Button4Click(Sender: TObject);
     procedure Button3Click(Sender: TObject);
@@ -67,6 +66,7 @@ type
     procedure ComboBox1Select(Sender: TObject);
     procedure CheckBox1Click(Sender: TObject);
     procedure UpDown1Click(Sender: TObject; Button: TUDBtnType);
+    procedure Button5Click(Sender: TObject);
   private
     { Private êÈåæ }
   public
@@ -128,6 +128,22 @@ begin
     Reconcile;
     CommitUpdates;
   end;
+end;
+
+procedure TForm1.Button5Click(Sender: TObject);
+begin
+  Edit4.Text := 'Ç∆ÇÈÇÀÅ`Ç«çÜ';
+  Memo1.Lines.Text :=
+    '<h1 style=color:maron;text-align:center;font-style:italic>Ç∆ÇÈÇÀÅ`Ç«çÜ</h1>';
+  Edit3.Text := 'îné≠,à¢ï€,éÄÇÀ,éEÇ∑';
+  Edit6.Text := 'admin';
+  ComboBox1.Text := 'info';
+  UpDown1.Position := 30;
+  UpDown1Click(nil);
+  CheckBox1.Checked := false;
+  CheckBox1Click(nil);
+  FDTable2.Post;
+  FDTable2.Edit;
 end;
 
 procedure TForm1.Button6Click(Sender: TObject);
