@@ -50,7 +50,7 @@ object Form1: TForm1
     OnClick = SpeedButton1Click
   end
   object Button1: TButton
-    Left = 184
+    Left = 206
     Top = 32
     Width = 75
     Height = 25
@@ -59,7 +59,7 @@ object Form1: TForm1
     OnClick = Button1Click
   end
   object Button2: TButton
-    Left = 184
+    Left = 206
     Top = 72
     Width = 75
     Height = 25
@@ -67,7 +67,7 @@ object Form1: TForm1
     TabOrder = 1
   end
   object Button3: TButton
-    Left = 184
+    Left = 206
     Top = 167
     Width = 75
     Height = 25
@@ -84,8 +84,8 @@ object Form1: TForm1
     TabOrder = 3
   end
   object DBNavigator1: TDBNavigator
-    Left = 280
-    Top = 238
+    Left = 312
+    Top = 222
     Width = 240
     Height = 25
     DataSource = DataSource1
@@ -93,9 +93,9 @@ object Form1: TForm1
   end
   object DBGrid1: TDBGrid
     Left = 312
-    Top = 80
+    Top = 32
     Width = 272
-    Height = 120
+    Height = 160
     DataSource = DataSource1
     TabOrder = 5
     TitleFont.Charset = DEFAULT_CHARSET
@@ -105,7 +105,7 @@ object Form1: TForm1
     TitleFont.Style = []
   end
   object Button4: TButton
-    Left = 184
+    Left = 206
     Top = 136
     Width = 75
     Height = 25
@@ -221,8 +221,8 @@ object Form1: TForm1
     Params.Strings = (
       'ConnectionDef=first_sql')
     Connected = True
-    Left = 144
-    Top = 64
+    Left = 320
+    Top = 24
   end
   object FDTable1: TFDTable
     Active = True
@@ -234,8 +234,8 @@ object Form1: TForm1
     FetchOptions.DetailServerCascade = True
     UpdateOptions.UpdateTableName = 'images'
     TableName = 'images'
-    Left = 232
-    Top = 64
+    Left = 392
+    Top = 24
     object FDTable1ID: TIntegerField
       FieldName = 'ID'
       Origin = 'ID'
@@ -253,8 +253,8 @@ object Form1: TForm1
   object OpenPictureDialog1: TOpenPictureDialog
     DefaultExt = 'jpg'
     FilterIndex = 2
-    Left = 144
-    Top = 128
+    Left = 88
+    Top = 96
   end
   object BindSourceDB1: TBindSourceDB
     DataSet = FDTable1
@@ -284,8 +284,8 @@ object Form1: TForm1
   end
   object FDGUIxWaitCursor1: TFDGUIxWaitCursor
     Provider = 'Forms'
-    Left = 224
-    Top = 160
+    Left = 88
+    Top = 152
   end
   object FDQuery1: TFDQuery
     CachedUpdates = True
@@ -365,7 +365,7 @@ object Form1: TForm1
   end
   object DataSource1: TDataSource
     DataSet = FDTable1
-    Left = 232
-    Top = 112
+    Left = 464
+    Top = 24
   end
 end
