@@ -34,7 +34,6 @@ type
     LinkControlToField2: TLinkControlToField;
     FDGUIxWaitCursor1: TFDGUIxWaitCursor;
     DBNavigator1: TDBNavigator;
-    DataSource1: TDataSource;
     DBGrid1: TDBGrid;
     FDTable1ID: TIntegerField;
     FDTable1NAME: TWideStringField;
@@ -46,15 +45,11 @@ type
     Edit3: TEdit;
     Label2: TLabel;
     FDTable2: TFDTable;
-    BindSourceDB2: TBindSourceDB;
-    LinkControlToField1: TLinkControlToField;
     Edit4: TEdit;
-    LinkControlToField5: TLinkControlToField;
     Button5: TButton;
     Edit5: TEdit;
     UpDown1: TUpDown;
     Edit6: TEdit;
-    LinkControlToField4: TLinkControlToField;
     ComboBox1: TComboBox;
     Button6: TButton;
     Label3: TLabel;
@@ -72,6 +67,7 @@ type
     FDTable3: TFDTable;
     FDTable3dbnum: TIntegerField;
     FDTable3database: TWideStringField;
+    DataSource1: TDataSource;
     procedure Button1Click(Sender: TObject);
     procedure Button4Click(Sender: TObject);
     procedure Button3Click(Sender: TObject);
@@ -174,7 +170,7 @@ begin
   ListBox1.Items.Add('info');
   ListBox1.Items.Add('master');
   for i := 1 to 10 do
-    ListBox1.Items.Add('ŒfŽ¦”Â'+i.ToString);
+    ListBox1.Items.Add('ŒfŽ¦”Â' + i.ToString);
   list;
   itemsCopy;
 end;
@@ -262,17 +258,22 @@ begin
   FDTable2.Open;
   FDTable1.Refresh;
   FDTable2.Refresh;
-  if FDTable3.Exists = false then
-    FDTable3.CreateTable;
-  FDTable3.Open;
+  Edit4.Text := FDTable2.FieldByName('title').AsString;
+  Memo1.Lines.Text := FDTable2.FieldByName('title2').AsString;
+  Edit3.Text := FDTable2.FieldByName('ng').AsString;
   with FDTable3 do
-  if (Bof = true)and(Eof = true) then
   begin
-    list;
-    ApplyUpdates;
-    CommitUpdates;
+    if Exists = false then
+      CreateTable;
+    Open;
+    if (Bof = true) and (Eof = true) then
+    begin
+      list;
+      ApplyUpdates;
+      CommitUpdates;
+    end;
+    Refresh;
   end;
-  FDTable3.Refresh;
   combo;
   CheckBox1.Checked := FDTable2.FieldByName('mente').AsInteger = 1;
   UpDown1.Position := FDTable2.FieldByName('count').AsInteger;

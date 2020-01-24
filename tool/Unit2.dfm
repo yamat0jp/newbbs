@@ -87,7 +87,6 @@ object Form1: TForm1
     Top = 222
     Width = 240
     Height = 25
-    DataSource = DataSource1
     TabOrder = 4
   end
   object DBGrid1: TDBGrid
@@ -280,37 +279,11 @@ object Form1: TForm1
       Control = Edit1
       Track = True
     end
-    object LinkControlToField1: TLinkControlToField
-      Category = #12463#12452#12483#12463' '#12496#12452#12531#12487#12451#12531#12464
-      DataSource = BindSourceDB2
-      FieldName = 'ng'
-      Control = Edit3
-      Track = True
-    end
-    object LinkControlToField5: TLinkControlToField
-      Category = #12463#12452#12483#12463' '#12496#12452#12531#12487#12451#12531#12464
-      DataSource = BindSourceDB2
-      FieldName = 'title'
-      Control = Edit4
-      Track = True
-    end
-    object LinkControlToField4: TLinkControlToField
-      Category = #12463#12452#12483#12463' '#12496#12452#12531#12487#12451#12531#12464
-      DataSource = BindSourceDB2
-      FieldName = 'title2'
-      Control = Memo1
-      Track = False
-    end
   end
   object FDGUIxWaitCursor1: TFDGUIxWaitCursor
     Provider = 'Forms'
     Left = 224
     Top = 160
-  end
-  object DataSource1: TDataSource
-    DataSet = FDTable1
-    Left = 232
-    Top = 112
   end
   object FDQuery1: TFDQuery
     CachedUpdates = True
@@ -369,17 +342,11 @@ object Form1: TForm1
       Size = 300
     end
   end
-  object BindSourceDB2: TBindSourceDB
-    DataSet = FDTable2
-    ScopeMappings = <>
-    Left = 368
-    Top = 304
-  end
   object FDTable3: TFDTable
     CachedUpdates = True
     Connection = FDConnection1
-    UpdateOptions.UpdateTableName = 'kainushi.dbname'
-    TableName = 'kainushi.dbname'
+    UpdateOptions.UpdateTableName = 'dbname'
+    TableName = 'dbname'
     Left = 440
     Top = 280
     object FDTable3dbnum: TIntegerField
@@ -393,5 +360,10 @@ object Form1: TForm1
       Required = True
       Size = 80
     end
+  end
+  object DataSource1: TDataSource
+    DataSet = FDTable1
+    Left = 232
+    Top = 112
   end
 end
