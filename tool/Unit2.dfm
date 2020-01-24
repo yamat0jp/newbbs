@@ -21,28 +21,29 @@ object Form1: TForm1
     Height = 13
   end
   object Label2: TLabel
-    Left = 20
+    Left = 37
     Top = 531
     Width = 14
     Height = 13
     Caption = 'NG'
   end
   object Label3: TLabel
-    Left = 8
+    Left = 24
     Top = 579
-    Width = 36
-    Height = 13
-    Caption = #35373#23450#29992
+    Width = 50
+    Height = 26
+    Caption = #12497#12473#12527#12540#12489' '#35373#23450#29992
+    WordWrap = True
   end
   object Bevel1: TBevel
     Left = 20
     Top = 280
-    Width = 575
+    Width = 564
     Height = 50
     Shape = bsTopLine
   end
   object SpeedButton1: TSpeedButton
-    Left = 618
+    Left = 561
     Top = 488
     Width = 23
     Height = 22
@@ -75,7 +76,7 @@ object Form1: TForm1
     OnClick = Button3Click
   end
   object Edit1: TEdit
-    Left = 48
+    Left = 80
     Top = 225
     Width = 121
     Height = 21
@@ -83,8 +84,8 @@ object Form1: TForm1
     TabOrder = 3
   end
   object DBNavigator1: TDBNavigator
-    Left = 224
-    Top = 222
+    Left = 280
+    Top = 238
     Width = 240
     Height = 25
     TabOrder = 4
@@ -112,14 +113,14 @@ object Form1: TForm1
     OnClick = Button4Click
   end
   object Memo1: TMemo
-    Left = 64
+    Left = 80
     Top = 376
-    Width = 425
+    Width = 345
     Height = 89
     TabOrder = 7
   end
   object CheckBox1: TCheckBox
-    Left = 64
+    Left = 80
     Top = 488
     Width = 97
     Height = 17
@@ -128,21 +129,21 @@ object Form1: TForm1
     OnClick = CheckBox1Click
   end
   object Edit3: TEdit
-    Left = 64
+    Left = 80
     Top = 528
-    Width = 425
+    Width = 345
     Height = 21
     TabOrder = 9
   end
   object Edit4: TEdit
-    Left = 64
+    Left = 80
     Top = 325
-    Width = 209
+    Width = 201
     Height = 21
     TabOrder = 10
   end
   object Button5: TButton
-    Left = 520
+    Left = 509
     Top = 323
     Width = 75
     Height = 25
@@ -172,9 +173,9 @@ object Form1: TForm1
     OnClick = UpDown1Click
   end
   object Edit6: TEdit
-    Left = 64
+    Left = 80
     Top = 576
-    Width = 121
+    Width = 129
     Height = 21
     TabOrder = 14
   end
@@ -187,7 +188,7 @@ object Form1: TForm1
     OnSelect = ComboBox1Select
   end
   object Button6: TButton
-    Left = 520
+    Left = 509
     Top = 368
     Width = 75
     Height = 25
@@ -196,7 +197,7 @@ object Form1: TForm1
     OnClick = Button6Click
   end
   object ListBox1: TListBox
-    Left = 520
+    Left = 463
     Top = 516
     Width = 121
     Height = 97
@@ -209,7 +210,7 @@ object Form1: TForm1
     OnStartDrag = ListBox1StartDrag
   end
   object Edit2: TEdit
-    Left = 520
+    Left = 463
     Top = 486
     Width = 92
     Height = 21
