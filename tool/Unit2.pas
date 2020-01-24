@@ -69,6 +69,9 @@ type
     FDTable2count: TIntegerField;
     FDTable2password: TWideStringField;
     FDTable2ng: TWideStringField;
+    FDTable3: TFDTable;
+    FDTable3dbnum: TIntegerField;
+    FDTable3database: TWideStringField;
     procedure Button1Click(Sender: TObject);
     procedure Button4Click(Sender: TObject);
     procedure Button3Click(Sender: TObject);
@@ -153,6 +156,8 @@ begin
 end;
 
 procedure TForm1.Button5Click(Sender: TObject);
+var
+  i: Integer;
 begin
   Edit4.Text := 'Ç∆ÇÈÇÀÅ`Ç«çÜ';
   Memo1.Lines.Text :=
@@ -165,6 +170,13 @@ begin
   UpDown1Click(nil, btNext);
   CheckBox1.Checked := false;
   CheckBox1Click(nil);
+  ListBox1.Items.Clear;
+  ListBox1.Items.Add('info');
+  ListBox1.Items.Add('master');
+  for i := 1 to 10 do
+    ListBox1.Items.Add('åfé¶î¬'+i.ToString);
+  list;
+  itemsCopy;
 end;
 
 procedure TForm1.Button6Click(Sender: TObject);
@@ -192,6 +204,8 @@ begin
   list;
   FDTable2.ApplyUpdates;
   FDTable2.CommitUpdates;
+  FDTable3.ApplyUpdates;
+  FDTable3.CommitUpdates;
   FDTable2.Edit;
 end;
 
@@ -212,9 +226,9 @@ var
   s: string;
 begin
   ComboBox1.Items.Clear;
-  with FDQuery1 do
+  with FDTable3 do
   begin
-    Open('select * from dbname;');
+    First;
     while Eof = false do
     begin
       s := FieldByName('database').AsString;
@@ -223,7 +237,6 @@ begin
     end;
     ComboBox1.Text := Lookup('dbnum', FDTable2.FieldByName('info').AsInteger,
       'database');
-    Close;
   end;
   ListBox1.Items.Text := ComboBox1.Items.Text;
   i := ComboBox1.Items.IndexOf('master');
@@ -232,10 +245,8 @@ end;
 
 procedure TForm1.ComboBox1Select(Sender: TObject);
 begin
-  FDQuery1.Open('select * from dbname');
-  FDTable2.FieldByName('info').AsInteger := FDQuery1.Lookup('database',
+  FDTable2.FieldByName('info').AsInteger := FDTable3.Lookup('database',
     ComboBox1.Text, 'dbnum');
-  FDQuery1.Close;
 end;
 
 procedure TForm1.FormCreate(Sender: TObject);
@@ -251,6 +262,17 @@ begin
   FDTable2.Open;
   FDTable1.Refresh;
   FDTable2.Refresh;
+  if FDTable3.Exists = false then
+    FDTable3.CreateTable;
+  FDTable3.Open;
+  with FDTable3 do
+  if (Bof = true)and(Eof = true) then
+  begin
+    list;
+    ApplyUpdates;
+    CommitUpdates;
+  end;
+  FDTable3.Refresh;
   combo;
   CheckBox1.Checked := FDTable2.FieldByName('mente').AsInteger = 1;
   UpDown1.Position := FDTable2.FieldByName('count').AsInteger;
@@ -278,14 +300,13 @@ procedure TForm1.list;
 var
   i: Integer;
 begin
-  with FDQuery1 do
+  with FDTable3 do
   begin
-    Open('select * from dbname;');
+    First;
     while (Bof = false) or (Eof = false) do
       Delete;
     for i := 0 to ListBox1.Items.Count - 1 do
       AppendRecord([i, ListBox1.Items[i]]);
-    Close;
   end;
 end;
 

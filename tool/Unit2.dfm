@@ -313,6 +313,7 @@ object Form1: TForm1
     Top = 112
   end
   object FDQuery1: TFDQuery
+    CachedUpdates = True
     Connection = FDConnection1
     SQL.Strings = (
       'use kainushi;'
@@ -373,5 +374,24 @@ object Form1: TForm1
     ScopeMappings = <>
     Left = 368
     Top = 304
+  end
+  object FDTable3: TFDTable
+    CachedUpdates = True
+    Connection = FDConnection1
+    UpdateOptions.UpdateTableName = 'kainushi.dbname'
+    TableName = 'kainushi.dbname'
+    Left = 440
+    Top = 280
+    object FDTable3dbnum: TIntegerField
+      FieldName = 'dbnum'
+      Origin = 'dbnum'
+      Required = True
+    end
+    object FDTable3database: TWideStringField
+      FieldName = 'database'
+      Origin = '`database`'
+      Required = True
+      Size = 80
+    end
   end
 end
