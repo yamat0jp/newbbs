@@ -73,9 +73,6 @@ type
     procedure Button3Click(Sender: TObject);
     procedure FormCreate(Sender: TObject);
     procedure Button6Click(Sender: TObject);
-    procedure ComboBox1Select(Sender: TObject);
-    procedure CheckBox1Click(Sender: TObject);
-    procedure UpDown1Click(Sender: TObject; Button: TUDBtnType);
     procedure Button5Click(Sender: TObject);
     procedure SpeedButton1Click(Sender: TObject);
     procedure ListBox1KeyDown(Sender: TObject; var Key: Word;
@@ -176,6 +173,8 @@ begin
 end;
 
 procedure TForm1.Button6Click(Sender: TObject);
+var
+  i: Integer;
   function hash(str: string): string;
   begin
     with TIdHashSHA1.Create do
@@ -189,31 +188,28 @@ procedure TForm1.Button6Click(Sender: TObject);
   end;
 
 begin
-  if Edit6.Text <> '' then
-    FDTable2.FieldByName('password').AsString := hash(hash(Edit6.Text));
-  if ComboBox1.Items.IndexOf(ComboBox1.Text) = -1 then
-  begin
-    ComboBox1.ItemIndex := 0;
-    ComboBox1Select(nil);
-  end;
-  FDTable2.Post;
   list;
-  FDTable2.ApplyUpdates;
-  FDTable2.CommitUpdates;
   FDTable3.ApplyUpdates;
   FDTable3.CommitUpdates;
-  FDTable2.Edit;
-end;
-
-procedure TForm1.CheckBox1Click(Sender: TObject);
-var
-  i: Integer;
-begin
-  if CheckBox1.Checked = true then
-    i := 1
-  else
-    i := 0;
-  FDTable2.FieldByName('mente').AsInteger := i;
+  with FDTable2 do
+  begin
+    Edit;
+    if Edit6.Text <> '' then
+      FieldByName('password').AsString := hash(hash(Edit6.Text));
+    if CheckBox1.Checked = true then
+      i := 1
+    else
+      i := 0;
+    FieldByName('mente').AsInteger := i;
+    if ComboBox1.Items.IndexOf(ComboBox1.Text) = -1 then
+      ComboBox1.ItemIndex := 0;
+    FieldByName('info').AsInteger := FDTable3.Lookup('database',
+      ComboBox1.Text, 'dbnum');
+    FieldByName('count').AsInteger := UpDown1.Position;
+    Post;
+    ApplyUpdates;
+    CommitUpdates;
+  end;
 end;
 
 procedure TForm1.combo;
@@ -237,12 +233,6 @@ begin
   ListBox1.Items.Text := ComboBox1.Items.Text;
   i := ComboBox1.Items.IndexOf('master');
   ComboBox1.Items.Delete(i);
-end;
-
-procedure TForm1.ComboBox1Select(Sender: TObject);
-begin
-  FDTable2.FieldByName('info').AsInteger := FDTable3.Lookup('database',
-    ComboBox1.Text, 'dbnum');
 end;
 
 procedure TForm1.FormCreate(Sender: TObject);
@@ -277,7 +267,6 @@ begin
   combo;
   CheckBox1.Checked := FDTable2.FieldByName('mente').AsInteger = 1;
   UpDown1.Position := FDTable2.FieldByName('count').AsInteger;
-  FDTable2.Edit;
 end;
 
 procedure TForm1.itemsCopy;
@@ -360,11 +349,6 @@ begin
     Edit2.Text := '';
     ListBox1.ItemIndex := ListBox1.Items.Count - 1;
   end;
-end;
-
-procedure TForm1.UpDown1Click(Sender: TObject; Button: TUDBtnType);
-begin
-  FDTable2.FieldByName('count').AsInteger := UpDown1.Position;
 end;
 
 end.

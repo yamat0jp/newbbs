@@ -127,7 +127,6 @@ object Form1: TForm1
     Height = 17
     Caption = 'mente'
     TabOrder = 8
-    OnClick = CheckBox1Click
   end
   object Edit3: TEdit
     Left = 80
@@ -171,7 +170,6 @@ object Form1: TForm1
     Max = 300
     Position = 30
     TabOrder = 13
-    OnClick = UpDown1Click
   end
   object Edit6: TEdit
     Left = 80
@@ -186,7 +184,6 @@ object Form1: TForm1
     Width = 145
     Height = 21
     TabOrder = 15
-    OnSelect = ComboBox1Select
   end
   object Button6: TButton
     Left = 509
