@@ -158,11 +158,8 @@ begin
   Edit3.Text := '”nŽ­,ˆ¢•Û,Ž€‚Ë,ŽE‚·';
   Edit6.Text := 'admin';
   ComboBox1.Text := 'info';
-  ComboBox1Select(nil);
   UpDown1.Position := 30;
-  UpDown1Click(nil, btNext);
   CheckBox1.Checked := false;
-  CheckBox1Click(nil);
   ListBox1.Items.Clear;
   ListBox1.Items.Add('info');
   ListBox1.Items.Add('master');
