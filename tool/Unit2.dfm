@@ -3,7 +3,7 @@ object Form1: TForm1
   Top = 0
   Caption = 'Form1'
   ClientHeight = 657
-  ClientWidth = 635
+  ClientWidth = 849
   Color = clBtnFace
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText
@@ -40,6 +40,13 @@ object Form1: TForm1
     Width = 575
     Height = 50
     Shape = bsTopLine
+  end
+  object SpeedButton1: TSpeedButton
+    Left = 618
+    Top = 488
+    Width = 23
+    Height = 22
+    OnClick = SpeedButton1Click
   end
   object Button1: TButton
     Left = 296
@@ -189,6 +196,26 @@ object Form1: TForm1
     TabOrder = 16
     OnClick = Button6Click
   end
+  object ListBox1: TListBox
+    Left = 520
+    Top = 516
+    Width = 121
+    Height = 97
+    DragMode = dmAutomatic
+    ItemHeight = 13
+    TabOrder = 17
+    OnDragOver = ListBox1DragOver
+    OnEndDrag = ListBox1EndDrag
+    OnKeyDown = ListBox1KeyDown
+    OnStartDrag = ListBox1StartDrag
+  end
+  object Edit2: TEdit
+    Left = 520
+    Top = 486
+    Width = 92
+    Height = 21
+    TabOrder = 18
+  end
   object FDConnection1: TFDConnection
     Params.Strings = (
       'ConnectionDef=first_sql')
@@ -295,12 +322,51 @@ object Form1: TForm1
     Top = 112
   end
   object FDTable2: TFDTable
-    Active = True
+    CachedUpdates = True
     Connection = FDConnection1
     UpdateOptions.UpdateTableName = 'setting'
     TableName = 'setting'
     Left = 496
     Top = 280
+    object FDTable2title: TWideStringField
+      AutoGenerateValue = arDefault
+      FieldName = 'title'
+      Origin = 'title'
+      Size = 160
+    end
+    object FDTable2title2: TWideStringField
+      AutoGenerateValue = arDefault
+      FieldName = 'title2'
+      Origin = 'title2'
+      Size = 320
+    end
+    object FDTable2mente: TSmallintField
+      AutoGenerateValue = arDefault
+      FieldName = 'mente'
+      Origin = 'mente'
+    end
+    object FDTable2info: TIntegerField
+      AutoGenerateValue = arDefault
+      FieldName = 'info'
+      Origin = 'info'
+    end
+    object FDTable2count: TIntegerField
+      AutoGenerateValue = arDefault
+      FieldName = 'count'
+      Origin = 'count'
+    end
+    object FDTable2password: TWideStringField
+      AutoGenerateValue = arDefault
+      FieldName = 'password'
+      Origin = '`password`'
+      Size = 100
+    end
+    object FDTable2ng: TWideStringField
+      AutoGenerateValue = arDefault
+      FieldName = 'ng'
+      Origin = 'ng'
+      Size = 300
+    end
   end
   object BindSourceDB2: TBindSourceDB
     DataSet = FDTable2

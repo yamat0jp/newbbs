@@ -4,7 +4,7 @@ interface
 
 uses
   Winapi.Windows, Winapi.Messages, System.SysUtils, System.Variants,
-  System.Classes, Vcl.Graphics,
+  System.Types, System.Classes, Vcl.Graphics,
   Vcl.Controls, Vcl.Forms, Vcl.Dialogs, FireDAC.Stan.Intf, FireDAC.Stan.Option,
   FireDAC.Stan.Error, FireDAC.UI.Intf, FireDAC.Phys.Intf, FireDAC.Stan.Def,
   FireDAC.Stan.Pool, FireDAC.Stan.Async, FireDAC.Phys, FireDAC.Phys.MySQL,
@@ -16,7 +16,7 @@ uses
   FireDAC.VCLUI.Wait, FireDAC.Comp.UI, Vcl.DBCtrls, Jpeg, Vcl.Grids,
   Vcl.DBGrids,
   FireDAC.Phys.IB, FireDAC.Phys.IBDef, FireDAC.Phys.FB, FireDAC.Phys.FBDef,
-  Vcl.ComCtrls;
+  Vcl.ComCtrls, Vcl.Buttons;
 
 type
   TForm1 = class(TForm)
@@ -59,6 +59,16 @@ type
     Button6: TButton;
     Label3: TLabel;
     Bevel1: TBevel;
+    ListBox1: TListBox;
+    SpeedButton1: TSpeedButton;
+    Edit2: TEdit;
+    FDTable2title: TWideStringField;
+    FDTable2title2: TWideStringField;
+    FDTable2mente: TSmallintField;
+    FDTable2info: TIntegerField;
+    FDTable2count: TIntegerField;
+    FDTable2password: TWideStringField;
+    FDTable2ng: TWideStringField;
     procedure Button1Click(Sender: TObject);
     procedure Button4Click(Sender: TObject);
     procedure Button3Click(Sender: TObject);
@@ -68,8 +78,19 @@ type
     procedure CheckBox1Click(Sender: TObject);
     procedure UpDown1Click(Sender: TObject; Button: TUDBtnType);
     procedure Button5Click(Sender: TObject);
+    procedure SpeedButton1Click(Sender: TObject);
+    procedure ListBox1KeyDown(Sender: TObject; var Key: Word;
+      Shift: TShiftState);
+    procedure ListBox1DragOver(Sender, Source: TObject; X, Y: Integer;
+      State: TDragState; var Accept: Boolean);
+    procedure ListBox1EndDrag(Sender, Target: TObject; X, Y: Integer);
+    procedure ListBox1StartDrag(Sender: TObject; var DragObject: TDragObject);
   private
     { Private êÈåæ }
+    item: Integer;
+    procedure combo;
+    procedure list;
+    procedure itemsCopy;
   public
     { Public êÈåæ }
   end;
@@ -144,8 +165,6 @@ begin
   UpDown1Click(nil, btNext);
   CheckBox1.Checked := false;
   CheckBox1Click(nil);
-  FDTable2.Post;
-  FDTable2.Edit;
 end;
 
 procedure TForm1.Button6Click(Sender: TObject);
@@ -170,6 +189,9 @@ begin
     ComboBox1Select(nil);
   end;
   FDTable2.Post;
+  list;
+  FDTable2.ApplyUpdates;
+  FDTable2.CommitUpdates;
   FDTable2.Edit;
 end;
 
@@ -184,6 +206,30 @@ begin
   FDTable2.FieldByName('mente').AsInteger := i;
 end;
 
+procedure TForm1.combo;
+var
+  i: Integer;
+  s: string;
+begin
+  ComboBox1.Items.Clear;
+  with FDQuery1 do
+  begin
+    Open('select * from dbname;');
+    while Eof = false do
+    begin
+      s := FieldByName('database').AsString;
+      ComboBox1.Items.Add(s);
+      Next;
+    end;
+    ComboBox1.Text := Lookup('dbnum', FDTable2.FieldByName('info').AsInteger,
+      'database');
+    Close;
+  end;
+  ListBox1.Items.Text := ComboBox1.Items.Text;
+  i := ComboBox1.Items.IndexOf('master');
+  ComboBox1.Items.Delete(i);
+end;
+
 procedure TForm1.ComboBox1Select(Sender: TObject);
 begin
   FDQuery1.Open('select * from dbname');
@@ -193,8 +239,6 @@ begin
 end;
 
 procedure TForm1.FormCreate(Sender: TObject);
-var
-  s: string;
 begin
   if FDTable1.Exists = false then
   begin
@@ -202,26 +246,98 @@ begin
     FDQuery1.ExecSQL;
     FDTable1.Open;
   end;
+  if FDTable2.Exists = false then
+    FDTable2.CreateTable;
+  FDTable2.Open;
   FDTable1.Refresh;
   FDTable2.Refresh;
-  ComboBox1.Items.Clear;
-  with FDQuery1 do
-  begin
-    Open('select * from dbname;');
-    while Eof = false do
-    begin
-      s := FieldByName('database').AsString;
-      if s <> 'master' then
-        ComboBox1.Items.Add(s);
-      Next;
-    end;
-    ComboBox1.Text := Lookup('dbnum', FDTable2.FieldByName('info').AsInteger,
-      'database');
-    Close;
-  end;
+  combo;
   CheckBox1.Checked := FDTable2.FieldByName('mente').AsInteger = 1;
   UpDown1.Position := FDTable2.FieldByName('count').AsInteger;
   FDTable2.Edit;
+end;
+
+procedure TForm1.itemsCopy;
+var
+  i: Integer;
+  s: string;
+begin
+  ComboBox1.Items.Clear;
+  for i := 0 to ListBox1.Items.Count - 1 do
+  begin
+    s := ListBox1.Items[i];
+    if s <> 'master' then
+      ComboBox1.Items.Add(s);
+  end;
+  if (ComboBox1.Items.IndexOf(ComboBox1.Text) = -1) and
+    (ComboBox1.Items.Count > 0) then
+    ComboBox1.ItemIndex := 0;
+end;
+
+procedure TForm1.list;
+var
+  i: Integer;
+begin
+  with FDQuery1 do
+  begin
+    Open('select * from dbname;');
+    while (Bof = false) or (Eof = false) do
+      Delete;
+    for i := 0 to ListBox1.Items.Count - 1 do
+      AppendRecord([i, ListBox1.Items[i]]);
+    Close;
+  end;
+end;
+
+procedure TForm1.ListBox1DragOver(Sender, Source: TObject; X, Y: Integer;
+  State: TDragState; var Accept: Boolean);
+begin
+  Accept := Source is TListBox;
+end;
+
+procedure TForm1.ListBox1EndDrag(Sender, Target: TObject; X, Y: Integer);
+var
+  i: Integer;
+begin
+  i := ListBox1.ItemAtPos(Point(X, Y), true);
+  if ((X > 0) or (Y > 0)) and (i > -1) then
+  begin
+    ListBox1.Items.Move(item, i);
+    itemsCopy;
+  end;
+end;
+
+procedure TForm1.ListBox1KeyDown(Sender: TObject; var Key: Word;
+  Shift: TShiftState);
+var
+  i: Integer;
+begin
+  i := ListBox1.ItemIndex;
+  if (Key = VK_DELETE) and (i > -1) and (ListBox1.Items[i] <> 'master') then
+  begin
+    ListBox1.Items.Delete(i);
+    itemsCopy;
+  end;
+end;
+
+procedure TForm1.ListBox1StartDrag(Sender: TObject;
+  var DragObject: TDragObject);
+begin
+  item := ListBox1.ItemIndex;
+end;
+
+procedure TForm1.SpeedButton1Click(Sender: TObject);
+var
+  s: string;
+begin
+  s := Edit2.Text;
+  if (s <> '') and (ListBox1.Items.IndexOf(s) = -1) then
+  begin
+    ListBox1.Items.Add(s);
+    ComboBox1.Items.Add(s);
+    Edit2.Text := '';
+    ListBox1.ItemIndex := ListBox1.Items.Count - 1;
+  end;
 end;
 
 procedure TForm1.UpDown1Click(Sender: TObject; Button: TUDBtnType);
