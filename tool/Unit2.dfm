@@ -3,7 +3,7 @@ object Form1: TForm1
   Top = 0
   Caption = 'Form1'
   ClientHeight = 657
-  ClientWidth = 849
+  ClientWidth = 640
   Color = clBtnFace
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText
@@ -50,8 +50,8 @@ object Form1: TForm1
     OnClick = SpeedButton1Click
   end
   object Button1: TButton
-    Left = 296
-    Top = 56
+    Left = 184
+    Top = 32
     Width = 75
     Height = 25
     Caption = 'Button1'
@@ -59,16 +59,16 @@ object Form1: TForm1
     OnClick = Button1Click
   end
   object Button2: TButton
-    Left = 296
-    Top = 96
+    Left = 184
+    Top = 72
     Width = 75
     Height = 25
     Caption = 'Button2'
     TabOrder = 1
   end
   object Button3: TButton
-    Left = 296
-    Top = 191
+    Left = 184
+    Top = 167
     Width = 75
     Height = 25
     Caption = 'Button3'
@@ -88,12 +88,13 @@ object Form1: TForm1
     Top = 238
     Width = 240
     Height = 25
+    DataSource = DataSource1
     TabOrder = 4
   end
   object DBGrid1: TDBGrid
-    Left = 398
+    Left = 312
     Top = 80
-    Width = 186
+    Width = 272
     Height = 120
     DataSource = DataSource1
     TabOrder = 5
@@ -104,8 +105,8 @@ object Form1: TForm1
     TitleFont.Style = []
   end
   object Button4: TButton
-    Left = 296
-    Top = 160
+    Left = 184
+    Top = 136
     Width = 75
     Height = 25
     Caption = 'Button4'
