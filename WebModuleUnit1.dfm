@@ -325,12 +325,6 @@ object WebModule1: TWebModule1
       '<head>'
       #9'<title>Top Page</title>'
       
-        '<link rel=stylesheet type=text/css href="<#uri>/file?type=css&id' +
-        '=1" ref=top>'
-      
-        '<link rel=stylesheet type=text/css href="<#uri>/file?type=css&id' +
-        '=3" ref=normal>'
-      
         ' <script type="text/javascript" src="//ajax.googleapis.com/ajax/' +
         'libs/jquery/2.1.4/jquery.min.js"></script>'
       
@@ -339,10 +333,27 @@ object WebModule1: TWebModule1
       
         ' <script src="//ajax.googleapis.com/ajax/libs/jqueryui/1.10.4/jq' +
         'uery-ui.min.js"></script>'
-      '<script src="<#uri>/file?type=js&id=3">org</script>'
-      '<script src="<#uri>/file?type=js&id=4">moder</script>'
+      
+        ' <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com' +
+        '/bootstrap/4.2.1/css/bootstrap.min.css" integrity="sha384-GJzZqF' +
+        'Gwb1QTTN6wy59ffF1BuGJpLSa9DkKMp0DgiMDm4iYMj70gZWKYbI706tWS" cros' +
+        'sorigin="anonymous">'
       '</head>'
       '<body>'
+      
+        '    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.j' +
+        's" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp' +
+        '4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>'
+      
+        '    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.j' +
+        's/1.14.6/umd/popper.min.js" integrity="sha384-wHAiFfRlMFy6i5SRax' +
+        'vfOCifBUQy1xHdJ/yoi7FRNXMRBu5WHdZYu1hA6ZOblgut" crossorigin="ano' +
+        'nymous"></script>'
+      
+        '    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.' +
+        '2.1/js/bootstrap.min.js" integrity="sha384-B0UglyR+jN6CkvvICOB2j' +
+        'oaf5I4l3gm9GU6Hc1og6Ls7i6U/mkkaduKaBhlAXv9k" crossorigin="anonym' +
+        'ous"></script>'
       '<#pr>'
       '<div id="fb-root"></div>'
       ''
@@ -359,17 +370,28 @@ object WebModule1: TWebModule1
       ''
       '<header><h1 style="text-align: center;">'#28961#26009#38651#23376#25522#31034#26495#12408#12424#12358#12371#12381
       '</h1></header>'
-      '<div class="slideshow">'
-      #9'<div class="slideshow-slides"><#slide></div>'
+      '<div id="slide-1" class="carousel slide" data-ride="carousel">'
+      '  <ol class="carousel-indicators">'
+      '    <#indicator>'
+      '  </ol>'
+      '  <div class="carousel-inner bg-dark"><#slide></div>'
       ''
-      #9'<div class="slideshow-nav">'
-      #9'<a href="#" class="prev">prev'
-      '</a>'
-      #9'<a href="#" class="next">next'
-      '</a>'
-      '        </div>'
-      ''
-      #9'<div class="slideshow-indicator"></div>'
+      
+        #9'<a class="carousel-control-prev" href="#slide-1" role="button" ' +
+        'data-slide="prev">'
+      
+        '          <span class="carousel-control-prev-icon" aria-hidden="' +
+        'true"></span>'
+      '          <span class="sr-only">Previous</span>'
+      '        </a>'
+      
+        '        <a class="carousel-control-next" href="#slide-1" role="b' +
+        'utton" data-slide="next">'
+      
+        '          <span class="carousel-control-next-icon" aria-hidden="' +
+        'true"></span>'
+      '          <span class="sr-only">Next></span>'
+      '        </a>'
       '</div>'
       '<p>'#12288'<em style="background-color: aqua;">'#12288#12288#12288#12288'</em>'#12539#12539#12539'new!'
       
@@ -464,163 +486,6 @@ object WebModule1: TWebModule1
     OnHTMLTag = mailHTMLTag
     Left = 176
     Top = 144
-  end
-  object css1: TPageProducer
-    HTMLDoc.Strings = (
-      '@media only screen and (min-width:900px){'
-      '.slideshow-nav a.prev {'
-      #9'margin-left:-480px'
-      #9'}'
-      '.slideshow-nav a.next {'
-      #9'margin-left:408px'
-      #9'}'
-      '}'
-      '@media only screen and (min-width:600px)'
-      'and (max-width:899px){'
-      'header h1 {'
-      #9'font-size:1em'
-      #9'}'
-      '.slideshow .slide img {'
-      #9'display:none'
-      '}'
-      '.slideshow-nav a.prev {'
-      #9'margin-left:-300px'
-      #9'}'
-      '.slideshow-nav a.next {'
-      #9'margin-left:200px'
-      #9'}'
-      '}'
-      '@media only screen and (max-width:599px){'
-      'header h1 {'
-      #9'font-size:1em'
-      #9'}'
-      '.slideshow .slide img {'
-      #9'display:none'
-      '}'
-      '.slideshow-nav a.prev {'
-      #9'margin-left:-150px'
-      #9'}'
-      '.slideshow-nav a.next {'
-      #9'margin-left:100px'
-      #9'}'
-      '}'
-      ''
-      '.slideshow-slides {'
-      #9'height:100%;'
-      #9'position:absolute;'
-      #9'width:100%;'
-      '}'
-      ''
-      '.slideshow {'
-      #9'background-color:rgb(255,225,225);'
-      #9'width:100%;'
-      #9'height:465px;'
-      #9'overflow:hidden;'
-      #9'position:relative'
-      '}'
-      ''
-      '.slideshow-slides .slide {'
-      #9'height:100%;'
-      #9'overflow:auto;'
-      #9'position:absolute;'
-      #9'width:100%;'
-      '}'
-      ''
-      '.slide p {'
-      #9'font-size:1.5em'
-      '}'
-      ''
-      '.slideshow-nav a,'
-      '.slideshow-indicator a {'
-      #9'overflow:hidden'
-      '}'
-      ''
-      '.slideshow-nav a:before,'
-      '.slideshow-indicator a:before {'
-      #9'content:url("<#uri>/src?name=sprites.png");'
-      #9'display:inline-block;'
-      #9'font-size:0;'
-      #9'line-height:0'
-      '}'
-      ''
-      '.slideshow-nav a {'
-      #9'position:absolute;'
-      #9'top:50%;'
-      #9'left:50%;'
-      #9'width:72px;'
-      #9'height:72px;'
-      #9'margin-top:-36px'
-      '}'
-      ''
-      '.slideshow-nav a.prev:before {'
-      #9'margin-top:-20px'
-      '}'
-      ''
-      '.slideshow-nav a.next:before {'
-      #9'margin-left:-80px;'
-      #9'margin-top:-20px'
-      '}'
-      ''
-      '.slideshow-nav a.disabled {'
-      #9'display:none'
-      '}'
-      ''
-      '.slideshow-indicator {'
-      #9'bottom:30px;'
-      #9'height:16px;'
-      #9'left:0;'
-      #9'position:absolute;'
-      #9'right:0;'
-      #9'text-align:center'
-      '}'
-      ''
-      '.slideshow-indicator a {'
-      #9'display:inline-block;'
-      #9'width:16px;'
-      #9'height:16px;'
-      #9'margin-left:3px;'
-      #9'margin-right:3px'
-      '}'
-      ''
-      '.slideshow-indicator a.active {'
-      #9'cursor:default'
-      '}'
-      ''
-      '.slideshow-indicator a:before {'
-      #9'margin-left:-110px'
-      '}'
-      ''
-      '.slideshow-indicator a.active:before {'
-      #9'margin-left:-130px'
-      '}'
-      ''
-      '.no-js .slideshow {'
-      #9'height:auto'
-      '}'
-      ''
-      '.no-js .slideshow-slides {'
-      #9'height:auto;'
-      #9'position:static'
-      '}'
-      ''
-      '.no-js .slideshow-slides .slide {'
-      #9'display: block;'
-      #9'height: auto;'
-      #9'position:static'
-      '}'
-      ''
-      '.no-js .slideshow-slides .slide .box{'
-      #9'margin:auto;'
-      #9'position:static'
-      '}'
-      ''
-      '.no-js .slideshow-nav,'
-      '.no-js .slideshow-indicator {'
-      #9'display:none'
-      '}')
-    OnHTMLTag = css1HTMLTag
-    Left = 360
-    Top = 96
   end
   object css2: TPageProducer
     HTMLDoc.Strings = (
@@ -1631,168 +1496,6 @@ object WebModule1: TWebModule1
       '  });'
       '})(jQuery);')
     Left = 256
-    Top = 272
-  end
-  object js3: TPageProducer
-    HTMLDoc.Strings = (
-      ''
-      '$(function(){'
-      #9'$('#39'.slideshow'#39').each(function(){'
-      #9#9'var $container = $(this),'
-      #9#9#9'$slideGroup = $container.find('#39'.slideshow-slides'#39'),'
-      #9#9#9'$slides = $slideGroup.find('#39'.slide'#39'),'
-      #9#9#9'$nav = $container.find('#39'.slideshow-nav'#39'),'
-      #9#9#9'$indicator = $container.find('#39'.slideshow-indicator'#39'),'
-      #9#9#9'$images = $slides.find('#39'img'#39'),'
-      #9#9#9
-      #9#9#9'slideCount = $slides.length,'
-      #9#9#9'indicatorHTML = '#39#39','
-      #9#9#9'currentIndex = 0,'
-      #9#9#9'duration = 500,'
-      #9#9#9'easing = '#39'easeInOutExpo'#39','
-      #9#9#9'interval = 7500,'
-      #9#9#9'timer;'
-      #9#9#9#9
-      #9#9
-      #9#9'$slides.each(function(i){'
-      #9#9#9'$(this).css({left:100*i+'#39'%'#39'});'
-      #9#9#9'indicatorHTML += '#39'<a href="#">'#39'+(i+1)+'#39'</a>'#39';'
-      #9#9'});'
-      #9#9
-      #9#9'$indicator.html(indicatorHTML);'
-      #9#9
-      #9#9'function goToSlide(index){'
-      #9#9#9'$slideGroup.animate({left:-100*index+'#39'%'#39'},duration,easing);'
-      #9#9#9'currentIndex = index;'
-      #9#9#9'updateNav();'
-      #9#9'}'
-      #9#9
-      #9#9'function updateNav(){'
-      #9#9#9'var $navPrev = $nav.find('#39'.prev'#39'),'
-      #9#9#9#9'$navNext = $nav.find('#39'.next'#39');'
-      #9#9#9'if (currentIndex === 0){'
-      #9#9#9#9'$navPrev.addClass('#39'disabled'#39');'
-      #9#9#9'} else {'
-      #9#9#9#9'$navPrev.removeClass('#39'disabled'#39');'
-      #9#9#9'}'
-      #9#9#9'if (currentIndex === slideCount-1){'
-      #9#9#9#9'$navNext.addClass('#39'disabled'#39');'
-      #9#9#9'} else {'
-      #9#9#9#9'$navNext.removeClass('#39'disabled'#39');'
-      #9#9#9'}'
-      #9#9#9'$indicator.find('#39'a'#39').removeClass('#39'active'#39')'
-      #9#9#9#9'.eq(currentIndex).addClass('#39'active'#39');'
-      #9#9'}'
-      ''
-      #9#9'function startTimer(){'
-      #9#9'    timer = setInterval(function(){'
-      #9'            var nextIndex = (currentIndex + 1) % slideCount;'
-      #9'            goToSlide(nextIndex);'
-      '            }, interval)'
-      #9#9'}'
-      ''
-      #9#9'function stopTimer(){'
-      #9#9'    clearInterval(timer);'
-      #9#9'}'
-      #9#9#9
-      #9#9'$nav.on('#39'click'#39','#39'a'#39',function(event){'
-      #9#9#9'event.preventDefault();'
-      #9#9#9'if ($(this).hasClass('#39'prev'#39')){'
-      #9#9#9#9'goToSlide(currentIndex-1);'
-      #9#9#9'} else {'
-      #9#9#9#9'goToSlide(currentIndex+1);'
-      #9#9#9'}'
-      #9#9'});'
-      #9#9
-      #9#9'$indicator.on('#39'click'#39','#39'a'#39',function(event){'
-      #9#9#9'event.preventDefault();'
-      #9#9#9'if (!$(this).hasClass('#39'active'#39')){'
-      #9#9#9#9'goToSlide($(this).index());'
-      #9#9#9'}'
-      #9#9'});'
-      ''
-      #9#9'$container.on({'
-      #9#9'    mouseenter: stopTimer,'
-      #9#9'    mouseleave: startTimer'
-      #9#9'});'
-      ''
-      #9#9#9
-      #9#9'goToSlide(currentIndex);'
-      ''
-      #9#9'startTimer();'
-      #9#9
-      #9'});'
-      #9
-      '});')
-    Left = 200
-    Top = 272
-  end
-  object js4: TPageProducer
-    HTMLDoc.Strings = (
-      '/* Modernizr 2.6.2 (Custom Build) | MIT & BSD'
-      ' * Build: http://modernizr.com/download/#-shiv-cssclasses'
-      ' */'
-      
-        ';window.Modernizr=function(a,b,c){function u(a){j.cssText=a}func' +
-        'tion v(a,b){return u(prefixes.join(a+";")+(b||""))}function w(a,' +
-        'b){return typeof a===b}function x(a,b){return!!~(""+a).indexOf(b' +
-        ')}function y(a,b,d){for(var e in a){var f=b[a[e]];if(f!==c)retur' +
-        'n d===!1?a[e]:w(f,"function")?f.bind(d||b):f}return!1}var d="2.6' +
-        '.2",e={},f=!0,g=b.documentElement,h="modernizr",i=b.createElemen' +
-        't(h),j=i.style,k,l={}.toString,m={},n={},o={},p=[],q=p.slice,r,s' +
-        '={}.hasOwnProperty,t;!w(s,"undefined")&&!w(s.call,"undefined")?t' +
-        '=function(a,b){return s.call(a,b)}:t=function(a,b){return b in a' +
-        '&&w(a.constructor.prototype[b],"undefined")},Function.prototype.' +
-        'bind||(Function.prototype.bind=function(b){var c=this;if(typeof ' +
-        'c!="function")throw new TypeError;var d=q.call(arguments,1),e=fu' +
-        'nction(){if(this instanceof e){var a=function(){};a.prototype=c.' +
-        'prototype;var f=new a,g=c.apply(f,d.concat(q.call(arguments)));r' +
-        'eturn Object(g)===g?g:f}return c.apply(b,d.concat(q.call(argumen' +
-        'ts)))};return e});for(var z in m)t(m,z)&&(r=z.toLowerCase(),e[r]' +
-        '=m[z](),p.push((e[r]?"":"no-")+r));return e.addTest=function(a,b' +
-        '){if(typeof a=="object")for(var d in a)t(a,d)&&e.addTest(d,a[d])' +
-        ';else{a=a.toLowerCase();if(e[a]!==c)return e;b=typeof b=="functi' +
-        'on"?b():b,typeof f!="undefined"&&f&&(g.className+=" "+(b?"":"no-' +
-        '")+a),e[a]=b}return e},u(""),i=k=null,function(a,b){function k(a' +
-        ',b){var c=a.createElement("p"),d=a.getElementsByTagName("head")[' +
-        '0]||a.documentElement;return c.innerHTML="x<style>"+b+"</style>"' +
-        ',d.insertBefore(c.lastChild,d.firstChild)}function l(){var a=r.e' +
-        'lements;return typeof a=="string"?a.split(" "):a}function m(a){v' +
-        'ar b=i[a[g]];return b||(b={},h++,a[g]=h,i[h]=b),b}function n(a,c' +
-        ',f){c||(c=b);if(j)return c.createElement(a);f||(f=m(c));var g;re' +
-        'turn f.cache[a]?g=f.cache[a].cloneNode():e.test(a)?g=(f.cache[a]' +
-        '=f.createElem(a)).cloneNode():g=f.createElem(a),g.canHaveChildre' +
-        'n&&!d.test(a)?f.frag.appendChild(g):g}function o(a,c){a||(a=b);i' +
-        'f(j)return a.createDocumentFragment();c=c||m(a);var d=c.frag.clo' +
-        'neNode(),e=0,f=l(),g=f.length;for(;e<g;e++)d.createElement(f[e])' +
-        ';return d}function p(a,b){b.cache||(b.cache={},b.createElem=a.cr' +
-        'eateElement,b.createFrag=a.createDocumentFragment,b.frag=b.creat' +
-        'eFrag()),a.createElement=function(c){return r.shivMethods?n(c,a,' +
-        'b):b.createElem(c)},a.createDocumentFragment=Function("h,f","ret' +
-        'urn function(){var n=f.cloneNode(),c=n.createElement;h.shivMetho' +
-        'ds&&("+l().join().replace(/\w+/g,function(a){return b.createElem' +
-        '(a),b.frag.createElement(a),'#39'c("'#39'+a+'#39'")'#39'})+");return n}")(r,b.fr' +
-        'ag)}function q(a){a||(a=b);var c=m(a);return r.shivCSS&&!f&&!c.h' +
-        'asCSS&&(c.hasCSS=!!k(a,"article,aside,figcaption,figure,footer,h' +
-        'eader,hgroup,nav,section{display:block}mark{background:#FF0;colo' +
-        'r:#000}")),j||p(a,c),a}var c=a.html5||{},d=/^<|^(?:button|map|se' +
-        'lect|textarea|object|iframe|option|optgroup)$/i,e=/^(?:a|b|code|' +
-        'div|fieldset|h1|h2|h3|h4|h5|h6|i|label|li|ol|p|q|span|strong|sty' +
-        'le|table|tbody|td|th|tr|ul)$/i,f,g="_html5shiv",h=0,i={},j;(func' +
-        'tion(){try{var a=b.createElement("a");a.innerHTML="<xyz></xyz>",' +
-        'f="hidden"in a,j=a.childNodes.length==1||function(){b.createElem' +
-        'ent("a");var a=b.createDocumentFragment();return typeof a.cloneN' +
-        'ode=="undefined"||typeof a.createDocumentFragment=="undefined"||' +
-        'typeof a.createElement=="undefined"}()}catch(c){f=!0,j=!0}})();v' +
-        'ar r={elements:c.elements||"abbr article aside audio bdi canvas ' +
-        'data datalist details figcaption figure footer header hgroup mar' +
-        'k meter nav output progress section summary time video",shivCSS:' +
-        'c.shivCSS!==!1,supportsUnknownElements:j,shivMethods:c.shivMetho' +
-        'ds!==!1,type:"default",shivDocument:q,createElement:n,createDocu' +
-        'mentFragment:o};a.html5=r,q(b)}(this,b),e._version=d,g.className' +
-        '=g.className.replace(/(^|\s)no-js(\s|$)/,"$1$2")+(f?" js "+p.joi' +
-        'n(" "):""),e}(this,this.document);')
-    Left = 152
     Top = 272
   end
   object adhead: TPageProducer

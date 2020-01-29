@@ -24,15 +24,12 @@ type
     master: TPageProducer;
     alert: TDataSetPageProducer;
     mail: TPageProducer;
-    css1: TPageProducer;
     css2: TPageProducer;
     css3: TPageProducer;
     css4: TPageProducer;
     header: TDataSetPageProducer;
     js1: TPageProducer;
     js2: TPageProducer;
-    js3: TPageProducer;
-    js4: TPageProducer;
     adhead: TPageProducer;
     js5: TPageProducer;
     title: TPageProducer;
@@ -788,6 +785,8 @@ begin
         [t, Request.ScriptName, j, s]);
       FDTable1.Next;
     end;
+    ReplaceText := '<div class="carousel-caption text-left">' + ReplaceText
+      + '</div>';
   end
   else if TagString = 'info' then
     ReplaceText := FDTable1.Lookup('dbnum', FDTable3.FieldByName('info')
@@ -798,11 +797,25 @@ begin
     ReplaceText := detail(TagString, TagParams.Values['id'])
   else if TagString = 'slide' then
   begin
+    s := ' active';
     for i := 1 to (FDTable1.RecordCount div tcnt) + 1 do
+    begin
       ReplaceText := ReplaceText +
-        Format('<div class="slide"><img src="%s/src?name=slide%d.jpg"',
-        [Request.ScriptName, i]) +
+        Format('<div class="carousel-item%s"><img src="%s/src?name=slide%d.jpg"',
+        [s, Request.ScriptName, i]) +
         ' style=float:right;height:465px><#list></div>';
+      s := '';
+    end;
+  end
+  else if TagString = 'indicator' then
+  begin
+    s := ' class="active"';
+    for i := 0 to (FDTable1.RecordCount div tcnt) do
+    begin
+      ReplaceText := ReplaceText +
+        Format('<li data-target="#slide-1" data-slide-to=%d%s></li>', [i, s]);
+      s := '';
+    end;
   end;
 end;
 
@@ -882,7 +895,7 @@ begin
     else
       i := 0;
     FieldByName('mente').AsInteger := i;
-    if (s <> '')and(s = Request.ContentFields.Values['pass2']) then
+    if (s <> '') and (s = Request.ContentFields.Values['pass2']) then
     begin
       s := hash(s);
       FieldByName('password').AsString := hash(s);
@@ -1339,7 +1352,7 @@ begin
       '<h1 style=color:maron;text-align:center;font-style:italic>Ç∆ÇÈÇÀÅ`Ç«çÜ</h1>',
       0, i, 30, hash(hash('admin')), s]);
   end;
-  admin.MaxRows:=FDTable3.FieldByName('count').AsInteger;
+  admin.MaxRows := FDTable3.FieldByName('count').AsInteger;
 end;
 
 end.
