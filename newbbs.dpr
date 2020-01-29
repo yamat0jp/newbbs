@@ -3,7 +3,7 @@ program newbbs;
 
 
 
-{$R *.dres}
+
 
 uses
   Vcl.Forms,

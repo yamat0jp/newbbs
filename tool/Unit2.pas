@@ -117,7 +117,8 @@ begin
       jpg.LoadFromStream(t);
       AppendRecord([i, Format('slide%d.jpg', [i])]);
       Edit;
-      t2:=FDTable1.CreateBlobStream(FDTable1.FieldByName('source'),bmWrite);
+      t2 := FDTable1.CreateBlobStream(FDTable1.FieldByName('source'), bmWrite);
+//      TNetEncoding.Base64.Encode(t, t2);
       jpg.SaveToStream(t2);
       Post;
       t.Free;
@@ -126,12 +127,14 @@ begin
     jpg.Free;
     ApplyUpdates;
     CommitUpdates;
+//    Refresh;
   end;
 end;
 
 procedure TForm1.Button2Click(Sender: TObject);
 begin
-  FDQuery1.ExecSQL('drop table kainushi.images;');
+  if FDTable1.Exists = true then
+    FDQuery1.ExecSQL('drop table images;');
   FDQuery1.ExecSQL;
 end;
 
@@ -140,6 +143,8 @@ var
   s: TStream;
   j: TJpegImage;
 begin
+  if (FDTable1.Bof = true)or(FDTable1.Eof = True) then
+    Exit;
   s := FDTable1.CreateBlobStream(FDTable1.FieldByName('source'), bmRead);
   j := TJpegImage.Create;
   j.LoadFromStream(s);

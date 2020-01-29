@@ -1019,12 +1019,6 @@ begin
       res := CreateBlobStream(FieldByName('source'), bmRead);
       Response.ContentStream := res;
     end
-    else if s = 'sprites.png' then
-    begin
-      Response.ContentType := 'image/png';
-      res := TResourceStream.Create(HInstance, 'PngImage_1', RT_RCDATA);
-      Response.ContentStream := res;
-    end
     else
       Response.ContentStream := nil;
   end;

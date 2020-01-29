@@ -107,7 +107,7 @@ object Form1: TForm1
   end
   object Button4: TButton
     Left = 206
-    Top = 136
+    Top = 128
     Width = 75
     Height = 25
     Caption = 'Button4'
@@ -289,9 +289,10 @@ object Form1: TForm1
     CachedUpdates = True
     Connection = FDConnection1
     SQL.Strings = (
+      'use kainushi;'
       'create table if not exists'
-      ' kainushi.images(id int primary key,'
-      ' name varchar(30), source mediumblob);')
+      ' images(id int primary key,'
+      ' name varchar(30), source longblob);')
     Left = 440
     Top = 112
   end
