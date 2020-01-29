@@ -785,7 +785,7 @@ begin
         [t, Request.ScriptName, j, s]);
       FDTable1.Next;
     end;
-    ReplaceText := '<div class="carousel-caption text-left">' + ReplaceText
+    ReplaceText := '<div class="carousel-caption text-left" style="font-size:1.5rem">' + ReplaceText
       + '</div>';
   end
   else if TagString = 'info' then

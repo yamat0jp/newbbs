@@ -393,6 +393,7 @@ object WebModule1: TWebModule1
       '          <span class="sr-only">Next></span>'
       '        </a>'
       '</div>'
+      '<p>'
       '<p>'#12288'<em style="background-color: aqua;">'#12288#12288#12288#12288'</em>'#12539#12539#12539'new!'
       
         '        <p>[ <a href=<#uri>/index?db=<#dbnum>><#info></a> ] ='#12362#30693#12425 +
@@ -1759,7 +1760,6 @@ object WebModule1: TWebModule1
   object FDConnection1: TFDConnection
     Params.Strings = (
       'ConnectionDef=first_sql')
-    Connected = True
     Left = 632
     Top = 56
   end
