@@ -13,10 +13,10 @@ uses
   FireDAC.Comp.DataSet, FireDAC.Comp.Client, System.Rtti,
   System.Bindings.Outputs, Vcl.Bind.Editors, Data.Bind.EngExt,
   Vcl.Bind.DBEngExt, Data.Bind.Components, Data.Bind.DBScope,
-  FireDAC.VCLUI.Wait, FireDAC.Comp.UI, Vcl.DBCtrls, Jpeg, Vcl.Grids,
+  FireDAC.VCLUI.Wait, FireDAC.Comp.UI, Vcl.DBCtrls, Vcl.Grids,
   Vcl.DBGrids,
   FireDAC.Phys.IB, FireDAC.Phys.IBDef, FireDAC.Phys.FB, FireDAC.Phys.FBDef,
-  Vcl.ComCtrls, Vcl.Buttons;
+  Vcl.ComCtrls, Vcl.Buttons, FireDAC.Stan.StorageBin, FireDAC.Stan.StorageXML;
 
 type
   TForm1 = class(TForm)
@@ -81,6 +81,7 @@ type
       State: TDragState; var Accept: Boolean);
     procedure ListBox1EndDrag(Sender, Target: TObject; X, Y: Integer);
     procedure ListBox1StartDrag(Sender: TObject; var DragObject: TDragObject);
+    procedure Button2Click(Sender: TObject);
   private
     { Private êÈåæ }
     item: Integer;
@@ -96,30 +97,44 @@ var
 
 implementation
 
-uses System.NetEncoding, IdHashSHA, IdHashMessageDigest;
+uses System.NetEncoding, IdHashSHA, IdHashMessageDigest, Jpeg;
 
 {$R *.dfm}
 
 procedure TForm1.Button1Click(Sender: TObject);
 var
   i: Integer;
-  t: TStream;
+  t, t2: TStream;
+  jpg: TJpegImage;
 begin
   with FDTable1 do
   begin
+    t2 := TMemoryStream.Create;
+    jpg := TJpegImage.Create;
     for i := 1 to 10 do
     begin
       t := TResourceStream.Create(HInstance, 'Resource_' + i.ToString,
         RT_RCDATA);
+      jpg.LoadFromStream(t);
       AppendRecord([i, Format('slide%d.jpg', [i])]);
       Edit;
-      FDTable1SOURCE.LoadFromStream(t);
+      t2:=FDTable1.CreateBlobStream(FDTable1.FieldByName('source'),bmWrite);
+      jpg.SaveToStream(t2);
       Post;
       t.Free;
+      t2.Free;
     end;
+    t2.Free;
+    jpg.Free;
     ApplyUpdates;
     CommitUpdates;
   end;
+end;
+
+procedure TForm1.Button2Click(Sender: TObject);
+begin
+  FDQuery1.ExecSQL('drop table kainushi.images;');
+  FDQuery1.ExecSQL;
 end;
 
 procedure TForm1.Button3Click(Sender: TObject);
@@ -139,9 +154,8 @@ procedure TForm1.Button4Click(Sender: TObject);
 begin
   with FDTable1 do
   begin
-    repeat
+    while not((Bof = true) and (Eof = true)) do
       Delete;
-    until (Bof = true) and (Eof = true);
     ApplyUpdates;
     Reconcile;
     CommitUpdates;
@@ -234,12 +248,8 @@ end;
 
 procedure TForm1.FormCreate(Sender: TObject);
 begin
-  if FDTable1.Exists = false then
-  begin
-    FDTable1.Close;
-    FDQuery1.ExecSQL;
-    FDTable1.Open;
-  end;
+  FDQuery1.ExecSQL;
+  FDTable1.Open;
   if FDTable2.Exists = false then
     FDTable2.CreateTable;
   FDTable2.Open;

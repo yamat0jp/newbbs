@@ -1759,7 +1759,7 @@ object WebModule1: TWebModule1
   end
   object FDConnection1: TFDConnection
     Params.Strings = (
-      'ConnectionDef=first_sql')
+      'ConnectionDef=test_server')
     Left = 632
     Top = 56
   end
