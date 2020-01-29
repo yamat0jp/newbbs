@@ -109,7 +109,6 @@ var
 begin
   with FDTable1 do
   begin
-    t2 := TMemoryStream.Create;
     jpg := TJpegImage.Create;
     for i := 1 to 10 do
     begin
@@ -124,7 +123,6 @@ begin
       t.Free;
       t2.Free;
     end;
-    t2.Free;
     jpg.Free;
     ApplyUpdates;
     CommitUpdates;
