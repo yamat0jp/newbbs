@@ -1,5 +1,13 @@
 program Project1;
 
+
+
+
+
+
+
+
+
 {$R *.dres}
 
 uses

@@ -35,9 +35,6 @@ type
     FDGUIxWaitCursor1: TFDGUIxWaitCursor;
     DBNavigator1: TDBNavigator;
     DBGrid1: TDBGrid;
-    FDTable1ID: TIntegerField;
-    FDTable1NAME: TWideStringField;
-    FDTable1SOURCE: TBlobField;
     Button4: TButton;
     FDQuery1: TFDQuery;
     Memo1: TMemo;
@@ -68,6 +65,9 @@ type
     FDTable3dbnum: TIntegerField;
     FDTable3database: TWideStringField;
     DataSource1: TDataSource;
+    FDTable1id: TIntegerField;
+    FDTable1name: TWideStringField;
+    FDTable1source: TWideMemoField;
     procedure Button1Click(Sender: TObject);
     procedure Button4Click(Sender: TObject);
     procedure Button3Click(Sender: TObject);
@@ -104,30 +104,19 @@ uses System.NetEncoding, IdHashSHA, IdHashMessageDigest, Jpeg;
 procedure TForm1.Button1Click(Sender: TObject);
 var
   i: Integer;
-  t, t2: TStream;
-  jpg: TJpegImage;
+  s: string;
+  t: TResourceStream;
 begin
   with FDTable1 do
   begin
-    jpg := TJpegImage.Create;
-    for i := 1 to 10 do
+    for i := 1 to 5 do
     begin
-      t := TResourceStream.Create(HInstance, 'Resource_' + i.ToString,
-        RT_RCDATA);
-      jpg.LoadFromStream(t);
-      AppendRecord([i, Format('slide%d.jpg', [i])]);
-      Edit;
-      t2 := FDTable1.CreateBlobStream(FDTable1.FieldByName('source'), bmWrite);
-//      TNetEncoding.Base64.Encode(t, t2);
-      jpg.SaveToStream(t2);
-      Post;
+      t := TResourceStream.Create(HInstance, 'JpgImage_'+i.ToString, RT_RCDATA);
+      s := TNetEncoding.Base64.EncodeBytesToString(t.Memory, t.Size);
       t.Free;
-      t2.Free;
+      AppendRecord([i, Format('slide%d.jpg', [i]), s]);
     end;
-    jpg.Free;
-    ApplyUpdates;
-    CommitUpdates;
-//    Refresh;
+    Refresh;
   end;
 end;
 
@@ -140,16 +129,20 @@ end;
 
 procedure TForm1.Button3Click(Sender: TObject);
 var
-  s: TStream;
+  s: TMemoryStream;
+  p: TBytes;
   j: TJpegImage;
 begin
-  if (FDTable1.Bof = true)or(FDTable1.Eof = True) then
+  if (FDTable1.Bof = true) or (FDTable1.Eof = true) then
     Exit;
-  s := FDTable1.CreateBlobStream(FDTable1.FieldByName('source'), bmRead);
+  p := TNetEncoding.Base64.DecodeStringToBytes(FDTable1.FieldByName('source')
+    .AsString);
   j := TJpegImage.Create;
+  s := TMemoryStream.Create;
+  s.WriteBuffer(p, Length(p));
+  s.Position := 0;
   j.LoadFromStream(s);
   Canvas.Draw(0, 0, j);
-  s.Free;
   j.Free;
 end;
 
@@ -159,9 +152,7 @@ begin
   begin
     while not((Bof = true) and (Eof = true)) do
       Delete;
-    ApplyUpdates;
-    Reconcile;
-    CommitUpdates;
+    Refresh;
   end;
 end;
 

@@ -785,8 +785,9 @@ begin
         [t, Request.ScriptName, j, s]);
       FDTable1.Next;
     end;
-    ReplaceText := '<div class="carousel-caption text-left" style="font-size:1.5rem">' + ReplaceText
-      + '</div>';
+    ReplaceText :=
+      '<div class="carousel-caption text-left" style="font-size:1.5rem">' +
+      ReplaceText + '</div>';
   end
   else if TagString = 'info' then
     ReplaceText := FDTable1.Lookup('dbnum', FDTable3.FieldByName('info')
@@ -1008,7 +1009,8 @@ procedure TWebModule1.WebModule1imgAction(Sender: TObject; Request: TWebRequest;
   Response: TWebResponse; var Handled: Boolean);
 var
   s: string;
-  res: TStream;
+  p: TBytes;
+  res: TMemoryStream;
 begin
   with FDTable5 do
   begin
@@ -1016,7 +1018,10 @@ begin
     Response.ContentType := 'image/jpeg';
     if Locate('name', s) = true then
     begin
-      res := CreateBlobStream(FieldByName('source'), bmRead);
+      s := FieldByName('source').AsString;
+      p := TNetEncoding.Base64.DecodeStringToBytes(s);
+      res := TMemoryStream.Create;
+      res.WriteBuffer(p, Length(p));
       Response.ContentStream := res;
     end
     else

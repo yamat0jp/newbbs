@@ -17,8 +17,9 @@ object Form1: TForm1
   object Label1: TLabel
     Left = 48
     Top = 56
-    Width = 3
+    Width = 6
     Height = 13
+    Caption = '1'
   end
   object Label2: TLabel
     Left = 37
@@ -83,6 +84,7 @@ object Form1: TForm1
     Height = 21
     ReadOnly = True
     TabOrder = 3
+    Text = 'slide1.jpg'
   end
   object DBNavigator1: TDBNavigator
     Left = 312
@@ -224,7 +226,6 @@ object Form1: TForm1
   end
   object FDTable1: TFDTable
     Active = True
-    CachedUpdates = True
     IndexFieldNames = 'id'
     Connection = FDConnection1
     FetchOptions.AssignedValues = [evDetailCascade, evDetailServerCascade]
@@ -234,18 +235,22 @@ object Form1: TForm1
     TableName = 'images'
     Left = 392
     Top = 24
-    object FDTable1ID: TIntegerField
-      FieldName = 'ID'
-      Origin = 'ID'
+    object FDTable1id: TIntegerField
+      FieldName = 'id'
+      Origin = 'id'
       Required = True
     end
-    object FDTable1NAME: TWideStringField
-      FieldName = 'NAME'
-      Origin = 'NAME'
+    object FDTable1name: TWideStringField
+      AutoGenerateValue = arDefault
+      FieldName = 'name'
+      Origin = '`name`'
+      Size = 30
     end
-    object FDTable1SOURCE: TBlobField
-      FieldName = 'SOURCE'
-      Origin = '"SOURCE"'
+    object FDTable1source: TWideMemoField
+      AutoGenerateValue = arDefault
+      FieldName = 'source'
+      Origin = '`source`'
+      BlobType = ftWideMemo
     end
   end
   object OpenPictureDialog1: TOpenPictureDialog
@@ -289,10 +294,9 @@ object Form1: TForm1
     CachedUpdates = True
     Connection = FDConnection1
     SQL.Strings = (
-      'use kainushi;'
       'create table if not exists'
       ' images(id int primary key,'
-      ' name varchar(30), source longblob);')
+      ' name varchar(30), source longtext);')
     Left = 440
     Top = 112
   end
