@@ -1669,20 +1669,23 @@ object WebModule1: TWebModule1
     TableName = 'images'
     Left = 712
     Top = 184
-    object FDTable5ID: TIntegerField
-      FieldName = 'ID'
-      Origin = 'ID'
+    object FDTable5id: TIntegerField
+      FieldName = 'id'
+      Origin = 'id'
       ProviderFlags = [pfInUpdate, pfInWhere, pfInKey]
       Required = True
     end
-    object FDTable5NAME: TWideStringField
-      FieldName = 'NAME'
-      Origin = 'NAME'
+    object FDTable5name: TWideStringField
+      AutoGenerateValue = arDefault
+      FieldName = 'name'
+      Origin = '`name`'
       Size = 30
     end
-    object FDTable5SOURCE: TBlobField
-      FieldName = 'SOURCE'
-      Origin = '"SOURCE"'
+    object FDTable5source: TWideMemoField
+      AutoGenerateValue = arDefault
+      FieldName = 'source'
+      Origin = '`source`'
+      BlobType = ftWideMemo
     end
   end
   object FDTable4: TFDTable
@@ -1760,6 +1763,7 @@ object WebModule1: TWebModule1
   object FDConnection1: TFDConnection
     Params.Strings = (
       'ConnectionDef=first_sql')
+    Connected = True
     Left = 632
     Top = 56
   end

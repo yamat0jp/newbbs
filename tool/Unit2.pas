@@ -88,6 +88,7 @@ type
     procedure combo;
     procedure list;
     procedure itemsCopy;
+    procedure openPicture(mem: TStream; filename: string);
   public
     { Public êÈåæ }
   end;
@@ -103,19 +104,21 @@ uses System.NetEncoding, IdHashSHA, IdHashMessageDigest, Jpeg;
 
 procedure TForm1.Button1Click(Sender: TObject);
 var
-  i: Integer;
+  i: integer;
   s: string;
-  t: TResourceStream;
+  t: TMemoryStream;
 begin
+  if OpenPictureDialog1.Execute = true then
   with FDTable1 do
   begin
-    for i := 1 to 5 do
+    t:=TMemoryStream.Create;
+    for i := 1 to OpenPictureDialog1.Files.Count do
     begin
-      t := TResourceStream.Create(HInstance, 'JpgImage_'+i.ToString, RT_RCDATA);
+      openPicture(t,OpenPictureDialog1.Files[i-1]);
       s := TNetEncoding.Base64.EncodeBytesToString(t.Memory, t.Size);
-      t.Free;
       AppendRecord([i, Format('slide%d.jpg', [i]), s]);
     end;
+    t.Free;
     Refresh;
   end;
 end;
@@ -336,6 +339,27 @@ procedure TForm1.ListBox1StartDrag(Sender: TObject;
   var DragObject: TDragObject);
 begin
   item := ListBox1.ItemIndex;
+end;
+
+procedure TForm1.openPicture(mem: TStream; filename: string);
+var
+  jpg: TJpegImage;
+  bmp: TBitmap;
+begin
+  jpg:=TJpegImage.Create;
+  bmp:=TBitmap.Create;
+  try
+    jpg.LoadFromFile(filename);
+    bmp.Height:=465;
+    bmp.Width:=Trunc(465*jpg.Width/jpg.Height);
+    bmp.Canvas.StretchDraw(Rect(0,0,bmp.Width,465),jpg);
+    jpg.Assign(bmp);
+    jpg.SaveToStream(mem);
+    mem.Position:=0;
+  finally
+    jpg.Free;
+    bmp.Free;
+  end;
 end;
 
 procedure TForm1.SpeedButton1Click(Sender: TObject);

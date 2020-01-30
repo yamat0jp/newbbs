@@ -62,14 +62,14 @@ type
     FDTable1: TFDTable;
     FDTable1DBNUM: TIntegerField;
     FDTable1DATABASE: TWideStringField;
-    FDTable5ID: TIntegerField;
-    FDTable5NAME: TWideStringField;
-    FDTable5SOURCE: TBlobField;
     login: TPageProducer;
     footer: TPageProducer;
     FDGUIxWaitCursor1: TFDGUIxWaitCursor;
     FDQuery1: TFDQuery;
     FDTable3mente: TSmallintField;
+    FDTable5id: TIntegerField;
+    FDTable5name: TWideStringField;
+    FDTable5source: TWideMemoField;
     procedure indexHTMLTag(Sender: TObject; Tag: TTag; const TagString: string;
       TagParams: TStrings; var ReplaceText: string);
     procedure WebModule1indexpageAction(Sender: TObject; Request: TWebRequest;

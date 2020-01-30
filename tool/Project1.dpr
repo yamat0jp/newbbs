@@ -8,7 +8,7 @@ program Project1;
 
 
 
-{$R *.dres}
+
 
 uses
   Vcl.Forms,

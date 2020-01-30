@@ -256,6 +256,7 @@ object Form1: TForm1
   object OpenPictureDialog1: TOpenPictureDialog
     DefaultExt = 'jpg'
     FilterIndex = 2
+    Options = [ofHideReadOnly, ofAllowMultiSelect, ofEnableSizing]
     Left = 88
     Top = 96
   end

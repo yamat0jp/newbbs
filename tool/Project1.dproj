@@ -83,26 +83,6 @@
             <Form>Form1</Form>
             <FormType>dfm</FormType>
         </DCCReference>
-        <RcItem Include="Photos\IMG_0684.jpg">
-            <ResourceType>RCDATA</ResourceType>
-            <ResourceId>JpgImage_1</ResourceId>
-        </RcItem>
-        <RcItem Include="Photos\IMG_0687.jpg">
-            <ResourceType>RCDATA</ResourceType>
-            <ResourceId>JpgImage_2</ResourceId>
-        </RcItem>
-        <RcItem Include="Photos\IMG_0689.jpg">
-            <ResourceType>RCDATA</ResourceType>
-            <ResourceId>JpgImage_3</ResourceId>
-        </RcItem>
-        <RcItem Include="Photos\IMG_0692.jpg">
-            <ResourceType>RCDATA</ResourceType>
-            <ResourceId>JpgImage_4</ResourceId>
-        </RcItem>
-        <RcItem Include="Photos\IMG_0698.jpg">
-            <ResourceType>RCDATA</ResourceType>
-            <ResourceId>JpgImage_5</ResourceId>
-        </RcItem>
         <BuildConfiguration Include="Release">
             <Key>Cfg_2</Key>
             <CfgParent>Base</CfgParent>
@@ -132,46 +112,16 @@
                         <Overwrite>true</Overwrite>
                     </Platform>
                 </DeployFile>
-                <DeployFile LocalName="Photos\IMG_0692.jpg" Configuration="Debug" Class="ProjectFile">
-                    <Platform Name="Win32">
-                        <RemoteDir>.\</RemoteDir>
-                        <Overwrite>true</Overwrite>
-                    </Platform>
-                </DeployFile>
                 <DeployFile LocalName="2019-03\IMG_0758.JPG" Configuration="Debug" Class="ProjectFile"/>
                 <DeployFile LocalName="2019-03\IMG_0754.JPG" Configuration="Debug" Class="ProjectFile"/>
-                <DeployFile LocalName="Photos\IMG_0689.jpg" Configuration="Debug" Class="ProjectFile">
-                    <Platform Name="Win32">
-                        <RemoteDir>.\</RemoteDir>
-                        <Overwrite>true</Overwrite>
-                    </Platform>
-                </DeployFile>
                 <DeployFile LocalName="2019-03\IMG_0761.JPG" Configuration="Debug" Class="ProjectFile"/>
                 <DeployFile LocalName="2019-03\IMG_0755.JPG" Configuration="Debug" Class="ProjectFile"/>
                 <DeployFile LocalName="2019-03\IMG_0760.JPG" Configuration="Debug" Class="ProjectFile"/>
                 <DeployFile LocalName="2019-03\IMG_0759.JPG" Configuration="Debug" Class="ProjectFile"/>
-                <DeployFile LocalName="Photos\IMG_0698.jpg" Configuration="Debug" Class="ProjectFile">
-                    <Platform Name="Win32">
-                        <RemoteDir>.\</RemoteDir>
-                        <Overwrite>true</Overwrite>
-                    </Platform>
-                </DeployFile>
                 <DeployFile LocalName="2019-03\IMG_0753.JPG" Configuration="Debug" Class="ProjectFile"/>
                 <DeployFile LocalName="2019-03\IMG_0757.JPG" Configuration="Debug" Class="ProjectFile"/>
                 <DeployFile LocalName="Win32\Debug\Project1.exe" Configuration="Debug" Class="ProjectOutput"/>
                 <DeployFile LocalName="2019-03\IMG_0752.JPG" Configuration="Debug" Class="ProjectFile"/>
-                <DeployFile LocalName="Photos\IMG_0687.jpg" Configuration="Debug" Class="ProjectFile">
-                    <Platform Name="Win32">
-                        <RemoteDir>.\</RemoteDir>
-                        <Overwrite>true</Overwrite>
-                    </Platform>
-                </DeployFile>
-                <DeployFile LocalName="Photos\IMG_0684.jpg" Configuration="Debug" Class="ProjectFile">
-                    <Platform Name="Win32">
-                        <RemoteDir>.\</RemoteDir>
-                        <Overwrite>true</Overwrite>
-                    </Platform>
-                </DeployFile>
                 <DeployClass Name="Android_SplashImage470">
                     <Platform Name="Android">
                         <RemoteDir>res\drawable-normal</RemoteDir>
@@ -548,7 +498,7 @@
                         <Operation>1</Operation>
                     </Platform>
                 </DeployClass>
-                <ProjectRoot Platform="iOSDevice32" Name="$(PROJECTNAME).app"/>
+                <ProjectRoot Platform="Win64" Name="$(PROJECTNAME)"/>
                 <ProjectRoot Platform="Android" Name="$(PROJECTNAME)"/>
                 <ProjectRoot Platform="iOSDevice" Name="$(PROJECTNAME).app"/>
                 <ProjectRoot Platform="Win32" Name="$(PROJECTNAME)"/>
@@ -557,7 +507,7 @@
                 <ProjectRoot Platform="Linux64" Name="$(PROJECTNAME)"/>
                 <ProjectRoot Platform="OSX32" Name="$(PROJECTNAME).app"/>
                 <ProjectRoot Platform="iOSSimulator" Name="$(PROJECTNAME).app"/>
-                <ProjectRoot Platform="Win64" Name="$(PROJECTNAME)"/>
+                <ProjectRoot Platform="iOSDevice32" Name="$(PROJECTNAME).app"/>
             </Deployment>
             <Platforms>
                 <Platform value="Win32">True</Platform>
