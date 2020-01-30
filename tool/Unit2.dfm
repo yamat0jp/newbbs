@@ -55,7 +55,7 @@ object Form1: TForm1
     Top = 32
     Width = 75
     Height = 25
-    Caption = 'Button1'
+    Caption = 'execute'
     TabOrder = 0
     OnClick = Button1Click
   end
@@ -64,7 +64,7 @@ object Form1: TForm1
     Top = 72
     Width = 75
     Height = 25
-    Caption = 'Button2'
+    Caption = 'drop table'
     TabOrder = 1
     OnClick = Button2Click
   end
@@ -73,7 +73,7 @@ object Form1: TForm1
     Top = 167
     Width = 75
     Height = 25
-    Caption = 'Button3'
+    Caption = 'draw'
     TabOrder = 2
     OnClick = Button3Click
   end
@@ -112,7 +112,7 @@ object Form1: TForm1
     Top = 128
     Width = 75
     Height = 25
-    Caption = 'Button4'
+    Caption = 'delete'
     TabOrder = 6
     OnClick = Button4Click
   end
