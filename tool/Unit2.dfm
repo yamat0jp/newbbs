@@ -2,7 +2,7 @@ object Form1: TForm1
   Left = 0
   Top = 0
   Caption = 'Form1'
-  ClientHeight = 657
+  ClientHeight = 605
   ClientWidth = 640
   Color = clBtnFace
   Font.Charset = DEFAULT_CHARSET
@@ -23,14 +23,14 @@ object Form1: TForm1
   end
   object Label2: TLabel
     Left = 37
-    Top = 531
+    Top = 491
     Width = 14
     Height = 13
     Caption = 'NG'
   end
   object Label3: TLabel
     Left = 24
-    Top = 579
+    Top = 539
     Width = 50
     Height = 26
     Caption = #12497#12473#12527#12540#12489' '#35373#23450#29992
@@ -38,14 +38,14 @@ object Form1: TForm1
   end
   object Bevel1: TBevel
     Left = 20
-    Top = 280
+    Top = 240
     Width = 564
     Height = 50
     Shape = bsTopLine
   end
   object SpeedButton1: TSpeedButton
     Left = 561
-    Top = 488
+    Top = 448
     Width = 23
     Height = 22
     OnClick = SpeedButton1Click
@@ -78,21 +78,13 @@ object Form1: TForm1
     OnClick = Button3Click
   end
   object Edit1: TEdit
-    Left = 80
-    Top = 225
+    Left = 56
+    Top = 185
     Width = 121
     Height = 21
     ReadOnly = True
     TabOrder = 3
     Text = 'slide1.jpg'
-  end
-  object DBNavigator1: TDBNavigator
-    Left = 312
-    Top = 222
-    Width = 240
-    Height = 25
-    DataSource = DataSource1
-    TabOrder = 4
   end
   object DBGrid1: TDBGrid
     Left = 312
@@ -100,7 +92,7 @@ object Form1: TForm1
     Width = 272
     Height = 160
     DataSource = DataSource1
-    TabOrder = 5
+    TabOrder = 4
     TitleFont.Charset = DEFAULT_CHARSET
     TitleFont.Color = clWindowText
     TitleFont.Height = -11
@@ -113,98 +105,98 @@ object Form1: TForm1
     Width = 75
     Height = 25
     Caption = 'delete'
-    TabOrder = 6
+    TabOrder = 5
     OnClick = Button4Click
   end
   object Memo1: TMemo
     Left = 80
-    Top = 376
+    Top = 336
     Width = 345
     Height = 89
-    TabOrder = 7
+    TabOrder = 6
   end
   object CheckBox1: TCheckBox
     Left = 80
-    Top = 488
+    Top = 448
     Width = 97
     Height = 17
     Caption = 'mente'
-    TabOrder = 8
+    TabOrder = 7
   end
   object Edit3: TEdit
     Left = 80
-    Top = 528
+    Top = 488
     Width = 345
     Height = 21
-    TabOrder = 9
+    TabOrder = 8
   end
   object Edit4: TEdit
     Left = 80
-    Top = 325
+    Top = 285
     Width = 201
     Height = 21
-    TabOrder = 10
+    TabOrder = 9
   end
   object Button5: TButton
     Left = 509
-    Top = 323
+    Top = 283
     Width = 75
     Height = 25
     Caption = 'default'
-    TabOrder = 11
+    TabOrder = 10
     OnClick = Button5Click
   end
   object Edit5: TEdit
     Left = 328
-    Top = 486
+    Top = 446
     Width = 65
     Height = 21
     ReadOnly = True
-    TabOrder = 12
+    TabOrder = 11
     Text = '30'
   end
   object UpDown1: TUpDown
     Left = 393
-    Top = 486
+    Top = 446
     Width = 16
     Height = 21
     Associate = Edit5
     Min = 5
     Max = 300
     Position = 30
-    TabOrder = 13
+    TabOrder = 12
   end
   object Edit6: TEdit
     Left = 80
-    Top = 576
+    Top = 536
     Width = 129
     Height = 21
-    TabOrder = 14
+    TabOrder = 13
   end
   object ComboBox1: TComboBox
     Left = 280
-    Top = 576
+    Top = 536
     Width = 145
     Height = 21
-    TabOrder = 15
+    TabOrder = 14
   end
   object Button6: TButton
     Left = 509
-    Top = 368
+    Top = 328
     Width = 75
     Height = 25
     Caption = 'adapt'
-    TabOrder = 16
+    TabOrder = 15
     OnClick = Button6Click
   end
   object ListBox1: TListBox
     Left = 463
-    Top = 516
+    Top = 476
     Width = 121
     Height = 97
     DragMode = dmAutomatic
     ItemHeight = 13
-    TabOrder = 17
+    TabOrder = 16
     OnDragOver = ListBox1DragOver
     OnEndDrag = ListBox1EndDrag
     OnKeyDown = ListBox1KeyDown
@@ -212,10 +204,10 @@ object Form1: TForm1
   end
   object Edit2: TEdit
     Left = 463
-    Top = 486
+    Top = 446
     Width = 92
     Height = 21
-    TabOrder = 18
+    TabOrder = 17
   end
   object FDConnection1: TFDConnection
     Params.Strings = (
@@ -307,7 +299,7 @@ object Form1: TForm1
     UpdateOptions.UpdateTableName = 'setting'
     TableName = 'setting'
     Left = 496
-    Top = 280
+    Top = 240
     object FDTable2title: TWideStringField
       AutoGenerateValue = arDefault
       FieldName = 'title'
@@ -354,7 +346,7 @@ object Form1: TForm1
     UpdateOptions.UpdateTableName = 'dbname'
     TableName = 'dbname'
     Left = 440
-    Top = 280
+    Top = 240
     object FDTable3dbnum: TIntegerField
       FieldName = 'dbnum'
       Origin = 'dbnum'

@@ -33,7 +33,6 @@ type
     LinkPropertyToFieldCaption: TLinkPropertyToField;
     LinkControlToField2: TLinkControlToField;
     FDGUIxWaitCursor1: TFDGUIxWaitCursor;
-    DBNavigator1: TDBNavigator;
     DBGrid1: TDBGrid;
     Button4: TButton;
     FDQuery1: TFDQuery;
@@ -104,23 +103,25 @@ uses System.NetEncoding, IdHashSHA, IdHashMessageDigest, Jpeg;
 
 procedure TForm1.Button1Click(Sender: TObject);
 var
-  i: integer;
-  s: string;
+  i: Integer;
+  s, s2: string;
   t: TMemoryStream;
 begin
   if OpenPictureDialog1.Execute = true then
-  with FDTable1 do
-  begin
-    t:=TMemoryStream.Create;
-    for i := 1 to OpenPictureDialog1.Files.Count do
+    with FDTable1 do
     begin
-      openPicture(t,OpenPictureDialog1.Files[i-1]);
-      s := TNetEncoding.Base64.EncodeBytesToString(t.Memory, t.Size);
-      AppendRecord([i, Format('slide%d.jpg', [i]), s]);
+      t := TMemoryStream.Create;
+      i:=RecordCount+1;
+      for s2 in OpenPictureDialog1.Files do
+      begin
+        openPicture(t, s2);
+        s := TNetEncoding.Base64.EncodeBytesToString(t.Memory, t.Size);
+        AppendRecord([i, Format('slide%d.jpg', [i]), s]);
+        inc(i);
+      end;
+      t.Free;
+      Refresh;
     end;
-    t.Free;
-    Refresh;
-  end;
 end;
 
 procedure TForm1.Button2Click(Sender: TObject);
@@ -346,16 +347,16 @@ var
   jpg: TJpegImage;
   bmp: TBitmap;
 begin
-  jpg:=TJpegImage.Create;
-  bmp:=TBitmap.Create;
+  jpg := TJpegImage.Create;
+  bmp := TBitmap.Create;
   try
     jpg.LoadFromFile(filename);
-    bmp.Height:=465;
-    bmp.Width:=Trunc(465*jpg.Width/jpg.Height);
-    bmp.Canvas.StretchDraw(Rect(0,0,bmp.Width,465),jpg);
+    bmp.Height := 465;
+    bmp.Width := Trunc(465 * jpg.Width / jpg.Height);
+    bmp.Canvas.StretchDraw(Rect(0, 0, bmp.Width, 465), jpg);
     jpg.Assign(bmp);
     jpg.SaveToStream(mem);
-    mem.Position:=0;
+    mem.Position := 0;
   finally
     jpg.Free;
     bmp.Free;
