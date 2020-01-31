@@ -162,36 +162,48 @@ object WebModule1: TWebModule1
       '    </title>'
       '  </head>'
       '  <body>'
+      
+        '    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.j' +
+        's" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp' +
+        '4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>'
+      
+        '    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.j' +
+        's/1.14.6/umd/popper.min.js" integrity="sha384-wHAiFfRlMFy6i5SRax' +
+        'vfOCifBUQy1xHdJ/yoi7FRNXMRBu5WHdZYu1hA6ZOblgut" crossorigin="ano' +
+        'nymous"></script>'
+      
+        '    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.' +
+        '2.1/js/bootstrap.min.js" integrity="sha384-B0UglyR+jN6CkvvICOB2j' +
+        'oaf5I4l3gm9GU6Hc1og6Ls7i6U/mkkaduKaBhlAXv9k" crossorigin="anonym' +
+        'ous"></script>'
       '<#pr>'
       '    <a href=<#uri>/ style=text-decoration:none><#title2></a>'
       ''
       '    <#header>'
       ''
-      '    <hr size="1" width="100%">'
-      '    <table class=my-table>'
-      '    <tr><td>'
+      
+        '    <table class="table col-4 thead-dark table-borderd" style=al' +
+        'ign:end>'
+      '    <tr><th>'#21066#38500'</th><th>'#31227#21205'</th></tr>'
+      '    <tr><td class=w-25>'
       
         '    <form action=<#uri>/userdel?db=<#dbnum> method="post" id=sea' +
         'rch>'
       
-        '      <label for=id1>'#35352#20107'No</label><input id=id1 class=form-contro' +
-        'l name="num">'
+        '      <label for=id1>'#35352#20107'No</label><input id=id1 class="form-contr' +
+        'ol" name="num">'
       
-        '      <label for=pass1>Pass</label><input id=pass1 class=form-co' +
-        'ntrol type="password" name="password">'
-      
-        '      <button class="form-control mx-auto" type="submit">"'#21066#38500'"</b' +
-        'utton>'
+        '      <label for=pass1>Pass</label><input id=pass1 class="form-c' +
+        'ontrol mb-3" type="password" name="password">'
+      '      <button type="submit">'#21066#38500'</button>'
       '    </form>'
-      '    </td><td class=align-middle>'
+      '    </td><td class="w-50 align-middle">'
       '    <form action=<#uri>/jump?db=<#dbnum> method=post id=search>'
-      '      <div class=input-group>'
+      '      <div class="input-group">'
       
         '      <div class=input-group-prepend><span class=input-group-tex' +
         't>'#35352#20107'No</span></div>'
-      
-        '      <input id=number1 class="form-control col-1 align-middle" ' +
-        'name=num>'
+      '      <input id=number1 class="form-control" name=num>'
       
         '      <div class=input-group-append><button type=submit>'#31227#21205'</butt' +
         'on></div>'
@@ -210,20 +222,6 @@ object WebModule1: TWebModule1
       
         '    <p style=text-align:center><a href="<#uri>/admin?db=<#dbnum>' +
         '">'#31649#29702#32773#29992#12525#12464#12452#12531'</a></p>'
-      
-        '    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.j' +
-        's" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp' +
-        '4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>'
-      
-        '    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.j' +
-        's/1.14.6/umd/popper.min.js" integrity="sha384-wHAiFfRlMFy6i5SRax' +
-        'vfOCifBUQy1xHdJ/yoi7FRNXMRBu5WHdZYu1hA6ZOblgut" crossorigin="ano' +
-        'nymous"></script>'
-      
-        '    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.' +
-        '2.1/js/bootstrap.min.js" integrity="sha384-B0UglyR+jN6CkvvICOB2j' +
-        'oaf5I4l3gm9GU6Hc1og6Ls7i6U/mkkaduKaBhlAXv9k" crossorigin="anonym' +
-        'ous"></script>'
       '  </body>'
       '</html>')
     DataSet = FDTable3
@@ -1176,18 +1174,18 @@ object WebModule1: TWebModule1
       '      <div class="container">'
       '        <div class="form-row">'
       '        <div class="form-inline p-3">'
-      '          <div class=input-group>'
+      '          <div class="input-group col-6">'
       
         '          <div class=input-group-prepend><span class=input-group' +
         '-text>'#12362#21517#21069'</span></div>'
       
-        '            <input name="name" id=name1 class="form-control" val' +
-        'ue=<#cookie param=name>>'
+        '            <input name="name" id=name1 class="form-control mr-5' +
+        '0" value=<#cookie param=name>>'
       '          </div>'
-      '          <div class="input-group justify-content-end">'
+      '          <div class="input-group col-6">'
       
-        '          <div class=input-text-prepend><span class=input-group-' +
-        'text>'#12479#12452#12488#12523'</span></div>'
+        '          <div class=input-group-prepend><span class=input-group' +
+        '-text>'#12479#12452#12488#12523'</span></div>'
       
         '            <input name="title" id=title1 class=form-control pla' +
         'ceholder="'#12479#12452#12488#12523#12394#12375'." value=<#title>>'
@@ -1210,22 +1208,26 @@ object WebModule1: TWebModule1
         'aceholder="'#12467#12513#12531#12488#12394#12393#12434#20837#21147#12375#12390#12367#12384#12373#12356'."><#raw></textarea>'
       '          </div>'
       '        </div>'
-      '        <div class="form-row justify-content-around">'
+      '        <div class="form-row">'
       '          <div class="form-inline w-50">'
+      '            <div class=input-group>'
       
-        '          <label for=password1>'#12497#12473#12527#12540#12489':'#12288'</label><input id=password' +
-        '1 name="password" class="form-control col-4" type="password" pla' +
-        'ceholder="'#21066#38500#29992'" value=<#pass>>'
+        '            <div class=input-group-prepend><span class=input-gro' +
+        'up-text>'#12497#12473#12527#12540#12489'</span></div>'
+      
+        '            <input id=password1 name="password" class="form-cont' +
+        'rol col-4" type="password" placeholder="'#21066#38500#29992'" value=<#pass>>'
+      '            </div>'
       '          </div>'
       '          <div class="form-group w-50">'
-      '          <div class="custom-control custom-checkbox">'
+      '            <div class="custom-control custom-checkbox">'
       
-        '           <input type="checkbox" id=check1 name="show" class=cu' +
-        'stom-control-input value="true" <#check>>'
+        '            <input type="checkbox" id=check1 name="show" class=c' +
+        'ustom-control-input value="true" <#check>>'
       
-        '           <label class=custom-control-label for=check1>'#12503#12524#12499#12517#12540'</l' +
-        'abel>'
-      '          </div>'
+        '            <label class=custom-control-label for=check1>'#12503#12524#12499#12517#12540'</' +
+        'label>'
+      '            </div>'
       '          </div>'
       '        </div>'
       '        <div class="form-row justify-content-end">'
@@ -1778,7 +1780,6 @@ object WebModule1: TWebModule1
   object FDConnection1: TFDConnection
     Params.Strings = (
       'ConnectionDef=first_sql')
-    Connected = True
     Left = 632
     Top = 56
   end
