@@ -180,15 +180,15 @@ object WebModule1: TWebModule1
       '    <a href=<#uri>/ style=text-decoration:none><#title2></a>'
       ''
       '    <#header>'
-      '    <p><br></p>'
-      '    <div class="container p-5">'
+      '      <div class="container pt-5">'
       
         '    <button class="btn shadow" data-toggle=collapse data-target=' +
         '.item1'
       '      aria-expanded=false aria-controls="item1-a item1-b">'
       '    '#12402#12425#12367'</button>'
-      '    <div class="row col-6">'
-      '      <div class="col-4">'
+      '    <div class="container pt-3">'
+      '    <div class="row col-5 p-0">'
+      '      <div class="col-4 p-0">'
       
         '    <div class="collapse item1" id=item1-a><div class="card card' +
         '-body">'
@@ -205,7 +205,7 @@ object WebModule1: TWebModule1
       '    </form>'
       '    </div></div>'
       '      </div>'
-      '      <div class="col">'
+      '      <div class="col-8">'
       
         '    <div class="collapse item1" id=item1-b><div class="card card' +
         '-body">'
@@ -224,14 +224,21 @@ object WebModule1: TWebModule1
       '      </div>'
       '    </div>'
       '    </div>'
+      '      </div>'
       '    <p><br></p>'
       '    <p><a href=<#uri>/search?db=<#dbnum>>'#26908#32034#12506#12540#12472'</a></p>'
-      '    <p style=text-align:right><a href=#article>'#19979#12408#31227#21205'</a></p>'
       '    <p style=text-align:center><#database></p>'
       '    <#footer>'
       '  <#article>'
       #9'<a name=article></a>'
-      #9'<p style=text-align:right><a href=#top>Top'#12408#31227#21205'</a></p>'
+      '    <div style=position:fixed;right:30px;bottom:40px>'
+      
+        '      <p><a class="btn btn-outline-info rounded-pill" href=#top>' +
+        #19978#12408'</a>'
+      
+        '      <p><a class="btn btn-outline-info rounded-pill" href=#arti' +
+        'cle>'#19979#12408'</a>'
+      '    </div>'
       '  <#footer>'
       
         '    <p style=text-align:center><a href="<#uri>/admin?db=<#dbnum>' +
@@ -1199,8 +1206,8 @@ object WebModule1: TWebModule1
         '            <input name="title" id=title1 class=form-control pla' +
         'ceholder="'#12479#12452#12488#12523#12394#12375'." value=<#title>>'
       
-        '          <button class="btn btn-primary" type="submit">'#36865#20449'</butt' +
-        'on>'
+        '          <input class="btn btn-primary ml-3" type="submit" valu' +
+        'e="'#36865#20449'">'
       '          </div>'
       '        </div>'
       '        </div>'
