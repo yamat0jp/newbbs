@@ -804,7 +804,7 @@ begin
       ReplaceText := ReplaceText +
         Format('<div class="carousel-item%s"><img src="%s/src?name=slide%d.jpg"',
         [s, Request.ScriptName, i]) +
-        ' style=float:right;height:465px><#list></div>';
+        ' class="d-sm-block d-none" style=float:right;height:465px><div style=height:465px></div><#list></div>';
       s := '';
     end;
   end
