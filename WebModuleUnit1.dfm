@@ -180,12 +180,18 @@ object WebModule1: TWebModule1
       '    <a href=<#uri>/ style=text-decoration:none><#title2></a>'
       ''
       '    <#header>'
-      ''
+      '    <p><br></p>'
+      '    <div class="container p-5">'
       
-        '    <table class="table col-4 thead-dark table-borderd" style=al' +
-        'ign:end>'
-      '    <tr><th>'#21066#38500'</th><th>'#31227#21205'</th></tr>'
-      '    <tr><td class=w-25>'
+        '    <button class="btn shadow" data-toggle=collapse data-target=' +
+        '.item1'
+      '      aria-expanded=false aria-controls="item1-a item1-b">'
+      '    '#12402#12425#12367'</button>'
+      '    <div class="row col-6">'
+      '      <div class="col-4">'
+      
+        '    <div class="collapse item1" id=item1-a><div class="card card' +
+        '-body">'
       
         '    <form action=<#uri>/userdel?db=<#dbnum> method="post" id=sea' +
         'rch>'
@@ -197,7 +203,12 @@ object WebModule1: TWebModule1
         'ontrol mb-3" type="password" name="password">'
       '      <button type="submit">'#21066#38500'</button>'
       '    </form>'
-      '    </td><td class="w-50 align-middle">'
+      '    </div></div>'
+      '      </div>'
+      '      <div class="col">'
+      
+        '    <div class="collapse item1" id=item1-b><div class="card card' +
+        '-body">'
       '    <form action=<#uri>/jump?db=<#dbnum> method=post id=search>'
       '      <div class="input-group">'
       
@@ -209,8 +220,11 @@ object WebModule1: TWebModule1
         'on></div>'
       '      </div>'
       '    </form>'
-      '    </td></tr>'
-      '    </table>'
+      '    </div></div>'
+      '      </div>'
+      '    </div>'
+      '    </div>'
+      '    <p><br></p>'
       '    <p><a href=<#uri>/search?db=<#dbnum>>'#26908#32034#12506#12540#12472'</a></p>'
       '    <p style=text-align:right><a href=#article>'#19979#12408#31227#21205'</a></p>'
       '    <p style=text-align:center><#database></p>'
@@ -565,11 +579,6 @@ object WebModule1: TWebModule1
       #9'width:80px;'
       #9'height:30px;'
       #9'right:20px'
-      '}'
-      ''
-      'button.sticky {'
-      #9'position:fixed;'
-      #9'top:0'
       '}'
       ''
       'body {'
