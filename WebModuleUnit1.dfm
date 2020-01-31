@@ -134,6 +134,11 @@ object WebModule1: TWebModule1
       '  <head>'
       '    <meta charset="utf-8">'
       '  <meta http-equiv="Content-Style-Type" content="text/css">'
+      
+        '    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.' +
+        'com/bootstrap/4.2.1/css/bootstrap.min.css" integrity="sha384-GJz' +
+        'ZqFGwb1QTTN6wy59ffF1BuGJpLSa9DkKMp0DgiMDm4iYMj70gZWKYbI706tWS" c' +
+        'rossorigin="anonymous">'
       '<style type="text/css">'
       '<!--'
       '    <#css id=2>'
@@ -163,19 +168,37 @@ object WebModule1: TWebModule1
       '    <#header>'
       ''
       '    <hr size="1" width="100%">'
+      '    <table class=my-table>'
+      '    <tr><td>'
       
         '    <form action=<#uri>/userdel?db=<#dbnum> method="post" id=sea' +
         'rch>'
-      '      <label><p>'#35352#20107'No</p><input name="num"></label>'
       
-        '      <label><p>Pass</p><input type="password" name="password"><' +
-        '/label>'
-      '      <input type="submit" value="'#21066#38500'">'
+        '      <label for=id1>'#35352#20107'No</label><input id=id1 class=form-contro' +
+        'l name="num">'
+      
+        '      <label for=pass1>Pass</label><input id=pass1 class=form-co' +
+        'ntrol type="password" name="password">'
+      
+        '      <button class="form-control mx-auto" type="submit">"'#21066#38500'"</b' +
+        'utton>'
       '    </form>'
+      '    </td><td class=align-middle>'
       '    <form action=<#uri>/jump?db=<#dbnum> method=post id=search>'
-      '      <label><p>'#35352#20107'No</p><input name=num></label>'
-      '      <input type=submit value='#31227#21205'>'
+      '      <div class=input-group>'
+      
+        '      <div class=input-group-prepend><span class=input-group-tex' +
+        't>'#35352#20107'No</span></div>'
+      
+        '      <input id=number1 class="form-control col-1 align-middle" ' +
+        'name=num>'
+      
+        '      <div class=input-group-append><button type=submit>'#31227#21205'</butt' +
+        'on></div>'
+      '      </div>'
       '    </form>'
+      '    </td></tr>'
+      '    </table>'
       '    <p><a href=<#uri>/search?db=<#dbnum>>'#26908#32034#12506#12540#12472'</a></p>'
       '    <p style=text-align:right><a href=#article>'#19979#12408#31227#21205'</a></p>'
       '    <p style=text-align:center><#database></p>'
@@ -187,6 +210,20 @@ object WebModule1: TWebModule1
       
         '    <p style=text-align:center><a href="<#uri>/admin?db=<#dbnum>' +
         '">'#31649#29702#32773#29992#12525#12464#12452#12531'</a></p>'
+      
+        '    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.j' +
+        's" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp' +
+        '4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>'
+      
+        '    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.j' +
+        's/1.14.6/umd/popper.min.js" integrity="sha384-wHAiFfRlMFy6i5SRax' +
+        'vfOCifBUQy1xHdJ/yoi7FRNXMRBu5WHdZYu1hA6ZOblgut" crossorigin="ano' +
+        'nymous"></script>'
+      
+        '    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.' +
+        '2.1/js/bootstrap.min.js" integrity="sha384-B0UglyR+jN6CkvvICOB2j' +
+        'oaf5I4l3gm9GU6Hc1og6Ls7i6U/mkkaduKaBhlAXv9k" crossorigin="anonym' +
+        'ous"></script>'
       '  </body>'
       '</html>')
     DataSet = FDTable3
@@ -496,24 +533,19 @@ object WebModule1: TWebModule1
       ''
       'section#title {'
       '    display:inline;'
-      '    font:bold;'
-      '    font-size:1.2em;'
-      '    color:#D01166;'
+      '    font-weight:bold;'
+      '    font-size:1.2rem;'
+      '    color:#D01166'
       '}'
       ''
       'section#name h1 {'
-      '    font:bold;'
-      '    font-size:1em;'
-      '    color:#007000;'
-      '    margin:0;'
-      '}'
-      ''
-      'section#date h1 {'
-      '    font-size:1em;'
-      '    margin:0;'
+      '    font-size:1rem;'
+      '    font-weight:bold;'
+      '    color:#007000'
       '}'
       ''
       'section h1 {'
+      '    font-size:1rem;'
       '    display:inline;'
       '}'
       ''
@@ -530,28 +562,7 @@ object WebModule1: TWebModule1
       '    width:100%'
       '}'
       ''
-      'header table {'
-      '    margin:auto'
-      '}'
-      ''
-      'header p {'
-      '    display:inline'
-      '}'
-      ''
-      '@media only screen and (min-width:900px){'
-      'header textarea {'
-      '    width:100%;'
-      '    height:150px;'
-      #9'}'
-      '}'
-      '@media only screen and (max-width:899px){'
-      'header textarea {'
-      #9'width:70%;'
-      #9'height:90px'
-      #9'}'
-      '}'
-      ''
-      'button {'
+      'button#custom {'
       #9'position:absolute;'
       #9'width:80px;'
       #9'height:30px;'
@@ -563,40 +574,8 @@ object WebModule1: TWebModule1
       #9'top:0'
       '}'
       ''
-      'input[type=password] {'
-      '    width:55px'
-      '}'
-      ''
-      'form#search input {'
-      '    height:22px;'
-      '    width:55px'
-      '}'
-      ''
-      'span {'
-      '    color:#ff0000'
-      '}'
-      ''
-      'p {'
-      #9'text-indent:0;'
-      #9'margin:0'
-      '}'
-      ''
       'body {'
       #9'line-height:1.5'
-      '}'
-      ''
-      'table {'
-      #9'margin:auto;'
-      #9'border:0'
-      '}'
-      ''
-      'form#search {'
-      #9'border:solid;'
-      #9'display:inline-block;'
-      #9'margin-top:30px;'
-      #9'margin-right:30px;'
-      #9'margin-left:30px;'
-      #9'margin-bottom:30px'
       '}')
     Left = 360
     Top = 144
@@ -1190,39 +1169,75 @@ object WebModule1: TWebModule1
       '    <header>'
       '    <a name=top></a>'
       '    <form action=<#uri>/regist?db=<#dbnum> method="post">'
-      '      <table>'
-      '        <tr><td>'
+      '      <p><br></p>'
       
-        '          <label><p>'#12362#21517#21069'</p><input name="name" class=name value=<' +
-        '#cookie param=name>></label>'
+        '      <div class="row justify-content-center"><div class="col-10' +
+        '">'
+      '      <div class="container">'
+      '        <div class="form-row">'
+      '        <div class="form-inline p-3">'
+      '          <div class=input-group>'
       
-        '          <label><p>'#12479#12452#12488#12523'</p><input name="title" class=title plac' +
-        'eholder="'#12479#12452#12488#12523#12394#12375'." value=<#title>></label>'
-      '          <input type="submit" value="'#36865#20449'">'
-      '        </td></tr>'
-      '        <tr><td>'
-      '          <label><p>'#26412#25991'<span>'#24517#38920'</span><br></p>'
+        '          <div class=input-group-prepend><span class=input-group' +
+        '-text>'#12362#21517#21069'</span></div>'
       
-        '            <textarea style="font-size:1.75em" name="comment" co' +
-        'ls=30'
+        '            <input name="name" id=name1 class="form-control" val' +
+        'ue=<#cookie param=name>>'
+      '          </div>'
+      '          <div class="input-group justify-content-end">'
       
-        '                      required placeholder="'#12467#12513#12531#12488#12394#12393#12434#20837#21147#12375#12390#12367#12384#12373#12356'."><#' +
-        'raw></textarea></label>'
-      '        </td></tr>'
-      '        <tr><td>'
+        '          <div class=input-text-prepend><span class=input-group-' +
+        'text>'#12479#12452#12488#12523'</span></div>'
       
-        '          <label><p>'#12497#12473#12527#12540#12489'</p><input name="password" type="passwo' +
-        'rd" placeholder="'#21066#38500#29992'" value=<#pass>>'
+        '            <input name="title" id=title1 class=form-control pla' +
+        'ceholder="'#12479#12452#12488#12523#12394#12375'." value=<#title>>'
       
-        '          </label> / <input type="checkbox" name="show" value="t' +
-        'rue" <#check>><p>'#12503#12524#12499#12517#12540'</p>'
-      '        </td></tr>'
-      '        <tr><td>'
+        '          <button class="btn btn-primary" type="submit">'#36865#20449'</butt' +
+        'on>'
+      '          </div>'
+      '        </div>'
+      '        </div>'
+      '        <div class="form-row">'
+      '          <div class="form-group align-self-center w-100">'
       
-        '          <label><p>'#21512#35328#33865#12434#12402#12425#12364#12394#12391#20837#21147#12375#12390#12367#12384#12373#12356': genki <input name=aikotob' +
-        'a type=text value=<#cookie param=aikotoba>></label>'
-      '        </td></tr>'
-      '      </table>'
+        '          <label for=text1>'#26412#25991'<span style=color:red>'#24517#38920'</span></la' +
+        'bel>'
+      
+        '          <textarea id=text1 style="font-size:1.75em" name="comm' +
+        'ent" rows=4'
+      
+        '                class="form-control w-100 sjadpw-lg" required pl' +
+        'aceholder="'#12467#12513#12531#12488#12394#12393#12434#20837#21147#12375#12390#12367#12384#12373#12356'."><#raw></textarea>'
+      '          </div>'
+      '        </div>'
+      '        <div class="form-row justify-content-around">'
+      '          <div class="form-inline w-50">'
+      
+        '          <label for=password1>'#12497#12473#12527#12540#12489':'#12288'</label><input id=password' +
+        '1 name="password" class="form-control col-4" type="password" pla' +
+        'ceholder="'#21066#38500#29992'" value=<#pass>>'
+      '          </div>'
+      '          <div class="form-group w-50">'
+      '          <div class="custom-control custom-checkbox">'
+      
+        '           <input type="checkbox" id=check1 name="show" class=cu' +
+        'stom-control-input value="true" <#check>>'
+      
+        '           <label class=custom-control-label for=check1>'#12503#12524#12499#12517#12540'</l' +
+        'abel>'
+      '          </div>'
+      '          </div>'
+      '        </div>'
+      '        <div class="form-row justify-content-end">'
+      '          <div class="form-inline">'
+      
+        '          <label for=aikotoba1>'#21512#35328#33865#12434#12402#12425#12364#12394#12391#20837#21147#12375#12390#12367#12384#12373#12356': genki'#12288'</label>' +
+        '<input name=aikotoba id=aikotoba1 class="form-control col-2" typ' +
+        'e=text value=<#cookie param=aikotoba>>'
+      '          </div>'
+      '        </div>'
+      '      </div>'
+      '      </div></div>'
       '    </form>'
       '    </header><#preview>')
     DataSet = FDTable1
