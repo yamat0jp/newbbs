@@ -1611,7 +1611,7 @@ object WebModule1: TWebModule1
       #9'});'
       '});'
       '')
-    Left = 104
+    Left = 184
     Top = 272
   end
   object title: TPageProducer
@@ -1868,7 +1868,7 @@ object WebModule1: TWebModule1
       '  <ui class="pagination justify-content-center pagination-sm">'
       '   <#link>'
       '  </ui>'
-      '</nav> <#recent>')
+      '</nav>')
     OnHTMLTag = footerHTMLTag
     Left = 112
     Top = 192

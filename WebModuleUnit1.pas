@@ -202,7 +202,7 @@ begin
     Exit;
   end;
   if CellRow mod 2 = 0 then
-    BgColor:='Maroon';
+    BgColor:='snow';
   case CellColumn of
     0:
       CellData := Format('<input name=check%d type=checkbox>', [CellRow]);
@@ -303,11 +303,7 @@ begin
   else
     t:=data[1].VString^;
   if Data[2].VBoolean = true then
-  begin
-    s := ' active';
-    t := '<span class=page-link>' + t +
-      '<span class=sr-only>(current)</span></span>';
-  end
+    s := ' active'
   else
     s := '';
   result := Format
