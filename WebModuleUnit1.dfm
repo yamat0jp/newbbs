@@ -1536,8 +1536,24 @@ object WebModule1: TWebModule1
     HTMLDoc.Strings = (
       '<#pr>'
       
-        '<form method=post action=<#uri>/adminset?db=<#database> style=te' +
-        'xt-align:center>'
+        '     <link rel="stylesheet" href="https://stackpath.bootstrapcdn' +
+        '.com/bootstrap/4.2.1/css/bootstrap.min.css" integrity="sha384-GJ' +
+        'zZqFGwb1QTTN6wy59ffF1BuGJpLSa9DkKMp0DgiMDm4iYMj70gZWKYbI706tWS" ' +
+        'crossorigin="anonymous">   <script src="https://code.jquery.com/' +
+        'jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK4' +
+        '1JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anony' +
+        'mous"></script>'
+      
+        '    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.j' +
+        's/1.14.6/umd/popper.min.js" integrity="sha384-wHAiFfRlMFy6i5SRax' +
+        'vfOCifBUQy1xHdJ/yoi7FRNXMRBu5WHdZYu1hA6ZOblgut" crossorigin="ano' +
+        'nymous"></script>'
+      
+        '    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.' +
+        '2.1/js/bootstrap.min.js" integrity="sha384-B0UglyR+jN6CkvvICOB2j' +
+        'oaf5I4l3gm9GU6Hc1og6Ls7i6U/mkkaduKaBhlAXv9k" crossorigin="anonym' +
+        'ous"></script><form method=post action=<#uri>/adminset?db=<#data' +
+        'base> style=text-align:center>'
       '    <label><p>'#12497#12473#12527#12540#12489#12398#22793#26356
       
         '      <input type="password" style="HEIGHT: 23px; WIDTH: 85px" n' +
@@ -1848,7 +1864,11 @@ object WebModule1: TWebModule1
   end
   object footer: TPageProducer
     HTMLDoc.Strings = (
-      '<p style=text-align:center>[ <#link> ] <#recent>')
+      '<nav aria-label="Page naigation">'
+      '  <ui class="pagination justify-content-center pagination-sm">'
+      '   <#link>'
+      '  </ui>'
+      '</nav> <#recent>')
     OnHTMLTag = footerHTMLTag
     Left = 112
     Top = 192

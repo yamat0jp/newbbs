@@ -151,6 +151,7 @@ type
     procedure pages(count: Integer; var page: Integer);
     procedure strsCheck(var Error: string; list: TStringList);
     procedure setLastArticle;
+    function footerLink(Data: array of const): string;
     function isInfo: Boolean;
     function loginCheck: Boolean;
     function hash(str: string): string;
@@ -196,7 +197,12 @@ procedure TWebModule1.adminFormatCell(Sender: TObject;
   var CustomAttrs, CellData: string);
 begin
   if CellRow = 0 then
+  begin
+    BgColor:='Silver';
     Exit;
+  end;
+  if CellRow mod 2 = 0 then
+    BgColor:='Maroon';
   case CellColumn of
     0:
       CellData := Format('<input name=check%d type=checkbox>', [CellRow]);
@@ -272,25 +278,42 @@ procedure TWebModule1.footerHTMLTag(Sender: TObject; Tag: TTag;
   const TagString: string; TagParams: TStrings; var ReplaceText: string);
 var
   i: Integer;
+  s: shortstring;
+  x: Boolean;
 begin
   if TagString = 'link' then
   begin
     for i := 1 to 10 do
-      if i = index.Tag then
-        ReplaceText := ReplaceText + ' ' + i.ToString + ' '
-      else
-        ReplaceText := ReplaceText +
-          Format(' <a style=text-decoration-line:none href="%s?db=%d&num=%d">%d</a> ',
-          [Request.ScriptName + PString(Self.Tag)^,
-          FDTable1.FieldByName('dbnum').AsInteger, i, i]);
+    begin
+      x := i = index.Tag;
+      ReplaceText := ReplaceText + footerLink([i, i, x]);
+    end;
+    x := index.Tag = -1;
+    s:='‚³‚¢‚²';
+    ReplaceText := ReplaceText + footerLink([-1, s, x]);
+  end;
+end;
+
+function TWebModule1.footerLink(Data: array of const): string;
+var
+  s, t: string;
+begin
+  if data[1].VType = vtInteger then
+    t:=data[1].VInteger.toString
+  else
+    t:=data[1].VString^;
+  if Data[2].VBoolean = true then
+  begin
+    s := ' active';
+    t := '<span class=page-link>' + t +
+      '<span class=sr-only>(current)</span></span>';
   end
-  else if TagString = 'recent' then
-    if index.Tag = -1 then
-      ReplaceText := TagString
-    else
-      ReplaceText := '<a style=text-decoration-line:none href="' +
-        Request.ScriptName + PString(Self.Tag)^ + '?db=' +
-        FDTable1.FieldByName('dbnum').AsString + '">recent</a>';
+  else
+    s := '';
+  result := Format
+    ('<li class="page-item%s"><a class=page-link href="%s?db=%d&num=%d">%s</a></li>',
+    [s, Request.ScriptName + PString(Self.Tag)^, FDTable1.FieldByName('dbnum')
+    .AsInteger, Data[0].VInteger, t]);
 end;
 
 function TWebModule1.hash(str: string): string;
@@ -786,8 +809,8 @@ begin
       FDTable1.Next;
     end;
     ReplaceText :=
-      '<div class="carousel-caption text-left" style="text-align:bottom;font-size:1.5rem">' +
-      ReplaceText + '</div>';
+      '<div class="carousel-caption text-left" style="text-align:bottom;font-size:1.5rem">'
+      + ReplaceText + '</div>';
   end
   else if TagString = 'info' then
     ReplaceText := FDTable1.Lookup('dbnum', FDTable3.FieldByName('info')
