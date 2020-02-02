@@ -1,1 +1,2 @@
-PngImage_1 RCDATA "sprites.png"
+JpgImage_1 RCDATA "BBS_bn.jpg"
+Icon_1 ICON "favicon64.ico"

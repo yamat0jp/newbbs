@@ -5,6 +5,8 @@ program newbbs;
 
 
 
+{$R *.dres}
+
 uses
   Vcl.Forms,
   Web.WebReq,

@@ -308,8 +308,8 @@ begin
     s := '';
   result := Format
     ('<li class="page-item%s"><a class=page-link href="%s?db=%d&num=%d">%s</a></li>',
-    [s, Request.ScriptName + tagstr, FDTable1.FieldByName('dbnum')
-    .AsInteger, Data[0].VInteger, t]);
+    [s, Request.ScriptName + tagstr, FDTable1.FieldByName('dbnum').AsInteger,
+    Data[0].VInteger, t]);
 end;
 
 function TWebModule1.hash(str: string): string;
@@ -1029,7 +1029,13 @@ begin
   begin
     s := Request.QueryFields.Values['name'];
     Response.ContentType := 'image/jpeg';
-    if Locate('name', s) = true then
+    if s = 'BBS_bn.jpg' then
+      Response.ContentStream := TResourceStream.Create(HInstance, 'JpgImage_1',
+        RT_RCDATA)
+    else if s = 'favicon64.ico' then
+      Response.ContentStream := TResourceStream.Create(HInstance,
+        'Icon_1', RT_ICON)
+    else if Locate('name', s) = true then
     begin
       s := FieldByName('source').AsString;
       p := TNetEncoding.Base64.DecodeStringToBytes(s);

@@ -394,6 +394,7 @@ object WebModule1: TWebModule1
         '/bootstrap/4.2.1/css/bootstrap.min.css" integrity="sha384-GJzZqF' +
         'Gwb1QTTN6wy59ffF1BuGJpLSa9DkKMp0DgiMDm4iYMj70gZWKYbI706tWS" cros' +
         'sorigin="anonymous">'
+      '<link rel=icon href=<#uri>/src?name=favicon64.ico>'
       '</head>'
       '<body>'
       
@@ -468,6 +469,8 @@ object WebModule1: TWebModule1
       '<p><a href="<#uri>/help">'#20351#12356#26041#26696#20869
       '</a>'
       '<p><a href=<#uri>/search>'#26908#32034'</a>'
+      '<p align="center">'#12522#12531#12463#12501#12522#12540
+      #9'<p align="center"><img src=<#uri>/src?name=BBS_bn.jpg>'
       '<p>PR '#12522#12531#12463'<br>'
       
         '<p><a href="https://www.amazon.co.jp/%E9%AB%98%E6%A0%A1%E5%8D%92' +
