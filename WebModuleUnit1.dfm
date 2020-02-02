@@ -1816,6 +1816,7 @@ object WebModule1: TWebModule1
   end
   object FDConnection1: TFDConnection
     Params.Strings = (
+      'User_Name=kainushi'
       'ConnectionDef=first_sql')
     Left = 632
     Top = 56

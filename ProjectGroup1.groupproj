@@ -15,6 +15,9 @@
         <Projects Include="bbs_isapi.dproj">
             <Dependencies/>
         </Projects>
+        <Projects Include="linuxBBS.dproj">
+            <Dependencies/>
+        </Projects>
     </ItemGroup>
     <ProjectExtensions>
         <Borland.Personality>Default.Personality.12</Borland.Personality>
@@ -59,14 +62,23 @@
     <Target Name="bbs_isapi:Make">
         <MSBuild Projects="bbs_isapi.dproj" Targets="Make"/>
     </Target>
+    <Target Name="linuxBBS">
+        <MSBuild Projects="linuxBBS.dproj"/>
+    </Target>
+    <Target Name="linuxBBS:Clean">
+        <MSBuild Projects="linuxBBS.dproj" Targets="Clean"/>
+    </Target>
+    <Target Name="linuxBBS:Make">
+        <MSBuild Projects="linuxBBS.dproj" Targets="Make"/>
+    </Target>
     <Target Name="Build">
-        <CallTarget Targets="newbbs;yourBBS;Project1;bbs_isapi"/>
+        <CallTarget Targets="newbbs;yourBBS;Project1;bbs_isapi;linuxBBS"/>
     </Target>
     <Target Name="Clean">
-        <CallTarget Targets="newbbs:Clean;yourBBS:Clean;Project1:Clean;bbs_isapi:Clean"/>
+        <CallTarget Targets="newbbs:Clean;yourBBS:Clean;Project1:Clean;bbs_isapi:Clean;linuxBBS:Clean"/>
     </Target>
     <Target Name="Make">
-        <CallTarget Targets="newbbs:Make;yourBBS:Make;Project1:Make;bbs_isapi:Make"/>
+        <CallTarget Targets="newbbs:Make;yourBBS:Make;Project1:Make;bbs_isapi:Make;linuxBBS:Make"/>
     </Target>
     <Import Project="$(BDS)\Bin\CodeGear.Group.Targets" Condition="Exists('$(BDS)\Bin\CodeGear.Group.Targets')"/>
 </Project>

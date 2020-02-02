@@ -889,13 +889,12 @@ object Form1: TForm1
   end
   object FDConnection1: TFDConnection
     Params.Strings = (
+      'User_Name=kainushi'
       'ConnectionDef=first_sql')
-    Connected = True
     Left = 320
     Top = 24
   end
   object FDTable1: TFDTable
-    Active = True
     IndexFieldNames = 'id'
     Connection = FDConnection1
     FetchOptions.AssignedValues = [evDetailCascade, evDetailServerCascade]
