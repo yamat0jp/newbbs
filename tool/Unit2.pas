@@ -119,7 +119,7 @@ begin
       t.Position := 0;
       Application.Icon.SaveToStream(t);
       s := TNetEncoding.Base64.EncodeBytesToString(t.Memory, t.Size);
-      AppendRecord([2, 'favion64.ico', s]);
+      AppendRecord([2, 'favicon64.ico', s]);
       t.Position := 0;
       i:=1;
       for s2 in OpenPictureDialog1.Files do
