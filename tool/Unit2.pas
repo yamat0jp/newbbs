@@ -16,7 +16,8 @@ uses
   FireDAC.VCLUI.Wait, FireDAC.Comp.UI, Vcl.DBCtrls, Vcl.Grids,
   Vcl.DBGrids,
   FireDAC.Phys.IB, FireDAC.Phys.IBDef, FireDAC.Phys.FB, FireDAC.Phys.FBDef,
-  Vcl.ComCtrls, Vcl.Buttons, FireDAC.Stan.StorageBin, FireDAC.Stan.StorageXML;
+  Vcl.ComCtrls, Vcl.Buttons, FireDAC.Stan.StorageBin, FireDAC.Stan.StorageXML,
+  Vcl.Imaging.jpeg;
 
 type
   TForm1 = class(TForm)
@@ -25,13 +26,7 @@ type
     Button1: TButton;
     Button2: TButton;
     Button3: TButton;
-    Edit1: TEdit;
-    Label1: TLabel;
     OpenPictureDialog1: TOpenPictureDialog;
-    BindSourceDB1: TBindSourceDB;
-    BindingsList1: TBindingsList;
-    LinkPropertyToFieldCaption: TLinkPropertyToField;
-    LinkControlToField2: TLinkControlToField;
     FDGUIxWaitCursor1: TFDGUIxWaitCursor;
     DBGrid1: TDBGrid;
     Button4: TButton;
@@ -67,6 +62,10 @@ type
     FDTable1id: TIntegerField;
     FDTable1name: TWideStringField;
     FDTable1source: TWideMemoField;
+    Image1: TImage;
+    Button7: TButton;
+    Button8: TButton;
+    OpenPictureDialog2: TOpenPictureDialog;
     procedure Button1Click(Sender: TObject);
     procedure Button4Click(Sender: TObject);
     procedure Button3Click(Sender: TObject);
@@ -81,6 +80,8 @@ type
     procedure ListBox1EndDrag(Sender, Target: TObject; X, Y: Integer);
     procedure ListBox1StartDrag(Sender: TObject; var DragObject: TDragObject);
     procedure Button2Click(Sender: TObject);
+    procedure Button7Click(Sender: TObject);
+    procedure Button8Click(Sender: TObject);
   private
     { Private êÈåæ }
     item: Integer;
@@ -97,7 +98,7 @@ var
 
 implementation
 
-uses System.NetEncoding, IdHashSHA, IdHashMessageDigest, Jpeg;
+uses System.NetEncoding, IdHashSHA, IdHashMessageDigest;
 
 {$R *.dfm}
 
@@ -110,8 +111,18 @@ begin
   if OpenPictureDialog1.Execute = true then
     with FDTable1 do
     begin
+      i := RecordCount + 1;
       t := TMemoryStream.Create;
-      i:=RecordCount+1;
+      Image1.Picture.Graphic.SaveToStream(t);
+      s := TNetEncoding.Base64.EncodeBytesToString(t.Memory, t.Size);
+      AppendRecord([i, 'BBS_bn.jpg', s]);
+      inc(i);
+      t.Position := 0;
+      Application.Icon.SaveToStream(t);
+      s := TNetEncoding.Base64.EncodeBytesToString(t.Memory, t.Size);
+      AppendRecord([i, 'favion64.ico', s]);
+      inc(i);
+      t.Position := 0;
       for s2 in OpenPictureDialog1.Files do
       begin
         openPicture(t, s2);
@@ -136,18 +147,30 @@ var
   s: TMemoryStream;
   p: TBytes;
   j: TJpegImage;
+  i: TIcon;
 begin
   if (FDTable1.Bof = true) or (FDTable1.Eof = true) then
     Exit;
   p := TNetEncoding.Base64.DecodeStringToBytes(FDTable1.FieldByName('source')
     .AsString);
-  j := TJpegImage.Create;
   s := TMemoryStream.Create;
   s.WriteBuffer(p, Length(p));
   s.Position := 0;
-  j.LoadFromStream(s);
-  Canvas.Draw(0, 0, j);
-  j.Free;
+  if ExtractFileExt(FDTable1.FieldByName('name').AsString) = '.ico' then
+  begin
+    i := TIcon.Create;
+    i.LoadFromStream(s);
+    Canvas.Draw(0, 0, i);
+    i.Free;
+  end
+  else
+  begin
+    j := TJpegImage.Create;
+    j.LoadFromStream(s);
+    Canvas.Draw(0, 0, j);
+    j.Free;
+  end;
+  s.Free;
 end;
 
 procedure TForm1.Button4Click(Sender: TObject);
@@ -219,6 +242,23 @@ begin
     ApplyUpdates;
     CommitUpdates;
   end;
+end;
+
+procedure TForm1.Button7Click(Sender: TObject);
+begin
+  with OpenPictureDialog2 do
+  begin
+    FilterIndex := 0;
+    if Execute = true then
+      Image1.Picture.LoadFromFile(filename);
+  end;
+end;
+
+procedure TForm1.Button8Click(Sender: TObject);
+begin
+  OpenPictureDialog2.FilterIndex := 7;
+  if OpenPictureDialog2.Execute = true then
+    Application.Icon.LoadFromFile(OpenPictureDialog2.filename);
 end;
 
 procedure TForm1.combo;

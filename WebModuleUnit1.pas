@@ -1028,14 +1028,11 @@ begin
   with FDTable5 do
   begin
     s := Request.QueryFields.Values['name'];
-    Response.ContentType := 'image/jpeg';
-    if s = 'BBS_bn.jpg' then
-      Response.ContentStream := TResourceStream.Create(HInstance, 'JpgImage_1',
-        RT_RCDATA)
-    else if s = 'favicon64.ico' then
-      Response.ContentStream := TResourceStream.Create(HInstance,
-        'Icon_1', RT_ICON)
-    else if Locate('name', s) = true then
+    if ExtractFileExt(s) = '.ico' then
+      Response.ContentType:='image/x-ico'
+    else
+      Response.ContentType := 'image/jpeg';
+    if Locate('name', s) = true then
     begin
       s := FieldByName('source').AsString;
       p := TNetEncoding.Base64.DecodeStringToBytes(s);

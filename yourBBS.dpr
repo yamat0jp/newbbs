@@ -2,7 +2,9 @@ program yourBBS;
 
 {$APPTYPE CONSOLE}
 
-{$R *.dres}
+
+
+
 
 uses
   Web.WebBroker,

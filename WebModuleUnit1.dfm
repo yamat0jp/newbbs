@@ -377,9 +377,12 @@ object WebModule1: TWebModule1
   object top: TPageProducer
     HTMLDoc.Strings = (
       '<!doctype html>'
-      '<html class=no-js lang="ja">'
+      '<html lang="ja">'
       '<head>'
       #9'<title>Top Page</title>'
+      
+        ' <link rel="icon" type=image/x-icon src=<#uri>/src?name=favicon6' +
+        '4.ico />'
       
         ' <script type="text/javascript" src="//ajax.googleapis.com/ajax/' +
         'libs/jquery/2.1.4/jquery.min.js"></script>'
@@ -394,7 +397,6 @@ object WebModule1: TWebModule1
         '/bootstrap/4.2.1/css/bootstrap.min.css" integrity="sha384-GJzZqF' +
         'Gwb1QTTN6wy59ffF1BuGJpLSa9DkKMp0DgiMDm4iYMj70gZWKYbI706tWS" cros' +
         'sorigin="anonymous">'
-      '<link rel=icon href=<#uri>/src?name=favicon64.ico>'
       '</head>'
       '<body>'
       
