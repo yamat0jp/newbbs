@@ -108,26 +108,25 @@ var
   s, s2: string;
   t: TMemoryStream;
 begin
+  Button4Click(nil);
   if OpenPictureDialog1.Execute = true then
     with FDTable1 do
     begin
-      i := RecordCount + 1;
       t := TMemoryStream.Create;
       Image1.Picture.Graphic.SaveToStream(t);
       s := TNetEncoding.Base64.EncodeBytesToString(t.Memory, t.Size);
-      AppendRecord([i, 'BBS_bn.jpg', s]);
-      inc(i);
+      AppendRecord([1, 'BBS_bn.jpg', s]);
       t.Position := 0;
       Application.Icon.SaveToStream(t);
       s := TNetEncoding.Base64.EncodeBytesToString(t.Memory, t.Size);
-      AppendRecord([i, 'favion64.ico', s]);
-      inc(i);
+      AppendRecord([2, 'favion64.ico', s]);
       t.Position := 0;
+      i:=1;
       for s2 in OpenPictureDialog1.Files do
       begin
         openPicture(t, s2);
         s := TNetEncoding.Base64.EncodeBytesToString(t.Memory, t.Size);
-        AppendRecord([i, Format('slide%d.jpg', [i]), s]);
+        AppendRecord([i+2, Format('slide%d.jpg', [i]), s]);
         inc(i);
       end;
       t.Free;
