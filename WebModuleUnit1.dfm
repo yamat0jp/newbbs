@@ -1865,9 +1865,9 @@ object WebModule1: TWebModule1
   object footer: TPageProducer
     HTMLDoc.Strings = (
       '<nav aria-label="Page naigation">'
-      '  <ui class="pagination justify-content-center pagination-sm">'
+      '  <ul class="pagination justify-content-center pagination-sm">'
       '   <#link>'
-      '  </ui>'
+      '  </ul>'
       '</nav>')
     OnHTMLTag = footerHTMLTag
     Left = 112

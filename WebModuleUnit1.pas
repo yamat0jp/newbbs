@@ -198,11 +198,11 @@ procedure TWebModule1.adminFormatCell(Sender: TObject;
 begin
   if CellRow = 0 then
   begin
-    BgColor:='Silver';
+    BgColor := 'Silver';
     Exit;
   end;
   if CellRow mod 2 = 0 then
-    BgColor:='snow';
+    BgColor := 'snow';
   case CellColumn of
     0:
       CellData := Format('<input name=check%d type=checkbox>', [CellRow]);
@@ -289,7 +289,7 @@ begin
       ReplaceText := ReplaceText + footerLink([i, i, x]);
     end;
     x := index.Tag = -1;
-    s:='‚³‚¢‚²';
+    s := '‚³‚¢‚²';
     ReplaceText := ReplaceText + footerLink([-1, s, x]);
   end;
 end;
@@ -298,17 +298,17 @@ function TWebModule1.footerLink(Data: array of const): string;
 var
   s, t: string;
 begin
-  if data[1].VType = vtInteger then
-    t:=data[1].VInteger.toString
+  if Data[1].VType = vtInteger then
+    t := Data[1].VInteger.toString
   else
-    t:=data[1].VString^;
+    t := Data[1].VString^;
   if Data[2].VBoolean = true then
     s := ' active'
   else
     s := '';
   result := Format
     ('<li class="page-item%s"><a class=page-link href="%s?db=%d&num=%d">%s</a></li>',
-    [s, Request.ScriptName + PString(Self.Tag)^, FDTable1.FieldByName('dbnum')
+    [s, Request.ScriptName + tagstr, FDTable1.FieldByName('dbnum')
     .AsInteger, Data[0].VInteger, t]);
 end;
 
@@ -499,8 +499,6 @@ begin
   else if TagString = 'uri' then
     ReplaceText := Request.ScriptName
   else if TagString = 'request' then
-  begin
-    FDTable1.Close;
     with FDTable4 do
     begin
       First;
@@ -519,9 +517,6 @@ begin
         ReplaceText := '<table border=1 align=center>' + ReplaceText +
           '</table>';
     end;
-    FDTable1.Open;
-    FDTable1.Refresh;
-  end;
 end;
 
 function TWebModule1.mente: Boolean;
@@ -736,7 +731,7 @@ begin
   if TagString = 'uri' then
     ReplaceText := Request.ScriptName
   else if TagString = 'count' then
-    ReplaceText := FDTable2.RecordCount.ToString
+    ReplaceText := FDTable2.RecordCount.toString
   else if TagString = 'database' then
     ReplaceText := FDTable1.FieldByName('database').AsString
   else if TagString = 'date' then
@@ -885,7 +880,6 @@ begin
   pages(FDTable2.RecordCount, i);
   index.Tag := i;
   tagstr := '/admin';
-  Self.Tag := Integer(@tagstr);
   admin.header.text := adhead.Content;
   admin.footer.Clear;
   admin.footer.Add
@@ -1065,7 +1059,6 @@ begin
   pages(FDTable2.RecordCount, i);
   index.Tag := i;
   tagstr := '/index';
-  Self.Tag := Integer(@tagstr);
   Response.Content := index.Content;
 end;
 
@@ -1131,7 +1124,7 @@ begin
     if s = 'master' then
       Response.SendRedirect(Request.ScriptName + '/master')
     else
-      Response.SendRedirect(Request.ScriptName + '/admin?db=' + i.ToString);
+      Response.SendRedirect(Request.ScriptName + '/admin?db=' + i.toString);
   end
   else if VarIsNull(v) = false then
   begin
@@ -1181,13 +1174,12 @@ begin
   if Request.MethodType = mtPost then
   begin
     s := Request.ContentFields.Values['delete'];
+    FDTable4.First;
     with FDTable4 do
       if s = 'all' then
         while not((Bof = true) and (Eof = true)) do
           Delete
       else
-      begin
-        First;
         while Eof = false do
         begin
           i := FieldByName('dbname').AsInteger;
@@ -1202,7 +1194,6 @@ begin
           else
             Delete;
         end;
-      end;
   end;
   FDTable4.First;
   Response.ContentType := 'text/html;charset=utf-8';
@@ -1285,7 +1276,7 @@ begin
       setLastArticle;
       number := FDTable2.FieldByName('number').AsInteger + 1;
       FDTable2.AppendRecord([i, number, title, na, temp, raw, Now, pass]);
-      Response.SendRedirect(Request.ScriptName + '/index?db=' + i.ToString +
+      Response.SendRedirect(Request.ScriptName + '/index?db=' + i.toString +
         '#article');
     end;
     Exit;
@@ -1359,7 +1350,7 @@ begin
     FDTable1.AppendRecord([0, 'info']);
     FDTable1.AppendRecord([1, 'master']);
     for i := 1 to 10 do
-      FDTable1.AppendRecord([i + 1, 'ŒfŽ¦”Â' + i.ToString]);
+      FDTable1.AppendRecord([i + 1, 'ŒfŽ¦”Â' + i.toString]);
   end;
   if (FDTable3.Bof = true) and (FDTable3.Eof = true) then
   begin
